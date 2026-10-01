@@ -59,20 +59,28 @@ export default function Welcome() {
 
   return (
     <Shell tabs={false}>
-      <div className="mt-2 flex items-center gap-2" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS} aria-valuenow={step}>
-        {Array.from({ length: STEPS }, (_, i) => (
-          <span key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < step ? "bg-ink/70" : "bg-soft"}`} />
-        ))}
+      <div className="mt-3" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS} aria-valuenow={step}>
+        <div className="flex items-center gap-2">
+          {Array.from({ length: STEPS }, (_, i) => (
+            <span key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i < step ? "bg-ink/75" : "bg-ink/15"}`} />
+          ))}
+        </div>
+        <div className="mt-2 text-right text-[12px] tracking-[0.14em] text-muted">{fil ? "HAKBANG" : "STEP"} {step} / {STEPS}</div>
       </div>
 
       {step === 1 && (
         <>
           <div className="kicker mt-5 text-gap-dark">{fil ? "Una sa lahat" : "First things first"}</div>
-          <h1 className="mt-1 text-[36px] leading-[1.05]">{fil ? "Sino ka sa Gap Finder?" : "Who's using Gap Finder?"}</h1>
-          <div className="card mt-6">
+          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{guest ? (fil ? "Kumusta! Ano ang pangalan mo?" : "Hi! What's your name?") : fil ? "Sino ka sa Gap Finder?" : "Who's using Gap Finder?"}</h1>
+          <p className="mt-2 text-balance text-[16px] text-muted">
+            {guest ? (fil ? "Gagawa kami ng plano sa pag-aaral para sa iyo sa loob ng isang minuto. Walang account na kailangan." : "We'll build you a study plan in about a minute. No account needed.") : fil ? "Isang minuto lang para ihanda ang plano mo." : "One minute to set up your plan."}
+          </p>
+          <div className="card mt-5">
             <label className="kicker text-muted" htmlFor="nm">{fil ? "Ano ang itatawag namin sa iyo?" : "What should we call you?"}</label>
-            <input id="nm" className="input mt-2 !font-sans" value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoComplete="given-name" data-testid="name" />
-            <p className="mt-1 text-[13px] text-muted">{fil ? "Makikita ito ng teacher mo. Hindi ito ipinapadala sa AI." : "Your teacher can see this. It's never sent to the AI."}</p>
+            <input id="nm" autoFocus className="input mt-2 !py-4 !text-[20px] !font-sans" value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoComplete="given-name" data-testid="name" />
+            <p className="mt-1 text-[13px] text-muted">
+              {guest ? (fil ? "Nasa device na ito lang. Hindi ito ipinapadala sa AI." : "Stays on this device. It's never sent to the AI.") : fil ? "Makikita ito ng teacher mo. Hindi ito ipinapadala sa AI." : "Your teacher can see this. It's never sent to the AI."}
+            </p>
 
             {!guest && (
               <>
@@ -106,7 +114,7 @@ export default function Welcome() {
       {step === 2 && (
         <>
           <div className="kicker mt-5 text-gap-dark">{fil ? "Ikaw at ang pag-aaral mo" : "You and your studies"}</div>
-          <h1 className="mt-1 text-[36px] leading-[1.05]">{fil ? "Ano ang aaralin mo?" : "What are you studying?"}</h1>
+          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{fil ? "Ano ang aaralin mo?" : "What are you studying?"}</h1>
           <div className="card mt-6">
             <div className="kicker text-muted">{fil ? "Mga subject (pumili ng isa o higit pa)" : "Subjects (pick one or more)"}</div>
             <div className="mt-2 grid grid-cols-2 gap-3">
@@ -144,7 +152,7 @@ export default function Welcome() {
       {step === 3 && (
         <>
           <div className="kicker mt-5 text-gap-dark">{fil ? "Halos tapos na" : "Almost there"}</div>
-          <h1 className="mt-1 text-[36px] leading-[1.05]">{fil ? "Ano ang layunin mo?" : "What's your goal?"}</h1>
+          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{fil ? "Ano ang layunin mo?" : "What's your goal?"}</h1>
           <div className="card mt-6">
             <div className="grid gap-2" role="radiogroup">
               {(Object.keys(goalMeta) as Goal[]).map((g) => (
