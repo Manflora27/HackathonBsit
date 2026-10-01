@@ -32,3 +32,6 @@ __pycache__/
 public/pyodide/
 test-results/
 playwright-report/
+
+# Local secrets handed to the build agent (never commit)
+.secrets.local
