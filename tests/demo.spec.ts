@@ -124,3 +124,55 @@ test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with n
   await expect(page.getByTestId("plan-home")).toBeVisible();
   await expect(page.getByTestId("assignment-card")).toHaveCount(0);
 });
+
+const draft = {
+  en: { body: ["Expanding means multiplying every term. $(x+1)(x+4)=x^2+5x+4$."], spoken: "Expanding means multiplying every term." },
+  fil: { body: ["Ang expanding ay pag-multiply sa bawat term."], spoken: "Ang expanding ay pag-multiply sa bawat term." },
+  practice: [
+    { prompt: "Expand", given: "(x+1)(x+4)", form: "expanded", expected: "x^2+5x+4" },
+    { prompt: "Expand", given: "(x+2)(x+3)", form: "expanded", expected: "x^2+5x+7" }, // wrong key: the gate must drop it
+    { prompt: "Expand", given: "(x+1)(x+1)", form: "expanded", expected: "x^2+2x+1" },
+  ],
+};
+
+async function startPlan(page: import("@playwright/test").Page) {
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /let.s go/i }).click();
+  await page.getByTestId("start-onboarding").click();
+  await page.getByTestId("name").fill("Mika");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("subject-math").click();
+  await page.getByTestId("grade-8").click();
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("finish-profile").click();
+}
+
+test("lesson pipeline: skeleton, generated lesson, engine drops a wrong key, practice works", async ({ page }) => {
+  let release!: () => void;
+  const gateOpen = new Promise<void>((r) => (release = r));
+  await page.route("**/api/lesson", async (route) => {
+    await gateOpen;
+    await route.fulfill({ json: draft });
+  });
+  await startPlan(page);
+  await page.getByTestId("unit-math").click();
+  await expect(page.getByTestId("lesson-skeleton")).toBeVisible();
+  await page.screenshot({ path: "test-results/shots/12-skeleton.png" });
+  release();
+  await expect(page.getByTestId("lesson-body")).toBeVisible({ timeout: 90_000 });
+  const stored = await page.evaluate(() => Object.entries(localStorage).find(([k]) => k.startsWith("gf-lesson:"))?.[1] ?? "");
+  expect(JSON.parse(stored).lesson.practice).toHaveLength(2); // the wrong key was dropped
+  expect(JSON.parse(stored).verified).toBe(true);
+  await page.getByTestId("to-practice").click();
+  await page.getByTestId("practice-answer").fill("x^2+5x+4");
+  await page.getByTestId("practice-check").click();
+  await expect(page.getByText("Nice!")).toBeVisible();
+});
+
+test("lesson pipeline: generation failure keeps the skill in the plan", async ({ page }) => {
+  await page.route("**/api/lesson", (route) => route.fulfill({ status: 502, json: { error: "down" } }));
+  await startPlan(page);
+  await page.getByTestId("unit-math").click();
+  await expect(page.getByTestId("lesson-unavailable")).toBeVisible();
+});

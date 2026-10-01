@@ -135,11 +135,11 @@ export default function StudentHome() {
             {planSubjects.map((sub) => {
               const next = buildPlan(sub, planGrade)[0];
               return (
-                <div key={sub} className="card !p-4">
+                <button key={sub} className="card w-full !p-4 text-left" onClick={() => nav(`/unit/${next.id}`)} data-testid={`unit-${sub}`}>
                   <div className="kicker text-muted">{subjectLabel(sub, lang)} · {fil ? "Grade" : "Grade"} {planGrade}</div>
                   <div className="mt-1 font-display text-[22px] leading-tight">{fil ? "Susunod:" : "Up next:"} {next.title[lang]}</div>
                   <div className="mt-1 text-[14px] text-muted">Q{next.quarter} · {verifierMeta[next.verifier][lang]}</div>
-                </div>
+                </button>
               );
             })}
           </section>

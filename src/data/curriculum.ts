@@ -118,3 +118,10 @@ export const verifierMeta: Record<VerifierId, { en: string; fil: string; verifie
 };
 
 export const subjectLabel = (s: SubjectId, lang: Lang) => subjectMeta[s][lang];
+
+/** Resolve a unit id like "math-g8-q2-algebra" back to its plan unit. */
+export function unitById(id: string): PlanUnit | null {
+  const m = /^(math|science)-g(\d+)-q\d-/.exec(id);
+  if (!m) return null;
+  return buildPlan(m[1] as SubjectId, Number(m[2])).find((u) => u.id === id) ?? null;
+}

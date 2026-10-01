@@ -11,6 +11,7 @@ import Solve from "./pages/Solve";
 import StudentHome from "./pages/StudentHome";
 import Teacher from "./pages/Teacher";
 import Trace from "./pages/Trace";
+import Unit from "./pages/Unit";
 import Welcome from "./pages/Welcome";
 import { useStore } from "./store";
 
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/map" element={<Gate><MapPage /></Gate>} />
         <Route path="/solve/:problemId" element={<Gate><Solve /></Gate>} />
         <Route path="/trace" element={<Gate><Trace /></Gate>} />
+        <Route path="/unit/:unitId" element={<Gate><Unit /></Gate>} />
         <Route path="/learn/:skillId" element={<Gate><Learn /></Gate>} />
         <Route path="/teacher" element={<Gate teacher><Teacher /></Gate>} />
         <Route path="/settings" element={<Settings />} />
