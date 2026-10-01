@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth, type AccountType } from "../auth";
 import { Bilog, type BilogMood } from "../components/Bilog";
-import { Icon } from "../components/Icon";
+import { Icon, InkCircle } from "../components/Icon";
 import { PlanReveal } from "../components/PlanReveal";
 import { Shell } from "../components/Shell";
 import { GRADES, goalMeta, subjectMeta, type Goal, type SubjectId } from "../data/curriculum";
@@ -27,6 +27,7 @@ export default function Welcome() {
   const [goal, setGoal] = useState<Goal | null>(onboarding.goal);
   const [busy, setBusy] = useState(false);
   const [codeError, setCodeError] = useState(false);
+  const [showCode, setShowCode] = useState(false);
   const [planReady, setPlanReady] = useState(false);
 
   useEffect(() => {
@@ -83,37 +84,50 @@ export default function Welcome() {
           <p className="mt-2 text-balance text-[16px] text-muted">
             {guest ? (fil ? "Gagawa kami ng plano sa pag-aaral para sa iyo sa loob ng isang minuto. Walang account na kailangan." : "We'll build you a study plan in about a minute. No account needed.") : fil ? "Isang minuto lang para ihanda ang plano mo." : "One minute to set up your plan."}
           </p>
-          <div className={guest ? "mt-7" : "card mt-5"}>
-            <label className="kicker text-muted" htmlFor="nm">{fil ? "Ano ang itatawag namin sa iyo?" : "What should we call you?"}</label>
-            <input id="nm" className="input mt-2 !border-ink/25 !bg-white/85 !py-4 !text-[22px] !font-sans shadow-[0_6px_18px_-12px_rgb(30_43_39/.5)]" placeholder={fil ? "Unang pangalan" : "Your first name"} value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoComplete="given-name" data-testid="name" />
-            <p className="mt-1 text-[13px] text-muted">
-              {guest ? (fil ? "Nasa device na ito lang. Hindi ito ipinapadala sa AI." : "Stays on this device. It's never sent to the AI.") : fil ? "Makikita ito ng teacher mo. Hindi ito ipinapadala sa AI." : "Your teacher can see this. It's never sent to the AI."}
-            </p>
+          <div className="mt-8 space-y-9">
+            <div>
+              <label className="kicker text-muted" htmlFor="nm">{fil ? "Ano ang itatawag namin sa iyo?" : "What should we call you?"}</label>
+              <input id="nm" className="mt-1 w-full border-0 border-b-2 border-ink/25 bg-transparent px-0 pb-2 font-display text-[34px] leading-tight outline-none transition placeholder:text-ink/25 focus:border-ink"
+                placeholder={fil ? "Unang pangalan" : "Your first name"} value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoComplete="given-name" data-testid="name" />
+              <p className="mt-2 text-[13px] text-muted">
+                {guest ? (fil ? "Nasa device na ito lang. Hindi ito ipinapadala sa AI." : "Stays on this device. It's never sent to the AI.") : fil ? "Makikita ito ng teacher mo. Hindi ito ipinapadala sa AI." : "Your teacher can see this. It's never sent to the AI."}
+              </p>
+            </div>
 
             {!guest && (
-              <>
-                <div className="kicker mt-6 text-muted">{fil ? "Ako ay…" : "I am a…"}</div>
-                <div className="mt-2 grid grid-cols-2 gap-3">
+              <div>
+                <div className="kicker text-muted">{fil ? "Ako ay…" : "I am a…"}</div>
+                <div className="mt-4 flex gap-10 pl-2" role="radiogroup">
                   {([
                     ["student", "Student", fil ? "Mag-aral at hanapin ang gap" : "Learn and find my gaps"],
                     ["teacher", "Teacher", fil ? "Pamahalaan ang klase" : "Run a class"],
                   ] as const).map(([v, title, sub]) => (
-                    <button key={v} onClick={() => setType(v)} data-testid={`type-${v}`}
-                      className={`rounded-2xl border p-4 text-left transition ${type === v ? "border-ink/60 bg-white/70" : "border-white/60 bg-white/30"}`}>
-                      <div className="font-display text-[20px]">{title}</div>
-                      <div className="text-[13px] text-muted">{sub}</div>
+                    <button key={v} role="radio" aria-checked={type === v} onClick={() => setType(v)} data-testid={`type-${v}`} className="text-left">
+                      <span className={`block font-display text-[30px] leading-none transition-colors ${type === v ? "text-ink" : "text-ink/40"}`}>
+                        {type === v ? <InkCircle className="px-1.5 py-1">{title}</InkCircle> : <span className="px-1.5 py-1">{title}</span>}
+                      </span>
+                      <span className="mt-2 block max-w-[9.5rem] text-[13px] leading-snug text-muted">{sub}</span>
                     </button>
                   ))}
                 </div>
-              </>
+              </div>
             )}
 
             {student && !guest && (
-              <>
-                <label className="kicker mt-6 block text-muted" htmlFor="cc">{fil ? "May class code? (opsyonal)" : "Have a class code? (optional)"}</label>
-                <input id="cc" className="input mt-2 !border-ink/25 !bg-white/85" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
-                {codeError && <p className="mt-1 text-[13px] text-gap-dark">{fil ? "Hindi nahanap ang code. Puwede mo itong idagdag mamaya." : "We couldn't find that code. You can add it later from home."}</p>}
-              </>
+              <div>
+                {!showCode && !code ? (
+                  <button className="text-[15px] text-muted underline decoration-dotted underline-offset-4" onClick={() => setShowCode(true)} data-testid="show-code">
+                    {fil ? "May class code ka ba?" : "Have a class code?"}
+                  </button>
+                ) : (
+                  <>
+                    <label className="kicker text-muted" htmlFor="cc">{fil ? "Class code (opsyonal)" : "Class code (optional)"}</label>
+                    <input id="cc" className="mt-1 w-full border-0 border-b-2 border-ink/25 bg-transparent px-0 pb-2 font-mono text-[22px] outline-none transition placeholder:text-ink/25 focus:border-ink"
+                      value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
+                    {codeError && <p className="mt-2 text-[13px] text-gap-dark">{fil ? "Hindi nahanap ang code. Puwede mo itong idagdag mamaya." : "We couldn't find that code. You can add it later from home."}</p>}
+                  </>
+                )}
+              </div>
             )}
           </div>
         </>

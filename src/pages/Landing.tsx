@@ -94,17 +94,18 @@ export default function Landing() {
 
   return (
     <Shell tabs={false} bare>
+      <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col justify-center">
       <section>
-        <div className="mx-auto w-[clamp(130px,23dvh,250px)]"><HeroDrawing /></div>
+        <div className="mx-auto w-[clamp(150px,30dvh,300px)]"><HeroDrawing /></div>
         <div className="kicker mt-3 text-gap-dark">{fil ? "Para sa math na nakakalito" : "A diagnostic for math"}</div>
-        <h1 className="mt-1.5 text-[28px] leading-[1.06]">
+        <h1 className="mt-2 text-[clamp(26px,min(4.8dvh,7.8vw),44px)] leading-[1.06]">
           {fil ? "Hindi ka mahina sa math." : "You're not bad at math."}
           <br />
           {fil ? "May " : "You're missing "}
           <InkCircle className="px-1 text-gap">{fil ? "isang" : "one"}</InkCircle>
           {fil ? " skill lang na kulang." : " skill."}
         </h1>
-        <p className="mt-2 text-[14px] leading-snug text-muted">
+        <p className="mt-3 text-[clamp(14px,2.2dvh,18px)] leading-snug text-muted">
           {fil
             ? "Isulat ang solusyon mo. Hahanapin namin ang linyang nagkamali, at ang skill mula sa mga nakaraang taon na nagdulot nito."
             : "Show your steps. We find the line that broke, and the skill from years back that caused it."}
@@ -153,10 +154,10 @@ export default function Landing() {
           </button>
         </section>
       ) : (
-        <section className="card mt-5 !p-5">
-          <h2 className="text-[22px]">{fil ? "Mag-sign in para magsimula" : "Sign in to get started"}</h2>
+        <section className="card mt-[clamp(18px,4dvh,40px)] !p-6">
+          <h2 className="text-[clamp(22px,3.4dvh,28px)]">{fil ? "Mag-sign in para magsimula" : "Sign in to get started"}</h2>
           {authConfigured ? (
-            <button className="btn-primary mt-5 w-full" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
+            <button className="btn-primary mt-5 w-full !py-4 text-[17px]" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
               <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
             </button>
           ) : (
@@ -168,10 +169,11 @@ export default function Landing() {
         </section>
       )}
       {consent && (
-        <p className="mt-4 text-center text-[13px] text-muted">
+        <p className="mt-5 text-center text-[14px] text-muted">
           <Link to="/demo" className="underline decoration-dotted underline-offset-4" data-testid="to-demo">{fil ? "Mga demo account para sa judging" : "Demo accounts for judging"}</Link>
         </p>
       )}
+      </div>
     </Shell>
   );
 }
