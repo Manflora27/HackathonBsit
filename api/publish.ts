@@ -1,7 +1,7 @@
 // Publishes a server-generated lesson to the shared cache after re-checking every answer key with SymPy (api/verify.py).
 // Only this function writes lesson_cache (service role), so clients can't publish content of their own.
-import { json } from "./_openrouter";
-import { ENGINE_VERIFIED, resolve, verifySig } from "./_lessons";
+import { json } from "./_openrouter.js";
+import { ENGINE_VERIFIED, resolve, verifySig } from "./_lessons.js";
 
 type Item = { prompt: string; given: string; form: string; expected: string };
 

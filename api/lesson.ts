@@ -1,5 +1,5 @@
-import { chatJson, json } from "./_openrouter";
-import { resolve, sign, type Target } from "./_lessons";
+import { chatJson, json } from "./_openrouter.js";
+import { resolve, sign, type Target } from "./_lessons.js";
 
 const FORMS = ["any", "expanded", "factored", "solved", "units", "chemistry"];
 

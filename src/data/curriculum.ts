@@ -1,4 +1,4 @@
-import type { Lang } from "../types";
+import type { Lang } from "../types.js";
 
 export type SubjectId = "math" | "science";
 export type VerifierId = "sympy" | "arithmetic" | "statistics" | "geometry" | "units" | "chemistry" | "llm";

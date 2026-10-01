@@ -1,4 +1,4 @@
-import { chatJson, json } from "./_openrouter";
+import { chatJson, json } from "./_openrouter.js";
 
 type Candidate = { id: string; title: string };
 

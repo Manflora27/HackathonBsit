@@ -1,4 +1,4 @@
-import { headers, json, OPENROUTER_BASE } from "./_openrouter";
+import { headers, json, OPENROUTER_BASE } from "./_openrouter.js";
 
 const MODEL = process.env.OPENROUTER_TTS_MODEL ?? "openai/gpt-4o-mini-tts-2025-12-15";
 const VOICE = process.env.OPENROUTER_TTS_VOICE ?? "alloy";
