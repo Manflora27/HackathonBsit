@@ -40,7 +40,7 @@ export default function Unit() {
   const [answer, setAnswer] = useState("");
   const [results, setResults] = useState<(boolean | null)[]>([]);
   const [feedback, setFeedback] = useState<null | boolean>(null);
-  const [keypad, setKeypad] = useState(true);
+  const [keypadPref, setKeypad] = useState(true);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -82,6 +82,7 @@ export default function Unit() {
   const need = globalThis.Math.min(2, lesson.practice.length);
   const mastered = results.filter(Boolean).length >= need;
   const p = lesson.practice[qi];
+  const keypad = keypadPref && p.form !== "units" && p.form !== "chemistry"; // letters and arrows need the device keyboard
 
   async function check() {
     if (!answer.trim()) return;
@@ -134,7 +135,7 @@ export default function Unit() {
             <span className="kicker text-muted">{t("practice")} {qi + 1}/{lesson.practice.length}</span>
             <div className="mt-3 flex items-center gap-2 rounded-2xl bg-soft px-4 py-4 text-[26px]">
               <span className="font-display text-base text-muted">{p.prompt}:</span>
-              <Math tex={quickTex(p.given)} />
+              {p.form === "units" || p.form === "chemistry" ? <span className="font-mono text-[20px]">{p.given}</span> : <Math tex={quickTex(p.given)} />}
             </div>
             <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); void check(); }}>
               <input className="input" value={answer} onChange={(e) => { setFeedback(null); setAnswer(e.target.value); }} inputMode={keypad ? "none" : "text"}

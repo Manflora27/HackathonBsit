@@ -176,3 +176,35 @@ test("lesson pipeline: generation failure keeps the skill in the plan", async ({
   await page.getByTestId("unit-math").click();
   await expect(page.getByTestId("lesson-unavailable")).toBeVisible();
 });
+
+test("verifiers: unit keys are checked in the browser, wrong ones dropped", async ({ page }) => {
+  const units = {
+    en: { body: ["Speed is distance over time."], spoken: "Speed is distance over time." },
+    fil: { body: ["Ang bilis ay layo bawat oras."], spoken: "Ang bilis ay layo bawat oras." },
+    practice: [
+      { prompt: "Speed", given: "100 m / 20 s", form: "units", expected: "5 m/s" },
+      { prompt: "Force", given: "2 kg * 3 m/s^2", form: "units", expected: "6 N" },
+      { prompt: "Speed", given: "100 m / 20 s", form: "units", expected: "6 m/s" }, // wrong
+    ],
+  };
+  await page.route("**/api/lesson", (route) => route.fulfill({ json: units }));
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /let.s go/i }).click();
+  await page.getByTestId("start-onboarding").click();
+  await page.getByTestId("name").fill("Mika");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("subject-science").click();
+  await page.getByTestId("grade-11").click();
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("finish-profile").click();
+  await page.getByTestId("unit-science").click();
+  await expect(page.getByTestId("lesson-body")).toBeVisible({ timeout: 90_000 });
+  const stored = await page.evaluate(() => Object.entries(localStorage).find(([k]) => k.startsWith("gf-lesson:"))?.[1] ?? "");
+  expect(JSON.parse(stored).lesson.practice).toHaveLength(2);
+  expect(JSON.parse(stored).verified).toBe(true);
+  await page.getByTestId("to-practice").click();
+  await page.getByTestId("practice-answer").fill("18 km/h");
+  await page.getByTestId("practice-check").click();
+  await expect(page.getByText("Nice!")).toBeVisible();
+});

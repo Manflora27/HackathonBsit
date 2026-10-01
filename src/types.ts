@@ -1,5 +1,5 @@
 export type Lang = "en" | "fil";
-export type Form = "any" | "expanded" | "factored" | "solved";
+export type Form = "any" | "expanded" | "factored" | "solved" | "units" | "chemistry";
 export type SkillStatus = "unknown" | "gap" | "mastered";
 
 export interface Probe {

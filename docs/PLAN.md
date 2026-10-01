@@ -514,7 +514,7 @@ Decisions from the design review. Where they conflict with earlier sections, thi
 - Consent (RA 10173), settings (language, text size, readable font, reduced motion, share toggle, download/delete data, AI log), PWA manifest + offline precache.
 - AI proxy (`api/ai.ts`, `api/tts.ts`) with non-AI fallbacks; Supabase schema with RLS (`supabase/migrations/0001_init.sql`).
 
-**Added Oct 1 (branch `onboarding-and-curriculum`):** three-screen onboarding with plan reveal, Grades 1–12 Math/Science skeleton with verifier tags, profile migration `0003`, plan-based home. In progress: lesson generation and verified cache.
+**Added Oct 1 (branch `onboarding-and-curriculum`):** three-screen onboarding with plan reveal, Grades 1–12 Math/Science skeleton with verifier tags, profile migration `0003`, plan-based home. Lesson pipeline (`api/lesson.ts`, `src/lessons/pipeline.ts`, `/unit/:id`, migration `0004`): generate → engine gate → cache. Engine verifiers added for chemistry balancing (own parser, atom counts, lowest terms) and physical units (`sympy.physics.units`, dimension-aware, 0.1% tolerance); statistics and geometry are verified as calculations. `npm run test:engine`: 45 passing.
 
 **Needs the team:**
 - Vercel deploy + `OPENROUTER_API_KEY` (AI features currently use fallbacks).

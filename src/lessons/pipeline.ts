@@ -12,8 +12,9 @@ export interface CachedLesson {
 
 const LS = (id: string) => `gf-lesson:${id}`;
 const TIMEOUT_MS = 30_000;
-/** Verifier tags the offline engine can check today. Others are published as AI-checked until their verifier exists. */
-const ENGINE_VERIFIED = new Set(["sympy", "arithmetic"]);
+/** Verifier tags the offline engine checks. Only "llm" units are published as AI-checked.
+ * Statistics and geometry keys are verified as calculations: `given` is the computation, the engine confirms the value. */
+const ENGINE_VERIFIED = new Set(["sympy", "arithmetic", "statistics", "geometry", "units", "chemistry"]);
 
 type Draft = { en: Lesson["en"]; fil: Lesson["fil"]; practice: { prompt: string; given: string; form: Form; expected: string }[] };
 

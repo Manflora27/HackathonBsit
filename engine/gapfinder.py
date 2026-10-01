@@ -648,8 +648,122 @@ def analyze(problem: str, steps: list[str], kind: str = "solve") -> dict:
     return out
 
 
+# --- Domain verifiers: chemistry balancing and physical units ----------------------------------------------
+
+_FORMULA = re.compile(r"([A-Z][a-z]?|\(|\))(\d*)")
+
+
+def _formula_counts(formula: str) -> dict:
+    """Atom counts for a formula like Ca(OH)2. Charges and hydrates are not supported (raises ValueError)."""
+    if not re.fullmatch(r"(?:[A-Z][a-z]?|\(|\)|\d)+", formula):
+        raise ValueError(formula)
+    stack: list[dict] = [{}]
+    pos = 0
+    for m in _FORMULA.finditer(formula):
+        if m.start() != pos:
+            raise ValueError(formula)
+        pos = m.end()
+        tok, n = m.group(1), int(m.group(2) or 1)
+        if tok == "(":
+            stack.append({})
+        elif tok == ")":
+            if len(stack) < 2:
+                raise ValueError(formula)
+            inner = stack.pop()
+            for k, v in inner.items():
+                stack[-1][k] = stack[-1].get(k, 0) + v * n
+        else:
+            stack[-1][tok] = stack[-1].get(tok, 0) + n
+    if pos != len(formula) or len(stack) != 1:
+        raise ValueError(formula)
+    return stack[0]
+
+
+def _parse_reaction(text: str):
+    """'2H2 + O2 -> 2H2O' -> ([(2,'H2'),(1,'O2')], [(2,'H2O')])."""
+    sides = re.split(r"->|=>|=", text)
+    if len(sides) != 2:
+        raise ValueError(text)
+
+    def terms(side: str):
+        out = []
+        for t in side.split("+"):
+            m = re.fullmatch(r"\s*(\d*)\s*([A-Za-z0-9()]+)\s*", t)
+            if not m:
+                raise ValueError(t)
+            out.append((int(m.group(1) or 1), m.group(2)))
+        return out
+
+    return terms(sides[0]), terms(sides[1])
+
+
+def check_balanced(given: str, answer: str) -> dict:
+    """The answer must be the same reaction, balanced, with whole-number coefficients in lowest terms."""
+    try:
+        gl, gr = _parse_reaction(given)
+        al, ar = _parse_reaction(answer)
+        counts = {f: _formula_counts(f) for _, f in gl + gr + al + ar}
+    except ValueError:
+        return {"correct": False, "reason": "unparsed"}
+    if sorted(f for _, f in gl) != sorted(f for _, f in al) or sorted(f for _, f in gr) != sorted(f for _, f in ar):
+        return {"correct": False, "reason": "different_species"}
+
+    def total(side):
+        tot: dict = {}
+        for c, f in side:
+            for atom, n in counts[f].items():
+                tot[atom] = tot.get(atom, 0) + c * n
+        return tot
+
+    if total(al) != total(ar):
+        return {"correct": False, "reason": "not_balanced"}
+    from math import gcd
+    from functools import reduce
+    if reduce(gcd, [c for c, _ in al + ar]) != 1:
+        return {"correct": False, "reason": "not_lowest_terms"}
+    return {"correct": True}
+
+
+def _unit_namespace() -> dict:
+    from sympy.physics import units as u
+    return {"m": u.meter, "km": u.kilometer, "cm": u.centimeter, "mm": u.millimeter, "s": u.second, "min": u.minute,
+            "h": u.hour, "kg": u.kilogram, "g": u.gram, "N": u.newton, "J": u.joule, "W": u.watt, "Pa": u.pascal,
+            "Hz": u.hertz, "A": u.ampere, "V": u.volt, "K": u.kelvin, "mol": u.mole, "L": u.liter}
+
+
+def _parse_quantity(text: str):
+    from sympy import sympify
+    t = text.strip().replace("^", "**")
+    # "20 s" binds tighter than the "/" before it: (100*m)/(20*s)
+    t = re.sub(r"(\d+(?:\.\d+)?)\s*([A-Za-z]+)(\*\*-?\d+)?", r"(\1*\2\3)", t)
+    return sympify(t, locals=_unit_namespace(), rational=False)
+
+
+def check_units(given: str, answer: str) -> dict:
+    """The answer must equal the computation in `given` AND carry the right dimension (within 0.1%)."""
+    from sympy.physics.units import convert_to, kilogram, meter, second, ampere, kelvin, mole
+    base = [kilogram, meter, second, ampere, kelvin, mole]
+    try:
+        key, ans = _parse_quantity(given), _parse_quantity(answer)
+        ratio = convert_to(key, base) / convert_to(ans, base)
+        ratio = ratio.simplify()
+    except Exception:  # noqa: BLE001
+        return {"correct": False, "reason": "unparsed"}
+    if ratio.free_symbols or ratio.has(*base):
+        return {"correct": False, "reason": "wrong_units"}
+    try:
+        ok = abs(float(ratio) - 1) < 1e-3
+    except (TypeError, ValueError):
+        return {"correct": False, "reason": "unparsed"}
+    return {"correct": ok} if ok else {"correct": False, "reason": "not_equivalent"}
+
+
 def check_answer(expected: str, answer: str, form: str = "any") -> dict:
     """Is a short answer equivalent to the key (and in the requested form)?"""
+    if form == "chemistry":
+        return check_balanced(expected, answer)
+    if form == "units":
+        return check_units(expected, answer)
     try:
         e, a = parse_step(expected), parse_step(answer)
     except ParseError:

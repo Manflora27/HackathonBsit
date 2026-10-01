@@ -86,3 +86,20 @@ def test_rule_ids_have_misconception_entries():
 def test_demo_problems_parse():
     for p in _load("problems.json")["problems"]:
         assert g.preview(p["given"])["ok"], p
+
+
+def test_chemistry_balancing():
+    assert g.check_answer("H2 + O2 -> H2O", "2H2 + O2 -> 2H2O", "chemistry")["correct"]
+    assert g.check_answer("Al + O2 -> Al2O3", "4Al + 3O2 -> 2Al2O3", "chemistry")["correct"]
+    assert g.check_answer("Ca(OH)2 + HCl -> CaCl2 + H2O", "Ca(OH)2 + 2HCl -> CaCl2 + 2H2O", "chemistry")["correct"]
+    assert g.check_answer("H2 + O2 -> H2O", "H2 + O2 -> H2O", "chemistry")["reason"] == "not_balanced"
+    assert g.check_answer("H2 + O2 -> H2O", "4H2 + 2O2 -> 4H2O", "chemistry")["reason"] == "not_lowest_terms"
+    assert g.check_answer("H2 + O2 -> H2O", "2H2 + O2 -> 2H2O2", "chemistry")["reason"] == "different_species"
+
+
+def test_units():
+    assert g.check_answer("100 m / 20 s", "5 m/s", "units")["correct"]
+    assert g.check_answer("100 m / 20 s", "18 km/h", "units")["correct"]
+    assert g.check_answer("2 kg * 3 m/s^2", "6 N", "units")["correct"]
+    assert g.check_answer("100 m / 20 s", "5", "units")["reason"] == "wrong_units"
+    assert not g.check_answer("100 m / 20 s", "6 m/s", "units")["correct"]
