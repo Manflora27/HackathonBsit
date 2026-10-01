@@ -17,7 +17,9 @@ const TIMEOUT_MS = 30_000;
  * Statistics and geometry keys are verified as calculations: `given` is the computation, the engine confirms the value. */
 const ENGINE_VERIFIED = new Set(["sympy", "arithmetic", "statistics", "geometry", "units", "chemistry"]);
 
-type Draft = { en: Lesson["en"]; fil: Lesson["fil"]; practice: { prompt: string; given: string; form: Form; expected: string }[] };
+type Draft = {
+  /** Server signature over the generated lesson; lets /api/publish accept it into the shared cache. */
+  sig?: string; en: Lesson["en"]; fil: Lesson["fil"]; practice: { prompt: string; given: string; form: Form; expected: string }[] };
 
 /** What a lesson is about. Plan units and the original 14 skills both reduce to this. */
 export interface LessonTarget {
@@ -61,7 +63,7 @@ async function generate(unit: LessonTarget): Promise<Draft | null> {
     const res = await fetch("/api/lesson", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ subject: unit.subject, grade: unit.grade, quarter: unit.quarter, domain: unit.domain, title: unit.title, verifier: unit.verifier }),
+      body: JSON.stringify({ id: unit.id }), // the server knows what the id means
       signal: ctrl.signal,
     });
     return res.ok ? ((await res.json()) as Draft) : null;
@@ -69,6 +71,14 @@ async function generate(unit: LessonTarget): Promise<Draft | null> {
     return null;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+async function publish(id: string, draft: Draft) {
+  try {
+    await fetch("/api/publish", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ id, draft, sig: draft.sig }) });
+  } catch {
+    /* best effort: the lesson already works on this device */
   }
 }
 
@@ -91,6 +101,6 @@ export async function getLesson(unit: LessonTarget): Promise<CachedLesson | null
   const checked = await gate(unit, draft);
   if (!checked) return null;
   await deviceSet(unit.id, checked);
-  if (supabase) await supabase.from("lesson_cache").insert({ unit_id: unit.id, content: checked.lesson, verified: checked.verified, verifier: unit.verifier });
+  if (draft.sig) void publish(unit.id, draft); // the server re-checks every key with SymPy before the shared cache accepts it
   return { ...checked, source: "generated" };
 }

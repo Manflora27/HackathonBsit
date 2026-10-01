@@ -504,7 +504,7 @@ Decisions from the design review. Where they conflict with earlier sections, thi
 
 **Cut order if time runs short:** Chemistry beyond balancing and moles → LLM-judged skills → offline packs → Science above the demo grades. Not cut: onboarding, the Math plan, the verified-cache gate. Teacher-side subject filtering is later.
 
-**Known risk.** SymPy runs in the browser (Pyodide), so the verification gate runs on the client before a lesson is published to the shared cache. A hostile client could publish unverified content. Follow-up: re-check on the server (Python function with SymPy) before marking `verified`.
+**Cache trust (closed).** The browser gates a lesson for immediate use, but only the server writes the shared cache. `api/lesson.ts` generates from a lesson *id* (the server knows what the id means) and signs the draft with HMAC (`LESSON_SIGNING_KEY`). `api/publish.ts` accepts only a signed draft, has `api/verify.py` (SymPy, same engine) re-check every key, and writes `lesson_cache` with the service role (`0005` removes the client insert policy). A client can't publish its own content or tamper with a generated lesson. Untested on a real Vercel deploy; the logic is covered locally (`test_verify_api.py`, signature and publish checks).
 
 ## Build Status
 **Built and tested** (`npm run test:engine`: 43 passing; `npm run test:e2e`: demo flow + airplane mode, passing):
@@ -514,7 +514,7 @@ Decisions from the design review. Where they conflict with earlier sections, thi
 - Consent (RA 10173), settings (language, text size, readable font, reduced motion, share toggle, download/delete data, AI log), PWA manifest + offline precache.
 - AI proxy (`api/ai.ts`, `api/tts.ts`) with non-AI fallbacks; Supabase schema with RLS (`supabase/migrations/0001_init.sql`).
 
-**Added Oct 1 (branch `onboarding-and-curriculum`):** three-screen onboarding with plan reveal, Grades 1–12 Math/Science skeleton with verifier tags, profile migration `0003`, plan-based home. Lesson pipeline (`api/lesson.ts`, `src/lessons/pipeline.ts`, `/unit/:id`, migration `0004`): generate → engine gate → cache. Engine verifiers added for chemistry balancing (own parser, atom counts, lowest terms) and physical units (`sympy.physics.units`, dimension-aware, 0.1% tolerance); statistics and geometry are verified as calculations. `npm run test:engine`: 45 passing.
+**Added Oct 1 (branch `onboarding-and-curriculum`):** three-screen onboarding with plan reveal, Grades 1–12 Math/Science skeleton with verifier tags, profile migration `0003`, plan-based home. Done since: skills use the pipeline (hand-authored lessons are the fallback only), demo can start from a fresh onboarding, offline packs (IndexedDB, per subject and grade), server-side signed publish with SymPy re-check. Lesson pipeline (`api/lesson.ts`, `src/lessons/pipeline.ts`, `/unit/:id`, migration `0004`): generate → engine gate → cache. Engine verifiers added for chemistry balancing (own parser, atom counts, lowest terms) and physical units (`sympy.physics.units`, dimension-aware, 0.1% tolerance); statistics and geometry are verified as calculations. `npm run test:engine`: 46 passing.
 
 **Needs the team:**
 - Vercel deploy + `OPENROUTER_API_KEY` (AI features currently use fallbacks).

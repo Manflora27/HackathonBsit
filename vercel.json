@@ -1,6 +1,24 @@
 {
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "rewrites": [
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
-    { "source": "/pyodide/(.*)", "headers": [{ "key": "cache-control", "value": "public, max-age=31536000, immutable" }] }
-  ]
+    {
+      "source": "/pyodide/(.*)",
+      "headers": [
+        {
+          "key": "cache-control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/verify.py": {
+      "includeFiles": "engine/gapfinder.py"
+    }
+  }
 }

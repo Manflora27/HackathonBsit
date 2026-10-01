@@ -1,4 +1,5 @@
 import { chatJson, json } from "./_openrouter";
+import { resolve, sign, type Target } from "./_lessons";
 
 const FORMS = ["any", "expanded", "factored", "solved", "units", "chemistry"];
 
@@ -41,7 +42,7 @@ const HINTS: Record<string, string> = {
 };
 
 // Only curriculum-level fields reach the model. No user data.
-async function generate(b: { subject: string; grade: number; quarter: number; domain: string; title: string; verifier: string }) {
+async function generate(b: Target) {
   const system = [
     "You write one short lesson for a Filipino learner, aligned to the standard school curriculum.",
     "Return an English and a Filipino version. Each has 2-4 short body paragraphs and a 'spoken' version for read-aloud.",
@@ -57,10 +58,11 @@ async function generate(b: { subject: string; grade: number; quarter: number; do
 
 export async function POST(req: Request) {
   try {
-    const b = await req.json();
-    const ok = typeof b.subject === "string" && typeof b.title === "string" && Number.isInteger(b.grade) && b.grade >= 1 && b.grade <= 12;
-    if (!ok) return json({ error: "bad request" }, 400);
-    return json(await generate({ ...b, title: b.title.slice(0, 80), subject: b.subject.slice(0, 20), verifier: String(b.verifier).slice(0, 20) }));
+    const target = resolve((await req.json()).id);
+    if (!target) return json({ error: "unknown lesson" }, 400);
+    const draft = await generate(target);
+    // Signed so /api/publish can tell this exact content came from here.
+    return json({ ...(draft as object), sig: sign(target.id, draft) });
   } catch (e) {
     return json({ error: String(e) }, 502);
   }
