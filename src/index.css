@@ -154,4 +154,3 @@ h1, h2, h3, .font-display {
   .rule { @apply h-px w-full bg-line; }
   .btn-ghost:active:not(:disabled), .key:active { background-color: rgb(236 229 214 / .8); }
 }
-@keyframes gf-ring { to { stroke-dashoffset: 0; } }

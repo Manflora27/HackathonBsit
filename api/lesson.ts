@@ -1,4 +1,5 @@
 import { chatJson, json } from "./_openrouter.js";
+import { subjectMeta } from "../src/data/curriculum.js";
 import { resolve, sign, type Target } from "./_lessons.js";
 
 const FORMS = ["any", "expanded", "factored", "solved", "units", "chemistry"];
@@ -52,7 +53,7 @@ async function generate(b: Target) {
     "A calculator will check every 'expected'; a wrong key discards the lesson, so compute carefully and prefer simple numbers.",
     ...(HINTS[b.verifier] ? [HINTS[b.verifier]] : []),
   ].join(" ");
-  const user = `Subject: ${b.subject}. Grade ${b.grade}, quarter ${b.quarter}. Domain: ${b.title}. Answers are checked by: ${b.verifier}.`;
+  const user = `Subject: ${subjectMeta[b.subject].en}. Grade ${b.grade}, quarter ${b.quarter}. Domain: ${b.title}. Answers are checked by: ${b.verifier}.`;
   return chatJson(system, user, schema, "lesson");
 }
 

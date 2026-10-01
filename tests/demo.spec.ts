@@ -17,7 +17,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("to-demo").click();
+  await page.goto("/demo");
   await page.getByTestId("demo-student").click();
   await expect(page.getByTestId("assignment-card")).toBeVisible();
   await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
@@ -235,7 +235,7 @@ test("demo from a fresh onboarding lands in the seeded assignment", async ({ pag
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("to-demo").click();
+  await page.goto("/demo");
   await page.getByTestId("demo-fresh").click();
   await page.getByTestId("name").fill("Kyla");
   await page.getByTestId("next-step").click();
@@ -287,30 +287,39 @@ test("Bilog still blinks and follows the pointer when the OS asks for reduced mo
   await ctx.close();
 });
 
-test("subjects follow the Philippine system: Science is one subject in Grades 3-10, separate subjects in Senior High", async ({ page }) => {
+test("subjects follow the Philippine system, grade by grade", async ({ page }) => {
   await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await expect(page.getByText("Pick your grade to see your subjects.")).toBeVisible();
+  const shown = async () => (await page.locator('[data-testid^="subject-"]').evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")!.slice(8))));
 
   await page.getByTestId("grade-2").click();
-  await expect(page.getByTestId("subject-math")).toBeVisible();
-  await expect(page.getByTestId("subject-science")).toHaveCount(0); // Science starts at Grade 3
+  expect(await shown()).toEqual(["math"]); // Science starts at Grade 3
 
   await page.getByTestId("grade-5").click();
+  expect(await shown()).toEqual(["math", "science"]); // integrated Science
   await page.getByTestId("subject-science").click();
-  await expect(page.getByTestId("subject-physics")).toHaveCount(0);
 
-  await page.getByTestId("grade-11").click(); // Science (integrated) no longer exists: it is dropped
-  for (const s of ["physics", "chemistry", "biology"]) await expect(page.getByTestId(`subject-${s}`)).toBeVisible();
-  await expect(page.getByTestId("subject-science")).toHaveCount(0);
+  await page.getByTestId("grade-11").click(); // integrated Science no longer exists at Grade 11: it is dropped
+  expect(await shown()).toEqual([
+    "general-math", "general-science", // core
+    "pre-calculus", "basic-calculus", "finite-math", "advanced-math", // math electives
+    "physics", "chemistry", "biology", "earth-space", // science electives
+  ]);
   await expect(page.getByTestId("next-step")).toBeDisabled(); // nothing selected any more
 
+  await page.getByTestId("grade-12").click(); // core subjects are Grade 11 only
+  expect(await shown()).toEqual(["pre-calculus", "basic-calculus", "finite-math", "advanced-math", "physics", "chemistry", "biology", "earth-space"]);
+
+  await page.getByTestId("grade-11").click();
+  await page.getByTestId("subject-general-math").click();
   await page.getByTestId("subject-physics").click();
   await page.getByTestId("subject-chemistry").click();
   await page.screenshot({ path: "test-results/shots/13-shs-subjects.png", fullPage: true });
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
+  await expect(page.getByTestId("unit-general-math")).toBeVisible();
   await expect(page.getByTestId("unit-physics")).toBeVisible();
   await expect(page.getByTestId("unit-chemistry")).toBeVisible(); // separate plans, not one merged "science"
   await expect(page.getByTestId("unit-biology")).toHaveCount(0);

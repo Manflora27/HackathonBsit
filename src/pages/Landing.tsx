@@ -1,70 +1,193 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { motion } from "motion/react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import { AnimatePresence, motion } from "motion/react";
 import { Bilog } from "../components/Bilog";
-import { useCalm } from "../lib/calm";
-import { Icon, InkCircle } from "../components/Icon";
+import { Icon } from "../components/Icon";
 import { Shell } from "../components/Shell";
 import { useAuth } from "../auth";
 import { authConfigured } from "../lib/supabase";
 import { useStore } from "../store";
 
-/** Bilog watches the drawing trace down, and lights up when the root gets circled. */
-function HeroDrawing() {
-  const calm = useCalm();
-  const [drawn, setDrawn] = useState(false);
-  const found = calm || drawn;
-  const rootRef = useRef<HTMLSpanElement | null>(null);
+type Story = {
+  word: { en: string; fil: string };
+  /** foundation → gap → where the student is stuck, top-left to bottom */
+  nodes: [string, string, string];
+  labels: { en: [string, string, string]; fil: [string, string, string] };
+  shape: Shape;
+  /** the headline: "You're not bad at {end}. You're missing {gap}." */
+  say: { en: { end: string; gap: string }; fil: { end: string; gap: string } };
+};
+
+type Pt = [number, number];
+/** Node positions in a 300×228 box. top → gap → end is the traced path; extras are the rest of the graph. */
+type Shape = { top: Pt; gap: Pt; end: Pt; extras: { at: Pt; done?: boolean }[]; edges: string[] };
+
+const SHAPES: Record<"tree" | "stairs" | "molecule", Shape> = {
+  tree: {
+    top: [19, 34], gap: [92, 112], end: [160, 190],
+    extras: [{ at: [262, 72] }, { at: [48, 190], done: true }, { at: [246, 190], done: true }, { at: [286, 186], done: true }],
+    edges: ["M33 45 C80 74 200 50 262 72", "M92 112 C70 140 52 160 48 190", "M262 72 C270 120 284 150 286 186", "M262 72 C262 124 248 160 246 190"],
+  },
+  stairs: {
+    top: [19, 34], gap: [120, 96], end: [228, 176],
+    extras: [{ at: [250, 34] }, { at: [284, 118], done: true }, { at: [56, 186], done: true }, { at: [112, 206], done: true }],
+    edges: ["M36 34 C100 20 200 22 250 34", "M250 34 C272 60 284 90 284 118", "M120 96 C96 130 64 150 56 186", "M228 176 C190 200 140 210 112 206"],
+  },
+  molecule: {
+    top: [19, 34], gap: [62, 128], end: [176, 166],
+    extras: [{ at: [150, 40] }, { at: [244, 116], done: true }, { at: [266, 194], done: true }, { at: [20, 200], done: true }],
+    edges: ["M36 34 C80 30 120 34 150 40", "M150 40 C190 50 230 80 244 116", "M176 166 C200 150 226 130 244 116", "M176 166 C210 176 246 184 266 194", "M62 128 C44 150 26 176 20 200"],
+  },
+};
+
+const STORIES: Story[] = [
+  {
+    word: { en: "math", fil: "math" },
+    nodes: ["x", "x,y", "∫"],
+    labels: {
+      en: ["Algebra", "Systems of equations", "Integrals (calculus)"],
+      fil: ["Algebra", "Sistema ng mga equation", "Integral (calculus)"],
+    },
+    shape: SHAPES.tree,
+    say: { en: { end: "integrals", gap: "systems of equations" }, fil: { end: "integral", gap: "sistema ng equation" } },
+  },
+  {
+    word: { en: "physics", fil: "physics" },
+    nodes: ["a/b", "v=", "→"],
+    labels: {
+      en: ["Fractions", "Rearranging formulas", "Kinematics (physics)"],
+      fil: ["Fractions", "Pag-ayos ng formula", "Kinematics (physics)"],
+    },
+    shape: SHAPES.stairs,
+    say: { en: { end: "kinematics", gap: "rearranging formulas" }, fil: { end: "kinematics", gap: "pag-ayos ng formula" } },
+  },
+  {
+    word: { en: "chemistry", fil: "chemistry" },
+    nodes: ["H", "2H", "⇌"],
+    labels: {
+      en: ["Atoms", "Balancing equations", "Reactions (chemistry)"],
+      fil: ["Atom", "Pag-balance ng equation", "Reaksyon (chemistry)"],
+    },
+    shape: SHAPES.molecule,
+    say: { en: { end: "reactions", gap: "balancing equations" }, fil: { end: "reaksyon", gap: "pag-balance ng equation" } },
+  },
+];
+
+const STORY_MS = 6500; // ~2.5s to draw and circle the gap, then a hold
+
+function useStory() {
+  const [i, setI] = useState(0);
   useEffect(() => {
-    const id = setTimeout(() => setDrawn(true), 2300); // when the drawing circles G7
-    return () => clearTimeout(id);
+    const id = setInterval(() => setI((n) => (n + 1) % STORIES.length), STORY_MS);
+    return () => clearInterval(id);
   }, []);
+  return STORIES[i];
+}
+
+/** Bilog watches the drawing trace down, and lights up when the gap gets circled. */
+function HeroDrawing({ story }: { story: Story }) {
+  const [drawn, setDrawn] = useState(false);
+  const rootRef = useRef<HTMLSpanElement | null>(null);
+  const gapX = Math.round((story.shape.gap[0] / 300) * 100);
+  const gapY = Math.round((story.shape.gap[1] / 228) * 100);
+  useEffect(() => {
+    setDrawn(false);
+    const id = setTimeout(() => setDrawn(true), 2300); // when the drawing circles the gap
+    return () => clearTimeout(id);
+  }, [story]);
   return (
-    <div className="relative">
-      <RootDrawing />
-      {/* invisible anchor over the G7 root, for Bilog's eyes */}
-      <span ref={rootRef} className="absolute bottom-[8%] left-1/2 h-2 w-2" aria-hidden />
-      <div className="pointer-events-none absolute -left-[22%] top-[34%]">
-        <Bilog size={52} mood={found ? "found" : "watch"} lookAt={rootRef} />
+    <div className="relative min-h-[150px] flex-1"
+      style={{
+        background: `radial-gradient(40% 40% at ${gapX}% ${gapY}%, color-mix(in oklab, var(--color-gap) 22%, transparent), transparent 70%), radial-gradient(60% 55% at 50% 50%, rgb(255 253 247 / .75), transparent 72%)`,
+        transition: "background .6s",
+      }}>
+      <RootDrawing key={story.word.en} story={story} />
+      {/* invisible anchor over the gap node, for Bilog's eyes */}
+      <span ref={rootRef} className="absolute h-2 w-2" style={{ left: `${gapX}%`, top: `${gapY}%` }} aria-hidden />
+      <div className="pointer-events-none absolute right-2 top-[12%]">
+        <Bilog size={46} mood={drawn ? "found" : "watch"} lookAt={rootRef} />
       </div>
     </div>
   );
 }
 
-/** Thin-line drawing of a mistake being traced down to its root. */
-function RootDrawing() {
-  const reduce = useStore((s) => s.reduceMotion);
-  const t = (d: number) => (reduce ? { duration: 0 } : { duration: 0.9, delay: d, ease: "easeInOut" as const });
+/** Thin-line drawing of a skill graph, traced from the foundation to the gap. */
+function RootDrawing({ story }: { story: Story }) {
+  const fil = useStore((s) => s.lang) === "fil";
+  const labels = fil ? story.labels.fil : story.labels.en;
+  const [top, gap, end] = story.nodes;
+  const { top: [tx, ty], gap: [gx, gy], end: [ex, ey], extras, edges } = story.shape;
+  const t = (d: number) => ({ duration: 0.9, delay: d, ease: "easeInOut" as const });
+  const sym = (label: string) => (label.length === 1 ? 18 : label.length === 2 ? 14 : 12);
+  const traced = `M${tx} ${ty} C${tx} ${ty + 46} ${gx - 34} ${gy - 18} ${gx} ${gy}`;
   return (
-    <svg viewBox="0 0 300 210" className="mx-auto w-full max-w-[300px]" aria-hidden>
+    <motion.svg viewBox="0 0 300 228" preserveAspectRatio="xMinYMid meet" className="absolute inset-0 h-full w-full" aria-hidden
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
       <g fill="none" stroke="var(--color-ink)" strokeWidth="1.3" strokeLinecap="round" opacity=".28">
-        <path d="M150 34 C150 80 82 70 74 118" />
-        <path d="M150 34 C150 80 226 72 228 118" />
-        <path d="M74 118 C74 150 40 150 36 182" />
-        <path d="M228 118 C228 150 262 152 266 182" />
-        <path d="M228 118 C228 150 190 150 186 182" />
+        <path d={traced} />
+        <path d={`M${gx} ${gy} C${gx + 14} ${gy + 44} ${ex - 44} ${ey + 4} ${ex} ${ey}`} />
+        {edges.map((d) => <path key={d} d={d} />)}
       </g>
-      <motion.path d="M150 34 C150 80 104 76 110 118 C116 158 150 150 150 176" fill="none" stroke="var(--color-gap)" strokeWidth="2.4"
-        strokeLinecap="round" initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={t(0.3)} />
-      {[
-        [150, 34, "G9", "var(--color-card)"],
-        [110, 118, "G8", "var(--color-card)"],
-        [36, 182, "", "var(--color-ok)"],
-        [266, 182, "", "var(--color-ok)"],
-        [186, 182, "", "var(--color-card)"],
-      ].map(([x, y, label, fill], i) => (
-        <g key={i}>
-          <circle cx={x as number} cy={y as number} r={label ? 17 : 9} fill={fill as string} stroke="var(--color-ink)" strokeOpacity=".3" strokeWidth="1.3" />
-          {label && <text x={x as number} y={(y as number) + 5} textAnchor="middle" fontFamily="Young Serif" fontSize="13" fill="var(--color-ink)">{label}</text>}
+      <motion.path d={traced} fill="none" stroke="var(--color-gap)" strokeWidth="2.4"
+        strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={t(0.3)} />
+      {extras.map(({ at: [x, y], done }) => (
+        <circle key={`${x},${y}`} cx={x} cy={y} r={9} fill={done ? "var(--color-ok)" : "var(--color-card)"} stroke="var(--color-ink)" strokeOpacity=".3" strokeWidth="1.3" />
+      ))}
+      {([[tx, ty, top], [ex, ey, end]] as const).map(([x, y, label]) => (
+        <g key={label}>
+          <circle cx={x} cy={y} r={17} fill="var(--color-card)" stroke="var(--color-ink)" strokeOpacity=".3" strokeWidth="1.3" />
+          <text x={x} y={y + sym(label) / 3} textAnchor="middle" fontFamily="Young Serif" fontSize={sym(label)} fill="var(--color-ink)">{label}</text>
         </g>
       ))}
-      <motion.g initial={{ opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={t(1.1)} style={{ transformOrigin: "150px 182px" }}>
-        <circle cx="150" cy="182" r="17" fill="var(--color-gap)" />
-        <text x="150" y="187" textAnchor="middle" fontFamily="Young Serif" fontSize="13" fill="#fff">G7</text>
-      </motion.g>
-      <motion.path d="M128 172 C 132 152, 172 150, 176 176 C 180 202, 136 210, 126 190 C 122 180, 128 168, 140 163" fill="none" stroke="var(--color-gap)"
-        strokeWidth="1.8" strokeLinecap="round" initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={t(1.5)} />
-    </svg>
+      <g transform={`translate(${gx - 150} ${gy - 182})`}>
+        <motion.g initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={t(1.1)} style={{ transformOrigin: "150px 182px" }}>
+          <circle cx="150" cy="182" r="17" fill="var(--color-gap)" />
+          <text x="150" y={182 + sym(gap) / 3} textAnchor="middle" fontFamily="Young Serif" fontSize={sym(gap)} fill="#fff">{gap}</text>
+        </motion.g>
+        <motion.path d="M128 172 C 132 152, 172 150, 176 176 C 180 202, 136 210, 126 190 C 122 180, 128 168, 140 163" fill="none" stroke="var(--color-gap)"
+          strokeWidth="1.8" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={t(1.5)} />
+      </g>
+      <g fontFamily="inherit" fontSize="11" letterSpacing=".04em">
+        <text x={tx + 25} y={ty + 4} fill="var(--color-muted)">{labels[0]}</text>
+        <motion.text x={gx + 36} y={gy + 5} fill="var(--color-gap-dark)" fontWeight="600"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={t(2.2)}>{labels[1]}</motion.text>
+        <text x={ex} y={ey + 34} textAnchor="middle" fill="var(--color-muted)">{labels[2]}</text>
+      </g>
+    </motion.svg>
+  );
+}
+
+/** A rounded box sketched around its text in one pen stroke, overshooting where it closes. */
+function PenBox({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [size, setSize] = useState<[number, number] | null>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => setSize([el.offsetWidth, el.offsetHeight]);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  let d = "";
+  if (size) {
+    const [w, h] = size;
+    const x0 = 2, y0 = 2, x1 = w - 2, y1 = h - 2, r = Math.min(14, h / 2 - 2);
+    d = `M${x0 + r + 8} ${y0 + 1.5} L${x1 - r} ${y0 - 0.5} Q${x1} ${y0} ${x1 + 0.6} ${y0 + r} L${x1 - 0.4} ${y1 - r}`
+      + ` Q${x1} ${y1 + 0.5} ${x1 - r} ${y1 + 0.8} L${x0 + r} ${y1} Q${x0} ${y1} ${x0 + 0.5} ${y1 - r}`
+      + ` L${x0 - 0.3} ${y0 + r + 1} Q${x0} ${y0 - 0.5} ${x0 + r + 1} ${y0} L${x0 + r + 26} ${y0 - 2}`;
+  }
+  return (
+    <span ref={ref} className={`relative inline-block ${className}`}>
+      {children}
+      {size && (
+        <svg className="pointer-events-none absolute inset-0 overflow-visible" width={size[0]} height={size[1]} aria-hidden>
+          <motion.path d={d} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
+            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.8, delay: 0.15, ease: [0.4, 0, 0.2, 1] }} />
+        </svg>
+      )}
+    </span>
   );
 }
 
@@ -79,9 +202,19 @@ function GoogleMark() {
 export default function Landing() {
   const nav = useNavigate();
   const { consent, set, lang } = useStore();
-  const [by, setBy] = useState<"self" | "guardian" | "school">("school");
+  const by = "school" as const;
   const [agree, setAgree] = useState(false);
   const fil = lang === "fil";
+  const story = useStory();
+  const say = fil ? story.say.fil : story.say.en;
+  const swap = (text: string, key = text) => (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span key={key} className="inline-block" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.3 }}>
+        {text}
+      </motion.span>
+    </AnimatePresence>
+  );
+  const word = swap(fil ? story.word.fil : story.word.en);
 
   const { user, profile, ready, error, signInGoogle } = useAuth();
 
@@ -94,85 +227,59 @@ export default function Landing() {
 
   return (
     <Shell tabs={false} bare>
-      <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col justify-center">
-      <section>
-        <div className="mx-auto w-[clamp(150px,30dvh,300px)]"><HeroDrawing /></div>
-        <div className="kicker mt-3 text-gap-dark">{fil ? "Para sa math na nakakalito" : "A diagnostic for math"}</div>
-        <h1 className="mt-2 text-[clamp(26px,min(4.8dvh,7.8vw),44px)] leading-[1.06]">
-          {fil ? "Hindi ka mahina sa math." : "You're not bad at math."}
-          <br />
-          {fil ? "May " : "You're missing "}
-          <InkCircle className="px-1 text-gap">{fil ? "isang" : "one"}</InkCircle>
-          {fil ? " skill lang na kulang." : " skill."}
-        </h1>
-        <p className="mt-3 text-[clamp(14px,2.2dvh,18px)] leading-snug text-muted">
-          {fil
-            ? "Isulat ang solusyon mo. Hahanapin namin ang linyang nagkamali, at ang skill mula sa mga nakaraang taon na nagdulot nito."
-            : "Show your steps. We find the line that broke, and the skill from years back that caused it."}
-        </p>
-      </section>
+      <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col">
+        <div className="-mt-8 flex h-9 items-center gap-2 pr-14">
+          <img src="/icon.svg" alt="" className="h-7 w-7 rounded-[9px]" />
+          <span className="font-display text-[18px]">Gap Finder</span>
+        </div>
 
-      {!consent ? (
-        <section className="card mt-7">
-          <h2 className="text-[24px]">{fil ? "Bago tayo magsimula" : "Before we start"}</h2>
-          <ul className="mt-3 divide-y divide-line text-[15px]">
-            {[
-              fil ? "Math work at skill progress lang ang kinokolekta namin." : "We only collect your math work and skill progress.",
-              fil ? "Para lang ito sa paghahanap ng gap mo at pagtuturo." : "It's used only to find your gaps and teach you.",
-              fil ? "Hindi nakikita ng AI ang pangalan mo, random ID lang." : "The AI never sees your name, only a random ID.",
-              fil ? "Ang voice ay tina-transcribe at binubura agad." : "Voice is transcribed, then deleted. No audio is kept.",
-              fil ? "I-download o burahin ang data mo anumang oras." : "Download or delete your data anytime.",
-            ].map((text, i) => (
-              <li key={i} className="flex gap-3 py-2.5">
-                <span className="font-display text-gap">{i + 1}</span>
-                <span>{text}</span>
-              </li>
-            ))}
-          </ul>
-          <fieldset className="mt-4 space-y-2">
-            <legend className="kicker mb-2 text-muted">{fil ? "Sino ang pumapayag?" : "Who's giving consent?"}</legend>
-            {(
-              [
-                ["school", fil ? "Naka-enroll ako sa klase (sa school)" : "I'm in a class (through my school)"],
-                ["guardian", fil ? "Wala pa akong 18, pumayag ang guardian ko" : "I'm under 18 and my parent or guardian agrees"],
-                ["self", fil ? "18 na ako o higit pa" : "I'm 18 or older"],
-              ] as const
-            ).map(([v, label]) => (
-              <label key={v}
-                className={`flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 text-[15px] transition ${by === v ? "border-ink/50 bg-paper" : "border-line"}`}>
-                <input type="radio" name="by" className="h-4 w-4 accent-[#1e2b27]" checked={by === v} onChange={() => setBy(v)} />
-                {label}
-              </label>
-            ))}
-          </fieldset>
-          <label className="mt-4 flex items-start gap-3 text-[15px]">
-            <input type="checkbox" className="mt-1 h-4 w-4 accent-[#1e2b27]" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
-            <span>{fil ? "Nabasa ko at pumapayag ako (RA 10173, Data Privacy Act)." : "I've read this and agree (RA 10173, Data Privacy Act of 2012)."}</span>
-          </label>
-          <button className="btn-primary mt-5 w-full" disabled={!agree} onClick={() => set({ consent: { by, at: Date.now() } })}>
-            {fil ? "Tara na" : "Let's go"} <Icon name="arrow" size={18} />
-          </button>
+        <div className="mt-3 flex flex-1 flex-col"><HeroDrawing story={story} /></div>
+
+        <section className="mt-6">
+          <div className="kicker text-gap-dark">{fil ? <>Para sa {word} na nakakalito</> : <>A diagnostic for {word}</>}</div>
+          <h1 className="mt-2 whitespace-nowrap text-[clamp(20px,min(3.8dvh,5.6vw),32px)] leading-[1.15]">
+            {fil ? "Hindi ka mahina sa " : "You're not bad at "}{swap(say.end)}.
+            <br />
+            {fil ? "Kulang ka lang sa" : "You're missing"}
+            <span className="mt-2 block pl-1">
+              <PenBox key={story.word.en} className="px-3 pb-1.5 pt-1 text-gap">{say.gap}</PenBox>
+            </span>
+          </h1>
+          <p className="mt-3 text-[clamp(15px,2dvh,17px)] leading-snug text-muted">
+            {fil
+              ? "Ipakita ang sagot mo. Hahanapin namin kung saan ka nagkamali, at ang naunang skill na kulang sa iyo."
+              : "Show us your work. We find where it went wrong, and the earlier skill you're missing."}
+          </p>
         </section>
-      ) : (
-        <section className="card mt-[clamp(18px,4dvh,40px)] !p-6">
-          <h2 className="text-[clamp(22px,3.4dvh,28px)]">{fil ? "Mag-sign in para magsimula" : "Sign in to get started"}</h2>
-          {authConfigured ? (
-            <button className="btn-primary mt-5 w-full !py-4 text-[17px]" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
-              <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
+
+        {!consent ? (
+          <section className="mt-7">
+            <label className="flex items-start gap-3 text-[13px] leading-snug text-muted">
+              <input type="checkbox" className="mt-0.5 h-4 w-4 shrink-0 accent-[#1e2b27]" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
+              <span>
+                {fil
+                  ? "Pumapayag ako na gamitin ang work ko para hanapin ang gaps ko. Hindi nakikita ng AI ang pangalan ko, at mabubura ko ang data ko anumang oras. (RA\u00a010173)"
+                  : "I agree to my work being used to find my gaps. The AI never sees my name, and I can delete my data anytime. (RA\u00a010173)"}
+              </span>
+            </label>
+            <button className="btn-primary mt-4 w-full !py-4 text-[17px]" disabled={!agree} onClick={() => set({ consent: { by, at: Date.now() } })}>
+              {fil ? "Tara na" : "Let's go"} <Icon name="arrow" size={18} />
             </button>
-          ) : (
-            <p className="mt-3 rounded-2xl bg-gap-soft/70 px-3 py-2 text-[13px] text-gap-dark" data-testid="auth-unconfigured">
-              {fil ? "Hindi pa nakakonekta ang sign-in." : "Sign-in isn't connected yet (add the Supabase keys)."}
-            </p>
-          )}
-          {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
-        </section>
-      )}
-      {consent && (
-        <p className="mt-5 text-center text-[14px] text-muted">
-          <Link to="/demo" className="underline decoration-dotted underline-offset-4" data-testid="to-demo">{fil ? "Mga demo account para sa judging" : "Demo accounts for judging"}</Link>
-        </p>
-      )}
+          </section>
+        ) : (
+          <section className="mt-7">
+            {authConfigured ? (
+              <button className="btn-primary w-full !py-4 text-[17px]" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
+                <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
+              </button>
+            ) : (
+              <p className="rounded-2xl bg-gap-soft/70 px-3 py-2 text-[13px] text-gap-dark" data-testid="auth-unconfigured">
+                {fil ? "Hindi pa nakakonekta ang sign-in." : "Sign-in isn't connected yet (add the Supabase keys)."}
+              </p>
+            )}
+            {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
+          </section>
+        )}
       </div>
     </Shell>
   );

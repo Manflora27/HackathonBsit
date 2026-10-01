@@ -1,3 +1,5 @@
+import { useLayoutEffect, useRef } from "react";
+
 // Small hand-tuned line icons (1.6px stroke) that match the ink drawing style.
 const PATHS = {
   home: "M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z",
@@ -33,15 +35,43 @@ export function Icon({ name, size = 20, className = "", strokeWidth = 1.6 }: { n
 
 /** The hand-drawn circle motif as an inline element (wraps its children). */
 export function InkCircle({ children, className = "", color = "var(--color-gap)", draw = true }: { children: React.ReactNode; className?: string; color?: string; draw?: boolean }) {
+  const ref = useRef<SVGPathElement>(null);
+  // non-scaling-stroke makes Chromium measure dashes in screen px (pathLength is ignored),
+  // so measure the ring's on-screen length and animate in those units for an even sweep.
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!draw || !el) return;
+    const measure = () => {
+      const m = el.getScreenCTM();
+      const total = el.getTotalLength();
+      let len = 0;
+      if (m) {
+        let prev: DOMPoint | null = null;
+        for (let i = 0; i <= 64; i++) {
+          const pt = el.getPointAtLength((total * i) / 64).matrixTransform(m);
+          if (prev) len += Math.hypot(pt.x - prev.x, pt.y - prev.y);
+          prev = pt;
+        }
+      }
+      len = Math.ceil(len || total) + 4;
+      el.style.strokeDasharray = `${len} ${len}`;
+      return [{ strokeDashoffset: len }, { strokeDashoffset: 0 }];
+    };
+    el.style.opacity = "1";
+    const anim = el.animate(measure(), { duration: 700, delay: 100, easing: "cubic-bezier(.4,0,.2,1)", fill: "both" });
+    // Late font loads resize the box; re-measure so the sweep stays continuous.
+    const ro = new ResizeObserver(() => anim.effect && (anim.effect as KeyframeEffect).setKeyframes(measure()));
+    ro.observe(el.ownerSVGElement ?? el);
+    return () => { ro.disconnect(); anim.cancel(); };
+  }, [draw]);
   return (
     <span className={`relative inline-flex items-center justify-center ${className}`}>
       {children}
       <svg viewBox="0 0 120 120" preserveAspectRatio="none" className="pointer-events-none absolute -inset-[18%] h-[136%] w-[136%] overflow-visible" aria-hidden>
-        <path
+        <path ref={ref}
           d="M30 22 C 52 6, 96 10, 108 46 C 118 80, 88 112, 54 110 C 20 108, 4 80, 12 50 C 16 36, 26 26, 40 20"
           fill="none" stroke={color} strokeWidth={2.4} strokeLinecap="round" vectorEffect="non-scaling-stroke"
-          pathLength={1} strokeDasharray={1} strokeDashoffset={draw ? 1 : 0}
-          style={draw ? { animation: "gf-ring 0.8s 0.2s cubic-bezier(.65,0,.35,1) forwards" } : undefined}
+          style={draw ? { opacity: 0 } : undefined}
         />
       </svg>
     </span>

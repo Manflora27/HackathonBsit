@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 import { useAuth, type AccountType } from "../auth";
 import { Bilog, type BilogMood } from "../components/Bilog";
 import { Icon, InkCircle } from "../components/Icon";
 import { PlanReveal } from "../components/PlanReveal";
 import { Shell } from "../components/Shell";
-import { GRADES, goalMeta, subjectMeta, subjectsForGrade, type Goal, type SubjectId } from "../data/curriculum";
+import { GRADES, goalMeta, subjectGroupsForGrade, subjectMeta, subjectsForGrade, type Goal, type SubjectId } from "../data/curriculum";
 import { useStore } from "../store";
 
 const STEPS = 3;
@@ -145,10 +146,33 @@ export default function Welcome() {
           <div className="mt-7 space-y-8">
             <div>
               <div className="kicker text-muted">{fil ? "Anong grade ka ngayon?" : "What grade are you in now?"}</div>
-              <div className="mt-3 grid grid-cols-6 gap-2" role="radiogroup">
-                {GRADES.map((g) => (
-                  <button key={g} role="radio" aria-checked={grade === g} onClick={() => pickGrade(g)} data-testid={`grade-${g}`}
-                    className={`rounded-xl border py-2 font-display text-[18px] transition ${grade === g ? "border-ink/60 bg-white/85 shadow-[0_6px_14px_-10px_rgb(30_43_39/.6)]" : "border-white/60 bg-white/30"}`}>{g}</button>
+              <div className="mt-3 grid grid-cols-6 gap-x-2 gap-y-4" role="radiogroup">
+                {([
+                  [fil ? "Elementarya" : "Elementary", GRADES.slice(0, 6), "col-span-6 grid-cols-6"],
+                  ["Junior High", GRADES.slice(6, 10), "col-span-4 grid-cols-4"],
+                  ["Senior High", GRADES.slice(10), "col-span-2 grid-cols-2"],
+                ] as const).map(([band, gs, span]) => (
+                  <div key={band} className={`grid gap-2 ${span}`}>
+                    <div className="col-span-full flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.14em] text-muted/80">
+                      <span>{band}</span><span className="h-px flex-1 bg-ink/10" />
+                    </div>
+                    {gs.map((g) => {
+                      const on = grade === g;
+                      return (
+                        <motion.button key={g} role="radio" aria-checked={on} onClick={() => pickGrade(g)} data-testid={`grade-${g}`}
+                          whileHover={{ y: -2 }} whileTap={{ scale: 0.92 }} transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                          className="relative h-12 rounded-xl border border-white/60 bg-white/30 font-display text-[18px] shadow-[inset_0_1px_0_rgb(255_255_255/.7)]">
+                          {on && (
+                            <motion.span layoutId="grade-pick" aria-hidden transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                              className="absolute -inset-px rounded-xl border border-ink/50 bg-white/90 shadow-[0_10px_18px_-10px_rgb(30_43_39/.65)]" />
+                          )}
+                          <span className={`relative transition-colors duration-200 ${on ? "text-ink" : "text-ink/55"}`}>
+                            {on ? <InkCircle className="min-w-[1.5em] px-1">{g}</InkCircle> : <span className="inline-flex min-w-[1.5em] justify-center px-1">{g}</span>}
+                          </span>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
                 ))}
               </div>
               <p className="mt-2 text-[13px] text-muted">
@@ -157,21 +181,24 @@ export default function Welcome() {
             </div>
 
             <div>
-              <div className="kicker text-muted">
-                {grade !== null && grade >= 11 ? (fil ? "Mga subject sa Senior High (pumili ng isa o higit pa)" : "Senior High subjects (pick one or more)") : fil ? "Mga subject (pumili ng isa o higit pa)" : "Subjects (pick one or more)"}
-              </div>
+              <div className="kicker text-muted">{fil ? "Mga subject (pumili ng isa o higit pa)" : "Subjects (pick one or more)"}</div>
               {grade === null ? (
                 <p className="mt-3 text-[15px] text-muted">{fil ? "Pumili muna ng grade para makita ang mga subject mo." : "Pick your grade to see your subjects."}</p>
               ) : (
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  {subjectsForGrade(grade).map((s) => (
-                    <button key={s} onClick={() => toggle(s)} aria-pressed={subjects.includes(s)} data-testid={`subject-${s}`}
-                      className={`rounded-2xl border p-4 text-left transition ${subjects.includes(s) ? "border-ink/60 bg-white/85 shadow-[0_6px_14px_-10px_rgb(30_43_39/.6)]" : "border-white/60 bg-white/30"}`}>
-                      <div className="font-display text-[20px]">{subjectMeta[s][lang]}</div>
-                      <div className="mt-1 text-[13px] leading-snug text-muted">{subjectMeta[s].blurb[lang]}</div>
-                    </button>
-                  ))}
-                </div>
+                subjectGroupsForGrade(grade).map((grp, _gi, all) => (
+                  <div key={grp.id} className="mt-3">
+                    {all.length > 1 && <div className="mb-2 font-display text-[17px] text-ink/70">{fil ? grp.fil : grp.en}</div>}
+                    <div className="grid grid-cols-2 gap-3">
+                      {grp.subjects.map((sid) => (
+                        <button key={sid} onClick={() => toggle(sid)} aria-pressed={subjects.includes(sid)} data-testid={`subject-${sid}`}
+                          className={`rounded-2xl border p-4 text-left transition ${subjects.includes(sid) ? "border-ink/60 bg-white/85 shadow-[0_6px_14px_-10px_rgb(30_43_39/.6)]" : "border-white/60 bg-white/30"}`}>
+                          <div className="font-display text-[19px] leading-tight">{subjectMeta[sid][lang]}</div>
+                          <div className="mt-1 text-[13px] leading-snug text-muted">{subjectMeta[sid].blurb[lang]}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))
               )}
             </div>
 
