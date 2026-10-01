@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { skillById, skills, skillTitle } from "../data";
+import { translate } from "../locales";
 import { useStore } from "../store";
 import type { SkillStatus } from "../types";
 import { Bilog, type BilogMood } from "./Bilog";
@@ -103,7 +104,7 @@ export function PathMap({
     <div className="relative mx-auto" style={{ width: W, height }}>
       {bands.map((b) => (
         <div key={b.grade} className="absolute inset-x-0 flex items-center gap-3" style={{ top: b.y }}>
-          <span className="font-display text-[15px] text-muted">Grade {b.grade}</span>
+          <span className="font-display text-[15px] text-muted">{translate(lang, "common.gradeN", { n: b.grade })}</span>
           <span className="rule flex-1" />
         </div>
       ))}
@@ -150,7 +151,7 @@ export function PathMap({
             className="absolute flex w-[92px] -translate-x-1/2 -translate-y-6 flex-col items-center"
             style={{ left: p.x, top: p.y }}
             onClick={() => onSelect?.(p.id)}
-            aria-label={`${skillTitle(p.id, lang)}, grade ${skillById[p.id].grade}, ${isRoot ? "root gap" : st}`}
+            aria-label={translate(lang, "map.nodeLabel", { skill: skillTitle(p.id, lang), grade: skillById[p.id].grade, status: translate(lang, isRoot ? "map.status.root" : `map.status.${st}`) })}
             data-testid={`node-${p.id}`}
           >
             <motion.span initial={false} animate={isRoot ? { scale: [1, 1.12, 1] } : { scale: 1 }} transition={{ duration: 0.6 }}>
@@ -160,9 +161,9 @@ export function PathMap({
               {skillTitle(p.id, lang)}
             </span>
             {only && (
-              <span className="mt-0.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted">Grade {skillById[p.id].grade}</span>
+              <span className="mt-0.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted">{translate(lang, "common.gradeN", { n: skillById[p.id].grade })}</span>
             )}
-            {isRoot && <span className="mt-1 font-display text-[14px] italic text-gap-dark">{lang === "fil" ? "ang ugat" : "the root"}</span>}
+            {isRoot && <span className="mt-1 font-display text-[14px] italic text-gap-dark">{translate(lang, "map.theRoot")}</span>}
           </button>
         );
       })}

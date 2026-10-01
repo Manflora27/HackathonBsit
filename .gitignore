@@ -36,3 +36,6 @@ playwright-report/
 # Local secrets handed to the build agent (never commit)
 .secrets.local
 .vercel
+
+# Supabase CLI scratch
+supabase/.temp/

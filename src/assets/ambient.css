@@ -1,6 +1,9 @@
 /* ---- Backdrop ------------------------------------------------------------ */
 .ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #f1ebde; pointer-events: none; }
-.ambient .wash { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; will-change: transform; }
+.ambient .wash { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .24; will-change: transform; }
+/* bare screens (the landing): the washes stay a hint, so the one orange accent carries */
+.ambient.quiet .wash { opacity: .16; }
+.ambient.quiet .contour { opacity: .55; }
 .wash-a { width: 420px; height: 420px; left: -190px; top: -170px; background: radial-gradient(circle at 40% 40%, #f0a07a, #e8845a 55%, transparent 72%); }
 .wash-b { width: 520px; height: 520px; right: -230px; top: 28%; background: radial-gradient(circle at 50% 50%, #a9bf8f, #86a56e 55%, transparent 72%); }
 .wash-c { width: 440px; height: 440px; left: -120px; bottom: -140px; background: radial-gradient(circle at 50% 50%, #e9c87f, #d9ad55 55%, transparent 72%); }

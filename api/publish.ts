@@ -31,10 +31,14 @@ export async function POST(req: Request) {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!url || !key) return json({ error: "cache not configured" }, 503);
-    const content = { en: clean.en, fil: clean.fil, practice: kept.map(({ prompt, given, form }) => ({ prompt, given, form })) };
-    const res = await fetch(`${url}/rest/v1/lesson_cache`, {
+    // Replaces an older-format row for the same unit. Content is still server-signed, so clients can't write arbitrary lessons.
+    const content = { en: clean.en, fil: clean.fil, ...(clean.ceb ? { ceb: clean.ceb } : {}), ...(clean.example ? { example: clean.example } : {}), ...(clean.figure ? { figure: clean.figure } : {}),
+      ...(typeof clean.checkAnswer === "number" ? { checkAnswer: clean.checkAnswer } : {}),
+      // Keys are kept: SymPy just confirmed them, and a stuck learner can be shown one.
+      format: 3, practice: kept.map(({ prompt, given, form, expected }) => ({ prompt, given, form, expected })) };
+    const res = await fetch(`${url}/rest/v1/lesson_cache?on_conflict=unit_id`, {
       method: "POST",
-      headers: { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json", prefer: "resolution=ignore-duplicates" },
+      headers: { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json", prefer: "resolution=merge-duplicates" },
       body: JSON.stringify({ unit_id: target.id, content, verified: checked, verifier: target.verifier }),
     });
     return res.ok ? json({ ok: true, verified: checked }) : json({ error: "cache write failed" }, 502);

@@ -1,39 +1,80 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../auth";
+import { ensureVoiceConsent } from "../components/VoiceConsent";
+import { getSpeechBackend } from "../ai/client";
+import { isLocalVoiceReady, preloadLocalVoice } from "../ai/whisper";
 import { Shell } from "../components/Shell";
 import { useStore } from "../store";
+import { LANGS, useT } from "../i18n";
+import type { Lang } from "../types";
+
+/** One-time download of the on-device voice model (Settings, on Wi-Fi is best). */
+function OfflineVoice() {
+  const t = useT();
+  const [state, setState] = useState<"idle" | "busy" | "ready" | "failed">(isLocalVoiceReady() ? "ready" : "idle");
+  // Where the browser already listens, the download only matters offline.
+  // Where it can't (Firefox, Capacitor shell), this IS the voice input.
+  const needed = getSpeechBackend() === "local";
+  async function download() {
+    setState("busy");
+    try {
+      await preloadLocalVoice();
+      setState("ready");
+    } catch {
+      setState("failed");
+    }
+  }
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="text-sm text-muted">
+        {state === "ready" ? t("voice.offlineReady") : needed ? t("voice.offlineNeeded") : t("voice.offlineOptional")}
+      </span>
+      {state === "ready" ? (
+        <span className="text-sm text-gap-dark" data-testid="offline-voice-ready">✓</span>
+      ) : (
+        <button className="btn-ghost btn-sm" disabled={state === "busy"} onClick={download} data-testid="offline-voice-download">
+          {state === "busy" ? t("voice.downloading") : state === "failed" ? t("voice.offlineFailed") : t("voice.downloadOffline")}
+        </button>
+      )}
+    </div>
+  );
+}
 
 export default function Settings() {
   const nav = useNavigate();
   const s = useStore();
-  const fil = s.lang === "fil";
-  const { user, profile, signOut } = useAuth();
+  const t = useT();
+  const { user, profile, signOut, deleteAccount } = useAuth();
+  const teacher = s.role === "teacher" || profile?.account_type === "teacher";
 
   function download() {
     const { progress, attempts, consent, aiLog, shareSkillMap } = useStore.getState();
     const blob = new Blob([JSON.stringify({ consent, progress, attempts, shareSkillMap, aiLog }, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "my-gap-finder-data.json";
+    a.download = "my-hopper-data.json";
     a.click();
   }
 
   return (
-    <Shell title={fil ? "Ako" : "Me"}>
-      <h1 className="font-display text-[30px] font-bold">{fil ? "Settings" : "Settings"}</h1>
-      {user && <p className="mt-1 text-[14px] text-muted">{profile?.display_name} · {user.email} · {profile?.account_type}</p>}
+    // Teachers come from the wide dashboard: same width, two columns, back to the dashboard, no learner-only options.
+    <Shell wide={teacher} back={teacher ? "/teacher" : undefined} title={t("settings.me")}>
+      <h1 className="mt-2 font-display text-[30px] font-bold">{t("settings.settings")}</h1>
+      {user && <p className="mt-1 text-[14px] text-muted">{profile?.display_name} · {user.email}</p>}
+
+      <div className={teacher ? "mt-4 grid items-start gap-4 md:grid-cols-2 [&>section]:!mt-0" : ""}>
 
       <section className="card mt-4 space-y-4">
-        <h2 className="font-display text-xl font-semibold">{fil ? "Pagbasa" : "Reading"}</h2>
+        <h2 className="font-display text-xl font-semibold">{t("settings.reading")}</h2>
         <label className="flex items-center justify-between gap-3">
-          {fil ? "Wika ng paliwanag" : "Explanation language"}
-          <select className="input !w-40 !font-sans !text-base" value={s.lang} onChange={(e) => s.set({ lang: e.target.value as "en" | "fil" })}>
-            <option value="en">English</option>
-            <option value="fil">Filipino</option>
+          {t("settings.language")}
+          <select className="input !w-40 !font-sans !text-base" value={s.lang} onChange={(e) => s.set({ lang: e.target.value as Lang })} data-testid="lang-select">
+            {LANGS.map((l) => <option key={l.code} value={l.code}>{l.name}</option>)}
           </select>
         </label>
         <label className="flex items-center justify-between gap-3">
-          {fil ? "Laki ng text" : "Text size"}
+          {t("settings.textSize")}
           <select className="input !w-40 !font-sans !text-base" value={s.textScale} onChange={(e) => s.set({ textScale: Number(e.target.value) })}>
             <option value={1}>100%</option>
             <option value={1.15}>115%</option>
@@ -41,46 +82,68 @@ export default function Settings() {
           </select>
         </label>
         <label className="flex items-center justify-between gap-3">
-          {fil ? "Mas madaling basahing font" : "Easier-to-read font"}
+          {t("settings.easierReadFont")}
           <input type="checkbox" className="h-5 w-5 accent-[#1e2b27]" checked={s.readableFont} onChange={(e) => s.set({ readableFont: e.target.checked })} />
         </label>
         <label className="flex items-center justify-between gap-3">
-          {fil ? "Bawasan ang animation" : "Reduce motion"}
+          {t("settings.reduceMotion")}
           <input type="checkbox" className="h-5 w-5 accent-[#1e2b27]" checked={s.reduceMotion} onChange={(e) => s.set({ reduceMotion: e.target.checked })} />
         </label>
       </section>
 
       <section className="card mt-4 space-y-3">
-        <h2 className="font-display text-xl font-semibold">{fil ? "Privacy (RA 10173)" : "Privacy (RA 10173)"}</h2>
-        <label className="flex items-center justify-between gap-3">
-          {fil ? "Ibahagi ang skill map ko sa teacher" : "Share my skill map with my teacher"}
-          <input type="checkbox" className="h-5 w-5 accent-[#1e2b27]" checked={s.shareSkillMap} onChange={(e) => s.set({ shareSkillMap: e.target.checked })} />
-        </label>
-        <p className="text-sm text-muted">
-          {fil
-            ? "Assigned na gawa lang ang nakikita ng teacher mo. Pribado ang sariling practice maliban kung ibahagi mo."
-            : "Your teacher only sees assigned work. Self-practice stays private unless you share it."}
-        </p>
+        <h2 className="font-display text-xl font-semibold">{t("settings.privacyRa10173")}</h2>
+        {!teacher && <p className="text-sm text-muted">{t("settings.teacherSeesAssigned")}</p>}
+        {teacher && <p className="text-sm text-muted">{t("teacher.youOnlySeeAssigned")}</p>}
         <div className="flex flex-wrap gap-2">
-          <button className="btn-ghost" onClick={download}>⬇ {fil ? "I-download ang data ko" : "Download my data"}</button>
+          <button className="btn-ghost" onClick={download}>⬇ {t("settings.downloadMyData")}</button>
           <button
             className="btn-ghost text-red-700"
-            onClick={() => {
-              if (confirm(fil ? "Burahin ang lahat ng data mo sa device na ito?" : "Delete all your data on this device?")) {
-                s.resetDemo();
-                nav("/");
-              }
+            onClick={async () => {
+              if (user) {
+                // Signed in: erasure means the account and its server rows, not just this device.
+                if (!confirm(t("settings.deleteAccountConfirm"))) return;
+                if (!(await deleteAccount())) return alert(t("settings.deleteFailed"));
+              } else if (!confirm(t("settings.deleteAllDataDevice"))) return;
+              s.resetDemo();
+              nav("/");
             }}
           >
-            {fil ? "Burahin ang data ko" : "Delete my data"}
+            {t("settings.deleteMyData")}
           </button>
         </div>
       </section>
 
+      {!teacher && (
+        <section className="card mt-4 space-y-3">
+          <h2 className="font-display text-xl font-semibold">{t("settings.study")}</h2>
+          <label className="flex items-center justify-between gap-3">
+            {t("settings.examMode")}
+            <input type="checkbox" className="h-5 w-5 shrink-0 accent-[#1e2b27]" checked={s.examMode} onChange={(e) => s.set({ examMode: e.target.checked })} data-testid="exam-toggle" />
+          </label>
+          <p className="text-sm text-muted">{t("settings.examModeNote")}</p>
+        </section>
+      )}
+
+      <section className="card mt-4 space-y-3">
+        <h2 className="font-display text-xl font-semibold">{t("settings.aiTitle")}</h2>        <p className="text-sm text-muted">{t("settings.aiText")}</p>
+        {!teacher && <label className="flex items-center justify-between gap-3">
+          {t("settings.voiceToggle")}
+          <input type="checkbox" className="h-5 w-5 shrink-0 accent-[#1e2b27]" checked={s.voiceAi === true}
+            onChange={async (e) => {
+              // Turning it on asks the 18+ question once; under-18s stay off.
+              if (!e.target.checked) return s.set({ voiceAi: false });
+              s.set({ voiceAi: await ensureVoiceConsent() });
+            }} data-testid="voice-toggle" />
+        </label>}
+        {!teacher && <p className="text-sm text-muted">{t("settings.aiVoice")}</p>}
+        {!teacher && <OfflineVoice />}
+      </section>
+
       <section className="card mt-4 space-y-2">
-        <h2 className="font-display text-xl font-semibold">{fil ? "AI log" : "AI decisions log"}</h2>
+        <h2 className="font-display text-xl font-semibold">{t("settings.aiDecisionsLog")}</h2>
         {s.aiLog.length === 0 ? (
-          <p className="text-sm text-muted">{fil ? "Wala pa." : "Nothing yet."}</p>
+          <p className="text-sm text-muted">{t("settings.nothingYet")}</p>
         ) : (
           <ul className="space-y-1 text-sm">
             {s.aiLog.slice(-8).reverse().map((e, i) => (
@@ -91,18 +154,19 @@ export default function Settings() {
           </ul>
         )}
       </section>
+      </div>
 
       <section className="mt-6 flex flex-wrap gap-2">
         {user && (
           <button className="btn-primary" data-testid="signout" onClick={async () => { await signOut(); s.set({ role: null, demo: false }); nav("/"); }}>
-            {fil ? "Mag-sign out" : "Sign out"}
+            {t("settings.signOut")}
           </button>
         )}
         <button className="btn-ghost" onClick={() => { s.set({ role: null, demo: false }); nav(user ? "/" : "/demo"); }}>
-          {user ? (fil ? "Bumalik sa simula" : "Back to start") : fil ? "Lumipat ng demo account" : "Switch demo account"}
+          {user ? (t("settings.backStart")) : t("settings.switchDemoAccount")}
         </button>
         <button className="btn-ghost" data-testid="reset-demo" onClick={() => { s.resetDemo(); nav("/"); }}>
-          ↺ {fil ? "I-reset ang demo" : "Reset demo data"}
+          ↺ {t("settings.resetDemoData")}
         </button>
       </section>
     </Shell>

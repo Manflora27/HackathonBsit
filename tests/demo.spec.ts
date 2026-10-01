@@ -15,9 +15,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   const shot = (name: string) => page.screenshot({ path: `test-results/shots/${name}.png`, fullPage: true });
 
   await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("to-demo").click();
+  await page.goto("/demo");
   await page.getByTestId("demo-student").click();
   await expect(page.getByTestId("assignment-card")).toBeVisible();
   await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
@@ -92,7 +90,7 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("grade-8").click();
-  await page.getByTestId("subject-math").click();
+  await page.getByTestId("subject-science").click(); // required subjects come preselected; leave math only
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
   await page.goto("/solve/p-try-1"); // the checker itself is reachable once onboarded
@@ -108,8 +106,6 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
 
 test("landing without Supabase keys: sign-in is honest, no guest button, demo still works", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
   await expect(page.getByTestId("auth-unconfigured")).toBeVisible();
   await expect(page.getByTestId("google-signin")).toHaveCount(0);
   await expect(page.getByTestId("try-it")).toHaveCount(0);
@@ -119,19 +115,22 @@ test("landing without Supabase keys: sign-in is honest, no guest button, demo st
   await page.screenshot({ path: "test-results/shots/10-signin.png", fullPage: true });
 });
 
-test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with no problems on it", async ({ page }) => {
+test("fresh onboarding: subjects, baseline grade, plan, then a home with no problems on it", async ({ page }) => {
   await enterGuest(page);
 
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("grade-8").click();
-  await page.getByTestId("subject-math").click();
-  await page.getByTestId("subject-science").click();
+  // required subjects come preselected for a grade
+  await expect(page.getByTestId("subject-math")).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("subject-science")).toHaveAttribute("aria-pressed", "true");
   await page.getByTestId("next-step").click();
-  await page.getByTestId("goal-catch_up").click();
   await expect(page.getByTestId("plan")).toBeVisible();
   await page.screenshot({ path: "test-results/shots/11-plan.png", fullPage: true });
   await page.getByTestId("finish-profile").click();
+  // learners land straight in their first starting-point check
+  await expect(page.getByTestId("check-question")).toBeVisible({ timeout: 90_000 });
+  await page.goto("/student");
 
   await expect(page.getByTestId("plan-home")).toBeVisible();
   await expect(page.getByTestId("greeting")).toHaveText("Mika.");
@@ -168,9 +167,18 @@ async function startPlan(page: import("@playwright/test").Page) {
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("grade-8").click();
-  await page.getByTestId("subject-math").click();
+  await page.getByTestId("subject-science").click(); // deselect science, keep the preselected math
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
+  await page.goto("/student"); // finish lands in the first starting-point check
+  // simulate a completed check so units open directly instead of routing back to it
+  await page.evaluate(() => {
+    const raw = JSON.parse(localStorage.getItem("gapfinder-v1") ?? "{}");
+    raw.state = raw.state ?? {};
+    raw.state.placement = { math: { at: Date.now(), score: 1, total: 1, gap: false, unitId: "math-g8-q1-na" } };
+    localStorage.setItem("gapfinder-v1", JSON.stringify(raw));
+  });
+  await page.reload();
 }
 
 test("lesson pipeline: skeleton, generated lesson, engine drops a wrong key, practice works", async ({ page }) => {
@@ -220,6 +228,15 @@ test("verifiers: unit keys are checked in the browser, wrong ones dropped", asyn
   await page.getByTestId("subject-physics").click();
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
+  await page.goto("/student"); // finish lands in the first starting-point check
+  // simulate a completed check so units open directly instead of routing back to it
+  await page.evaluate(() => {
+    const raw = JSON.parse(localStorage.getItem("gapfinder-v1") ?? "{}");
+    raw.state = raw.state ?? {};
+    raw.state.placement = { physics: { at: Date.now(), score: 1, total: 1, gap: false, unitId: "physics-g11-q1-motion" } };
+    localStorage.setItem("gapfinder-v1", JSON.stringify(raw));
+  });
+  await page.reload();
   await page.getByTestId("unit-physics").click();
   await expect(page.getByTestId("lesson-body")).toBeVisible({ timeout: 90_000 });
   const stored = await storedLesson(page);
@@ -233,9 +250,7 @@ test("verifiers: unit keys are checked in the browser, wrong ones dropped", asyn
 
 test("demo from a fresh onboarding lands in the seeded assignment", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("to-demo").click();
+  await page.goto("/demo");
   await page.getByTestId("demo-fresh").click();
   await page.getByTestId("name").fill("Kyla");
   await page.getByTestId("next-step").click();
@@ -252,7 +267,7 @@ test("offline pack: download the plan, then open a lesson with no connection", a
   await startPlan(page);
   await expect(page.getByTestId("pack-math")).toBeVisible();
   await page.getByTestId("pack-go-math").click();
-  await expect(page.getByTestId("pack-math")).toContainText("Ready offline", { timeout: 120_000 });
+  await expect(page.getByTestId("pack-go-math")).toHaveAttribute("aria-label", /Ready offline/, { timeout: 120_000 });
   await context.setOffline(true);
   await page.getByTestId("unit-math").click();
   await expect(page.getByTestId("lesson-body")).toBeVisible();
@@ -274,8 +289,6 @@ test("Bilog still blinks and follows the pointer when the OS asks for reduced mo
   const ctx = await browser.newContext({ viewport: { width: 375, height: 800 }, reducedMotion: "reduce" });
   const page = await ctx.newPage();
   await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
   const eyes = () => page.evaluate(() => document.querySelector(".bilog g[transform]")?.getAttribute("transform") ?? "");
   await page.mouse.move(40, 700, { steps: 5 });
   await page.waitForTimeout(300);
@@ -287,31 +300,82 @@ test("Bilog still blinks and follows the pointer when the OS asks for reduced mo
   await ctx.close();
 });
 
-test("subjects follow the Philippine system: Science is one subject in Grades 3-10, separate subjects in Senior High", async ({ page }) => {
+test("subjects follow the Philippine system, grade by grade", async ({ page }) => {
   await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
-  await expect(page.getByText("Pick your grade to see your subjects.")).toBeVisible();
+  await expect(page.getByText(/Pick your grade, or tell us you learn on your own/)).toBeVisible();
+  const shown = async () => (await page.locator('[data-testid^="subject-"]').evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")!.slice(8))));
 
   await page.getByTestId("grade-2").click();
-  await expect(page.getByTestId("subject-math")).toBeVisible();
-  await expect(page.getByTestId("subject-science")).toHaveCount(0); // Science starts at Grade 3
+  expect(await shown()).toEqual(["math"]); // Science starts at Grade 3
 
   await page.getByTestId("grade-5").click();
+  expect(await shown()).toEqual(["math", "science"]); // integrated Science
   await page.getByTestId("subject-science").click();
-  await expect(page.getByTestId("subject-physics")).toHaveCount(0);
 
-  await page.getByTestId("grade-11").click(); // Science (integrated) no longer exists: it is dropped
-  for (const s of ["physics", "chemistry", "biology"]) await expect(page.getByTestId(`subject-${s}`)).toBeVisible();
-  await expect(page.getByTestId("subject-science")).toHaveCount(0);
-  await expect(page.getByTestId("next-step")).toBeDisabled(); // nothing selected any more
+  await page.getByTestId("grade-11").click(); // integrated Science no longer exists at Grade 11: it is dropped
+  expect(await shown()).toEqual([
+    "general-math", "general-science", // core
+    "pre-calculus", "basic-calculus", "finite-math", "advanced-math", // math electives
+    "physics", "chemistry", "biology", "earth-space", // science electives
+  ]);
+  await expect(page.getByTestId("next-step")).toBeEnabled(); // the Grade 11 core comes preselected
 
+  await page.getByTestId("grade-12").click(); // core subjects are Grade 11 only
+  expect(await shown()).toEqual(["pre-calculus", "basic-calculus", "finite-math", "advanced-math", "physics", "chemistry", "biology", "earth-space"]);
+
+  await page.getByTestId("grade-11").click();
+  await page.getByTestId("subject-general-science").click(); // deselect it, keep preselected general-math
   await page.getByTestId("subject-physics").click();
   await page.getByTestId("subject-chemistry").click();
   await page.screenshot({ path: "test-results/shots/13-shs-subjects.png", fullPage: true });
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
+  await page.goto("/student"); // finish lands in the first starting-point check
+  await expect(page.getByTestId("unit-general-math")).toBeVisible();
   await expect(page.getByTestId("unit-physics")).toBeVisible();
   await expect(page.getByTestId("unit-chemistry")).toBeVisible(); // separate plans, not one merged "science"
   await expect(page.getByTestId("unit-biology")).toHaveCount(0);
+});
+
+test("self-learners skip the grade and see every subject", async ({ page }) => {
+  await enterGuest(page);
+  await page.getByTestId("name").fill("Rico");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("self-learner").click();
+  const shown = await page.locator('[data-testid^="subject-"]').evaluateAll((els) => els.map((e) => e.getAttribute("data-testid")!.slice(8)));
+  expect(shown).toEqual(["math", "science", "pre-calculus", "basic-calculus", "finite-math", "advanced-math", "physics", "chemistry", "biology", "earth-space"]);
+  await page.getByTestId("subject-math").click();
+  await page.getByTestId("subject-physics").click();
+  await page.getByTestId("next-step").click();
+  // Self-learners get no school framing: subjects only, no grade or quarter labels.
+  await expect(page.getByTestId("plan")).toContainText("Mathematics");
+  await expect(page.getByTestId("plan")).not.toContainText("Grade 7");
+  await expect(page.getByTestId("plan")).not.toContainText("Q1");
+  await page.getByTestId("finish-profile").click();
+  await page.goto("/student"); // finish lands in the first starting-point check
+  await expect(page.getByTestId("unit-math")).toBeVisible();
+  await expect(page.getByTestId("unit-physics")).toBeVisible();
+});
+
+test("the whole app follows the language, Bisaya included", async ({ page }) => {
+  await enterGuest(page);
+  await page.getByTestId("name").fill("Rico");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("lang-menu").selectOption("ceb");
+  await expect(page.getByRole("heading", { name: "Unsa imong gitun-an?" })).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute("lang", "ceb");
+  await page.getByTestId("grade-8").click();
+  await expect(page.getByTestId("subject-math")).toContainText("Number sense, pagsukod"); // curriculum text too
+  await page.getByTestId("lang-menu").selectOption("tl");
+  await expect(page.getByRole("heading", { name: "Ano ang aaralin mo?" })).toBeVisible();
+});
+
+test("a saved 'fil' language from older builds becomes Tagalog", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("gapfinder-v1", JSON.stringify({ state: { lang: "fil" }, version: 0 }));
+  });
+  await page.goto("/");
+  await expect(page.getByText("Ipakita ang sagot mo.", { exact: false })).toBeVisible();
 });

@@ -1,0 +1,742 @@
+{
+  "common": {
+    "checkWork": "I-check ang akong solusyon",
+    "onlyYou": "Ikaw ra ang makakita ani",
+    "isThisWhatYouWrote": "Mao ba ni imong gisulat?",
+    "yesCheck": "Oo, i-check",
+    "edit": "Usba",
+    "foundIt": "Nakit-an na",
+    "findRoot": "Pangitaa ang gamut sa gap",
+    "readAloud": "Basaha og kusog",
+    "practice": "Practice",
+    "retry": "Sulayi pag-usab ang orihinal nga problem",
+    "addStep": "Pagdugang og step",
+    "allCorrect": "Sakto tanan nga step.",
+    "notDoneYet": "Sakto tanan nga step hangtod karon. Padayon hangtod mag-inusara ang x.",
+    "engineLoading": "Nag-load ang math checker…",
+    "engineReady": "Andam na ang math checker (mogana bisan offline)",
+    "gradeN": "Grade {n}",
+    "unknownSkill": "Wala mailhi nga skill.",
+    "unknownUnit": "Wala mailhi nga unit.",
+    "back": "Balik",
+    "home": "Home",
+    "gradeTitle": "Grade {n} · {title}"
+  },
+  "offline": {
+    "readyOffline": "Andam na offline",
+    "downloadOffline": "I-download para offline",
+    "get": "Kuhaa",
+    "failed": "{count} ka lesson ang wala maandam. Sulayi pag-usab kung online na."
+  },
+  "landing": {
+    "continueGoogle": "Padayon gamit ang Google",
+    "useAnotherEmail": "Laing email",
+    "emailPlaceholder": "imo@email.com",
+    "sending": "Nagpadala…",
+    "sendLink": "Ipadala ang link",
+    "continueEmail": "o padayon gamit ang email",
+    "signIsntConnectedYet": "Wala pa makonektar ang sign-in.",
+    "subtext": "Ipakita imong solusyon. Pangitaon namo asa ka nasayop, ug ang naunang konsepto nga kulang nimo.",
+    "consent": "Sa pagpadayon, mouyon ka nga gamiton ang imong trabaho aron pangitaon ang imong mga gap. Dili makita sa AI ang imong ngalan, ug mapapas nimo ang imong data bisan kanus-a (RA 10173).",
+    "stuckOn": "Naglisod sa {subject}?",
+    "notBadAt": "Dili ka hinay sa {skill}.",
+    "missing": "Kulang ra ka sa",
+    "checkInbox": "Tan-awa imong inbox. Nagpadala mi og sign-in link sa {email}.",
+    "stories": {
+      "math": {
+        "word": "math",
+        "top": "Algebra",
+        "gap": "Trigonometry",
+        "end": "Integral (calculus)",
+        "endShort": "integral",
+        "gapShort": "trigonometry"
+      },
+      "physics": {
+        "word": "physics",
+        "top": "Fractions",
+        "gap": "Paghan-ay sa formula",
+        "end": "Kinematics (physics)",
+        "endShort": "kinematics",
+        "gapShort": "paghan-ay sa formula"
+      },
+      "chemistry": {
+        "word": "chemistry",
+        "top": "Atom",
+        "gap": "Valence shell",
+        "end": "Reaksyon (chemistry)",
+        "endShort": "reaksyon",
+        "gapShort": "valence shell"
+      }
+    },
+    "testMode": "local nga test account"
+  },
+  "learn": {
+    "lessonNeedsConnectionPrepare": "Kinahanglan og koneksyon aron maandam kini nga lesson.",
+    "fixGap": "Ayoha ang gap",
+    "letsPractice": "Mag-practice ta!",
+    "answer": "Imong tubag",
+    "nice": "Nindot!",
+    "notYetMakeSure": "Dili pa — siguroha nga na-expand na gyud tanan.",
+    "notYetTryAgain": "Dili pa — sulayi pag-usab.",
+    "gapFixed": "Naayo na ang gap!",
+    "nowGoBackProblem": "Karon, balik sa problem nga nakapugong nimo.",
+    "backHome": "Balik sa home"
+  },
+  "map": {
+    "myRoots": "Akong mga gamut",
+    "whereMathGrowsFrom": "Diin motubo imong math",
+    "grade9TopFoundations": "Grade 9 sa ibabaw. Ang mga pundasyon naa sa ilawom.",
+    "mastered": "na-master",
+    "notCheckedYet": "wala pa ma-check",
+    "sharedMyTeacher": "Gipaambit sa akong teacher",
+    "youveGot": "Kaya nimo ni ✓",
+    "gap": "Gap kini",
+    "notCheckedYet2": "Wala pa ma-check",
+    "theRoot": "ang gamut",
+    "gapLegend": "gap",
+    "nodeLabel": "{skill}, grade {grade}, {status}",
+    "status": {
+      "root": "gamut nga gap",
+      "gap": "gap",
+      "mastered": "na-master",
+      "unknown": "wala pa ma-check"
+    },
+    "title": "Imong mga gamut",
+    "timelineSub": "Gikan sa imong sinugdanan hangtod sa imong grade, sunod-sunod. I-tap ang bisan unsang lakang aron ablihan.",
+    "youAreHere": "Ania ka",
+    "inProgress": "gihimo pa",
+    "doneOf": "{done} sa {total} nahuman",
+    "takeCheck": "Kuhaa ang starting-point check aron makita asa magsugod ang imong mga gamut."
+  },
+  "settings": {
+    "me": "Ako",
+    "settings": "Settings",
+    "reading": "Pagbasa",
+    "textSize": "Gidak-on sa text",
+    "easierReadFont": "Font nga sayon basahon",
+    "reduceMotion": "Pakunhura ang lihok",
+    "study": "Pagtuon",
+    "examMode": "Pag-andam sa exam: dugang practice",
+    "examModeNote": "Ang bag-ong mga lesson adunay unom ka practice item ug exam tip, hangtod imo kining i-off.",
+    "privacyRa10173": "Privacy (RA 10173)",
+    "shareMySkillMap": "Ipaambit ang akong skill map sa akong teacher",
+    "downloadMyData": "I-download ang akong data",
+    "deleteAllDataDevice": "Papason ba tanan nimong data niining device?",
+    "deleteMyData": "Papasa ang akong data",
+    "deleteAccountConfirm": "Papason ang account ug tanan nimong data? Dili na kini maibalik.",
+    "deleteFailed": "Wala mapapas ang account. Sulayi pag-usab, o balik kon online ka.",
+    "aiDecisionsLog": "Listahan sa mga desisyon sa AI",
+    "nothingYet": "Wala pay sulod.",
+    "signOut": "Sign out",
+    "backStart": "Balik sa sinugdanan",
+    "switchDemoAccount": "Ilisi ang demo account",
+    "resetDemoData": "I-reset ang demo data",
+    "teacherSeesAssigned": "Ang imong score ra sa mga quiz ug exam nga gipadala sa magtutudlo ang iyang makita. Pribado ang imong kaugalingong praktis, leksyon, ug mga gamut.",
+    "language": "Pinulongan",
+    "voiceTitle": "Voice input (18+)",
+    "voiceToggle": "Voice input (18+, device speech)",
+    "aiTitle": "Asa nagdagan ang AI",
+    "aiText": "Mga lesson, hint ug pagbasa sa litrato sa imong solusyon: GLM 5.3 Flash sa Together o Baseten (US). Imong math ra ang ipadala, dili imong ngalan.",
+    "aiVoice": "Voice input, kung imo ra kining ablihan: ang speech recognition sa imong device ang mosulat; ang transcript moadto sa text model sa taas kung online, ug isulat sa device kung offline. 18+ ra."
+  },
+  "solve": {
+    "problem": "Imong problem",
+    "retry": "Sulayi pag-usab",
+    "nowProblemStopped": "Karon, ang problem nga nakapugong nimo.",
+    "firstStep": "Imong unang step…",
+    "nextStep": "Sunod nga step…",
+    "demoKylasWork": "Demo: trabaho ni Kyla",
+    "couldntReadProblemCan": "Dili namo mabasa ang problem. Mahimo ba nimo kining i-type pag-usab?",
+    "problemStoppedSolved": "Ang problem nga nakapugong nimo — nasulbad na.",
+    "seeMySkillMap": "Tan-awa ang akong skill map",
+    "backHome": "Balik sa home",
+    "wrote": "Imong gisulat",
+    "should": "Mao unta",
+    "missing": "Kulang",
+    "matchedKnownMistakePattern": "Eksaktong mitakdo sa kasagarang sayop (sigurado). Ang sakto ug sayop gi-check sa SymPy, dili sa AI.",
+    "foundStepButNot": "Nakit-an namo ang step, pero wala pa kini sa among nahibaw-an nga pattern. Pangitaon nato ang gap pinaagi sa pipila ka dali nga pangutana.",
+    "thanksTeacherWillSee": "Salamat — makita kini sa imong teacher",
+    "diagnosisDoesntSeemRight": "Morag dili sakto ang diagnosis?",
+    "couldntReadStep": "Dili namo mabasa ang step {n}. Palihug i-type pag-usab.",
+    "brokeAtStep": "Nasayop sa step {n}",
+    "aiSuggestion": "Tag-an sa AI ({pct}% sigurado). Ang sakto ug sayop gi-check sa SymPy.",
+    "plusOneGapFixed": "+1 gap nga naayo",
+    "snap": "Kuhai og litrato ang akong solusyon",
+    "sayStep": "Isulti ang step",
+    "reading": "Gibasa ang imong solusyon…",
+    "snapFailed": "Dili mabasa ang litrato. Sulayi ang mas klaro, o i-type kini.",
+    "snapDone": "Tan-awa kung parehas ang mga linya sa imong papel, dayon i-check."
+  },
+  "home": {
+    "continueFindingGap": "Padayon sa pagpangita sa imong gap",
+    "rootGap": "Ang gamut sa imong gap",
+    "newFromMsSantos": "Bag-o gikan kang Ms. Santos",
+    "class": "Naa ka sa usa ka klase?",
+    "enterTeachersClassCode": "Isulod ang class code sa imong teacher",
+    "join": "Apil",
+    "couldntFindCodeCheck": "Wala namo makit-i ang code. Pangutan-a imong teacher, o mag-practice lang sa imong kaugalingon.",
+    "skipPracticeOwn": "O laktawi kini ug mag-practice sa imong kaugalingon.",
+    "class2": "Imong klase",
+    "assignment": "Assignment",
+    "starterCheck": "Sinugdanang check",
+    "teacherCanSee": "Makita kini sa imong teacher",
+    "onlyCanSee": "Ikaw ra ang makakita ani",
+    "myRoots": "Akong mga gamut",
+    "stuck": "Naipit?",
+    "checkAnyProblem": "I-check bisan unsang problem",
+    "selfPracticePrivate": "Pribado ang kaugalingong practice",
+    "goodMorning": "Maayong buntag",
+    "goodAfternoon": "Maayong hapon",
+    "goodEvening": "Maayong gabii",
+    "dueFriday": "Due sa Biyernes",
+    "gapsFixed": {
+      "one": "{count} ka gap ang naayo",
+      "other": "{count} ka gap ang naayo"
+    },
+    "friend": "higala",
+    "skillsMastered": {
+      "one": "{count} ka skill ang na-master",
+      "other": "{count} ka skill ang na-master"
+    },
+    "upNextUnit": "Sunod: {unit}",
+    "upNext": "Sunod",
+    "subjects": "Imong mga subject",
+    "nextIn": "Sunod: {unit}",
+    "more": "Uban pa",
+    "joinPrompt": "Naa ka sa klase? Isulod ang code sa imong teacher",
+    "start": "Sugdi",
+    "findStart": "Pangitaon nato imong sinugdanan",
+    "findStartSub": "Mga 10 ka dali nga pangutana sa {subject}",
+    "notChecked": "Wala pa ma-check",
+    "check": "I-check",
+    "yourGap": "Imong gap",
+    "startHere": "Sugdi diri",
+    "removedFromClass": "Gitangtang ka sa imong magtutudlo niining klase. Imo gihapon ang imong progreso. Pangutan-a ang imong magtutudlo kung angay kang mobalik."
+  },
+  "teacher": {
+    "myClass": "Akong klase",
+    "chooseClass": "Klas",
+    "liveFromClass": "Live gikan sa imong klase",
+    "loadingClass": "Nag-load sa class work…",
+    "noClassWorkYet": "Wala pa'y class work. Makita dinhi ang gipaambit nga mapa ug gisumite nga trabaho sa mga estudyante.",
+    "sentPractice": "Gipadalang practice",
+    "sentTitle": "Mga gipadala na",
+    "sentEmpty": "Wala pa'y gipadala. Pag-assign og practice gikan sa gap group sa taas.",
+    "sentDoneOf": "{done}/{total} nahuman",
+    "sentWaiting": "naghulat",
+    "sentTried": "gisulayan",
+    "sentDone": "nahuman",
+    "sentViewStudents": "Tan-awa ang mga estudyante",
+    "sentHide": "Tagoa",
+    "sentRemove": "Tangtanga",
+    "sentToCount": "{count} ka estudyante",
+    "classCode": "Class code",
+    "includesKylaLive": "Apil si Kyla — live",
+    "suggestion": "sugyot",
+    "basedOnlyClassCounts": "Base ra sa ihap sa klase — walay ngalan nga gipadala. Ikaw ang modesisyon.",
+    "students2": "Mga estudyante",
+    "student": "Estudyante",
+    "close": "Sirado",
+    "seenAiAs": "Nakita sa AI isip",
+    "latestDiagnosis": "Pinakabag-ong diagnosis",
+    "noSubmittedWorkYet": "Wala pay gipasa nga trabaho.",
+    "diagnosisCanOverride": "Diagnosis (mahimo nimong usbon)",
+    "noPattern": "— walay pattern —",
+    "overrodeEnginesDiagnosis": "Giusab nimo ang diagnosis sa engine.",
+    "sendPractice": "Ipadala ang practice?",
+    "cancel": "Kanselahon",
+    "send": "Ipadala",
+    "undo": "I-undo",
+    "createClass": "Paghimo og klase",
+    "oneStep": "Usa ka step",
+    "className": "Ngalan sa klase",
+    "sectionOptional": "Section (opsyonal)",
+    "createClass2": "Himoa ang klase",
+    "youllGetCodeShare": "Makakuha ka og code nga ipaambit sa imong mga estudyante.",
+    "class": "Imong klase",
+    "copy": "Kopyaha",
+    "studentsEnterTheirHome": "Isulod kini sa mga estudyante sa ilang home screen aron moapil.",
+    "noOneYetShare": "Wala pay miapil. Ipaambit ang code.",
+    "howDashboardFillsOnce": "Ingon niini mapuno ang imong dashboard kung magpasa na ang mga estudyante.",
+    "sentTo": {
+      "one": "Gipadala sa {count} ka estudyante",
+      "other": "Gipadala sa {count} ka estudyante"
+    },
+    "alreadyFixed": "{count} ang nakaayo na",
+    "assignTo": "I-assign ang practice niining {count}",
+    "hiMakeClass": "Hi, {name}. Himoa ang imong unang klase.",
+    "teacherFallback": "teacher",
+    "joined": {
+      "one": "{count} ka estudyante ang miapil",
+      "other": "{count} ka estudyante ang miapil"
+    },
+    "youOnlySeeAssigned": "Makita nimo ang mga estudyante pinaagi lang sa mga quiz ug exam nga imong gipadala: ilang score ug unsang topiko ang nasayop. Pribado ang ilang kaugalingong praktis.",
+    "insightFallback": "{count} sa {size} ka estudyante ang kulang sa \"{skill}\". Sugyot: 10 minutos nga mini-lesson gamit ang area model, dayon 3 ka practice item sa dili pa ang sunod nga quiz.",
+    "shareGapIn": "ka estudyante ang parehas og gap sa {skill} {grade}",
+    "studentCount": {
+      "one": "{count} ka estudyante",
+      "other": "{count} ka estudyante"
+    },
+    "masteredCount": "{count} ang na-master",
+    "confirmPractice": "{count} ka estudyante ang makadawat og practice sa {skill}.",
+    "live": "live",
+    "sampleData": "Sample data",
+    "classNamePlaceholder": "Grade 9 Math",
+    "removeFromClass": "Tangtanga sa klase",
+    "removeConfirm": "Mobiya si {name} niining klase. Ila gihapon ang ilang mga leksyon ug progreso; dili na lang nimo sila makita. Dili sila makabalik gamit ang code gawas kung i-undo nimo kini.",
+    "remove": "Tangtanga",
+    "removedName": "Natangtang si {name}"
+  },
+  "trace": {
+    "noProblemAnalyzedYet": "Wala pay problem nga na-analyze.",
+    "found": "Nakit-an na!",
+    "diggingGap": "Nagpangita sa gap…",
+    "quickCheck": "Dali nga check",
+    "answer": "Imong tubag",
+    "youveGotOneNot": "Kaya nimo kini. Dili kini ang gap.",
+    "letsLookOneLevel": "Tan-awon nato ang usa ka level nga mas lalom.",
+    "foundRoot": "Nakit-an ang gamut",
+    "exactSkillWellFix": "Kini ang eksaktong skill nga atong ayohon.",
+    "youreNotBadMath": "Dili ka hinay sa math. Usa ra ka skill, ug maayo pa kini.",
+    "fixMyGap": "Ayoha ang akong gap",
+    "mistakeComesFrom": "Ang imong sayop sa {from} naggikan sa skill sa {to}.",
+    "gradeN": "Grade {n}"
+  },
+  "unit": {
+    "lessonNeedsConnectionPrepare": "Kinahanglan og koneksyon aron maandam kini nga lesson.",
+    "staysPlanTryAgain": "Magpabilin kini sa imong plano. Sulayi pag-usab kung online na ka.",
+    "tryAgain": "Sulayi pag-usab",
+    "letsPractice": "Mag-practice ta!",
+    "answer": "Imong tubag",
+    "nice": "Nindot!",
+    "notYetTryAgain": "Dili pa — sulayi pag-usab.",
+    "unitDone": "Nahuman ang unit!",
+    "backHome": "Balik sa home",
+    "gradeQuarter": "Grade {grade} · Quarter {q}",
+    "notReady": "Dili pa andam kini nga lesson",
+    "notReadyText": "Among gihimo ug gisusi ang matag lesson sa dili pa nimo makita. Wala pa kini nakapasar. Sulayi pag-usab unya."
+  },
+  "welcome": {
+    "firstThingsFirst": "Una sa tanan",
+    "hiWhatsName": "Hi! Unsa imong ngalan?",
+    "whosUsingHopper": "Kinsa ang mogamit sa Hopper?",
+    "wellBuildStudyPlan": "Himoan ka namo og study plan sulod sa usa ka minuto. Walay account nga kinahanglan.",
+    "oneMinuteSetUp": "Usa ka minuto ra aron maandam imong plano.",
+    "whatShouldCall": "Unsa among itawag nimo?",
+    "firstName": "Imong unang ngalan",
+    "staysDeviceNeverSent": "Niining device ra. Dili kini ipadala sa AI.",
+    "teacherCanSeeNever": "Makita kini sa imong teacher. Dili kini ipadala sa AI.",
+    "iAm": "Ako usa ka…",
+    "learnFindMyGaps": "Magtuon ug pangitaon ang akong mga gap",
+    "runClass": "Magdumala og klase",
+    "haveClassCode": "Naa kay class code?",
+    "classCodeOptional": "Class code (opsyonal)",
+    "couldntFindCodeCan": "Wala namo makit-i ang code. Mahimo nimo kining idugang unya gikan sa home.",
+    "studies": "Ikaw ug ang imong pagtuon",
+    "whatStudying": "Unsa imong gitun-an?",
+    "justStartingPointNot": "Sinugdanan ra kini, dili sukod sa imong level. Susihon sa Hopper kung asa ka gyud.",
+    "subjectsPickOneMore": "Mga subject (pili og usa o labaw pa)",
+    "pickGradeSeeSubjects": "Pili og grade, o isulti nga nagtuon ka sa imong kaugalingon, aron makita ang imong mga subject.",
+    "language": "Pinulongan",
+    "almostThere": "Hapit na",
+    "planIsReady": "Andam na ang imong plano",
+    "whatsGoal": "Unsa imong tumong?",
+    "plan": "Imong plano",
+    "startHereWhenFind": "Diri ka magsugod. Kung naay makit-an nga gap, idugang namo ang mga naunang skill nga gikinahanglan niini.",
+    "back": "Balik",
+    "start": "Sugdi",
+    "next": "Sunod",
+    "whereInSchool": "Asa ka sa eskwelahan?",
+    "bands": "1–6 Elementarya · 7–10 Junior High · 11–12 Senior High",
+    "notInSchool": "Wala ko nag-eskwela. Nagtuon ko sa akong kaugalingon.",
+    "selfLearnerNote": "Sugdan nato ang matag subject sa angay nga level. Susihon sa Hopper kung asa ka gyud.",
+    "stepOf": "LAKANG {step} / {total}",
+    "goalSub": {
+      "catch_up": "Pangitaa ug pun-a ang mga gap gikan sa miaging tuig",
+      "keep_up": "Makasabay sa mga lesson karong tuiga",
+      "exam_prep": "I-practice ang mogawas sa exam",
+      "explore": "Magtuon sa imong kaugalingong dagan"
+    }
+  },
+  "areaModel": {
+    "caption1": "Usa ka square nga ang kilid kay {side}.",
+    "caption2": "Bahina: {aSq} ug {bSq} — ang duha ka piraso nga imong gisulat.",
+    "caption3": "Pero naa pay duha ka piraso: {strip} ug {strip}.",
+    "caption4": "Tibuok area: {aSq} + {two} + {bSq}. Ang {two} ang nawala.",
+    "next": "Sunod",
+    "replay": "Usba"
+  },
+  "nav": {
+    "home": "Home",
+    "roots": "Gamut",
+    "check": "Check",
+    "me": "Ako",
+    "switchLanguage": "Ilisi ang pinulongan"
+  },
+  "curriculum": {
+    "subjects": {
+      "math": {
+        "name": "Mathematics",
+        "blurb": "Number sense, pagsukod, geometry, algebra, statistics"
+      },
+      "science": {
+        "name": "Science",
+        "blurb": "Matter, mga butang nga buhi, force ug energy, yuta ug kawanangan"
+      },
+      "general-math": {
+        "name": "General Mathematics",
+        "blurb": "Functions, business math, logic"
+      },
+      "general-science": {
+        "name": "General Science",
+        "blurb": "Matter, energy, living systems, earth systems"
+      },
+      "finite-math": {
+        "name": "Finite Mathematics",
+        "blurb": "Pag-ihap, probability, matrices, graphs"
+      },
+      "pre-calculus": {
+        "name": "Pre-Calculus",
+        "blurb": "Conics, trigonometry, series, vectors"
+      },
+      "advanced-math": {
+        "name": "Advanced Mathematics",
+        "blurb": "Functions, series, complex numbers, analytic geometry"
+      },
+      "basic-calculus": {
+        "name": "Basic Calculus",
+        "blurb": "Limits, derivatives, integrals"
+      },
+      "physics": {
+        "name": "Physics",
+        "blurb": "Lihok, energy, waves, kuryente"
+      },
+      "chemistry": {
+        "name": "Chemistry",
+        "blurb": "Matter, atoms, reaksyon, solutions"
+      },
+      "biology": {
+        "name": "Biology",
+        "blurb": "Cells, genetics, evolution, sistema sa lawas"
+      },
+      "earth-space": {
+        "name": "Earth and Space Science",
+        "blurb": "Sistema sa yuta, klima, bitoon, katalagman"
+      }
+    },
+    "groups": {
+      "subjects": "Mga subject",
+      "core": "Core subjects",
+      "math": "Math electives",
+      "science": "Science electives"
+    },
+    "goals": {
+      "catch_up": "Apason ang akong na-miss",
+      "keep_up": "Makasabay sa klase",
+      "exam_prep": "Mangandam para sa exam",
+      "explore": "Nagkat-on lang"
+    },
+    "verifiers": {
+      "sympy": "Gi-verify sa SymPy",
+      "arithmetic": "Eksaktong gi-verify",
+      "statistics": "Gi-verify pinaagi sa kalkulasyon",
+      "geometry": "Gi-verify pinaagi sa kalkulasyon",
+      "units": "Gi-verify gamit ang units",
+      "chemistry": "Gi-verify pinaagi sa balancing",
+      "llm": "Gi-check sa AI"
+    },
+    "domains": {
+      "math": {
+        "number": "Number sense",
+        "measure": "Pagsukod",
+        "geometry": "Geometry",
+        "patterns": "Patterns ug algebra",
+        "algebra": "Algebra",
+        "functions": "Functions ug graphs",
+        "data": "Statistics ug probability",
+        "trig": "Trigonometry",
+        "calculus": "Limits ug calculus"
+      },
+      "science": {
+        "matter": "Matter",
+        "living": "Mga butang nga buhi ug ilang palibot",
+        "force": "Force, lihok ug energy",
+        "earth": "Yuta ug kawanangan"
+      },
+      "general-math": {
+        "functions": "Functions ug ilang graphs",
+        "exp-log": "Rational, exponential ug logarithmic functions",
+        "business": "Business math: interest ug annuities",
+        "logic": "Logic ug pangatarungan"
+      },
+      "general-science": {
+        "nature": "Kinaiya sa science ug pagsukod",
+        "matter-energy": "Matter ug energy",
+        "living": "Mga living system",
+        "earth": "Mga earth system"
+      },
+      "finite-math": {
+        "counting": "Sets ug pag-ihap",
+        "probability": "Probability",
+        "matrices": "Matrices ug linear systems",
+        "graphs": "Graphs ug networks"
+      },
+      "pre-calculus": {
+        "conics": "Conic sections",
+        "trig": "Trigonometric functions ug identities",
+        "series": "Sequences, series ug induction",
+        "vectors": "Polar coordinates ug vectors"
+      },
+      "advanced-math": {
+        "functions": "Algebraic ug transcendental functions",
+        "series": "Sequences ug series",
+        "complex": "Complex numbers",
+        "analytic": "Analytic geometry"
+      },
+      "basic-calculus": {
+        "limits": "Limits ug continuity",
+        "derivatives": "Derivatives",
+        "applications": "Paggamit sa derivatives",
+        "integrals": "Integrals"
+      },
+      "physics": {
+        "motion": "Lihok ug force",
+        "energy": "Work, energy ug power",
+        "waves": "Waves ug optics",
+        "electricity": "Kuryente ug magnetism"
+      },
+      "chemistry": {
+        "matter": "Matter ug pagsukod",
+        "atoms": "Atoms ug ang periodic table",
+        "reactions": "Mga chemical reaction ug stoichiometry",
+        "solutions": "Solutions, acids ug bases"
+      },
+      "biology": {
+        "cells": "Cells",
+        "genetics": "Heredity ug genetics",
+        "evolution": "Evolution ug ecology",
+        "body": "Mga sistema sa lawas"
+      },
+      "earth-space": {
+        "earth": "Estruktura ug proseso sa yuta",
+        "climate": "Atmosphere ug klima",
+        "space": "Mga bitoon ug ang solar system",
+        "hazards": "Kahinguhaan ug katalagman"
+      }
+    }
+  },
+  "skills": {
+    "quad_sqrt": "Pagsulbad sa quadratic pinaagi sa square root",
+    "quad_factor": "Pagsulbad sa quadratic pinaagi sa factoring",
+    "quad_formula": "Ang quadratic formula",
+    "special_products": "Special products: pag-square sa binomial",
+    "factoring": "Pag-factor sa trinomial",
+    "rational_expr": "Rational algebraic expressions",
+    "poly_mult": "Pag-multiply sa binomial",
+    "lin_eq": "Pagsulbad sa linear equation",
+    "sqrt_roots": "Square roots",
+    "distributive": "Ang distributive property",
+    "exponents": "Mga balaod sa exponent",
+    "like_terms": "Paghiusa sa like terms",
+    "frac_ops": "Mga operasyon sa fraction",
+    "int_ops": "Mga operasyon sa integer"
+  },
+  "misconceptions": {
+    "binomial_square": {
+      "title": "Gi-square ang matag term nga bulag",
+      "what": "Imong gisulat ang $(a+b)^2$ isip $a^2 + b^2$. Ang pag-square sa sum naghimo usab og middle term, $2ab$."
+    },
+    "partial_distribution": {
+      "title": "Ang unang term ra ang gi-multiply",
+      "what": "Ang numero sa gawas sa parentheses kinahanglan mo-multiply sa matag term sa sulod, dili lang sa una."
+    },
+    "negative_distribution": {
+      "title": "Nawala ang sign sa pag-distribute sa negative",
+      "what": "Ang negative sa gawas sa parentheses mag-usab sa sign sa matag term sa sulod."
+    },
+    "sign_not_changed": {
+      "title": "Gibalhin ang term nga wala giusab ang sign",
+      "what": "Ang pagbalhin sa term sa pikas nagpasabot nga buhaton ang kaatbang nga operasyon sa duha ka kilid, busa mabali ang sign niini."
+    },
+    "divide_one_side_or_term": {
+      "title": "Bahin ra sa equation ang gi-divide",
+      "what": "Kung mag-divide ka, ang matag term sa duha ka kilid kinahanglan i-divide sa parehas nga numero."
+    },
+    "subtract_coefficient": {
+      "title": "Gi-subtract ang coefficient imbes nga i-divide",
+      "what": "Ang $3x$ nagpasabot og $3 \\times x$, busa i-undo nimo kini pinaagi sa pag-divide sa 3, dili pag-subtract sa 3."
+    },
+    "fraction_add_across": {
+      "title": "Gi-add ang fractions nga diretso",
+      "what": "Ang $\\frac{1}{2} + \\frac{1}{3}$ dili $\\frac{2}{5}$. Kinahanglan og common denominator ang fractions sa dili pa i-add."
+    },
+    "combine_unlike_terms": {
+      "title": "Gihiusa ang unlike terms",
+      "what": "Ang $2x$ ug $3$ dili like terms, busa dili sila ma-add ngadto sa $5x$."
+    },
+    "like_terms_multiply": {
+      "title": "Gi-multiply ang variable sa pag-add",
+      "what": "$2x + 3x = 5x$. Ang pag-add sa like terms nag-add sa mga numero; ang variable magpabilin."
+    },
+    "exponent_rules": {
+      "title": "Nagkasagol ang mga balaod sa exponent",
+      "what": "Ang pag-multiply sa powers nag-add sa exponents: $x^2 \\cdot x^3 = x^5$. Ang power sa power nag-multiply niini: $(x^2)^3 = x^6$."
+    },
+    "sqrt_of_sum": {
+      "title": "Gikuha ang square root sa matag term",
+      "what": "Ang $\\sqrt{x^2 + 9}$ dili $x + 3$. Ang square root dili mabahin sa addition."
+    },
+    "sqrt_as_halving": {
+      "title": "Gi-tunga imbes nga kuhaon ang square root",
+      "what": "Ang pag-undo sa $x^2$ nagpasabot og pagkuha sa square root, dili pag-divide sa 2."
+    },
+    "missing_negative_root": {
+      "title": "Nakalimtan ang negative square root",
+      "what": "Ang $7^2$ ug $(-7)^2$ parehas nga 49, busa ang pagkuha sa square root naghatag og duha ka tubag: $\\pm$."
+    },
+    "divided_by_variable": {
+      "title": "Gi-divide sa variable ug nawala ang usa ka solusyon",
+      "what": "Ang pag-divide sa duha ka kilid sa $x$ naglabay sa $x = 0$. Ibalhin tanan sa usa ka kilid ug i-factor hinuon."
+    },
+    "lost_solution": {
+      "title": "Nawala ang usa ka solusyon",
+      "what": "Kini nga step nakawala sa usa sa mga solusyon sa equation."
+    }
+  },
+  "shell": {
+    "checkerFailed": "Wala ma-load ang math checker",
+    "daysPracticed": "Mga adlaw nga nag-practice ka",
+    "daysPracticedCount": "{count} ka adlaw nga nag-practice",
+    "gapsFixed": "Mga gap nga naayo",
+    "gapsFixedCount": "{count} ka gap nga naayo",
+    "xp": "XP",
+    "xpCount": "{count} XP"
+  },
+  "keypad": {
+    "label": "Mga simbolo sa math"
+  },
+  "demo": {
+    "title": "Demo",
+    "kicker": "Judging mode",
+    "heading": "Mga andam nga account",
+    "intro": "Gilaktawan niini ang sign-in ug naggamit og sample data (si Kyla ug klase nga 30). Naa sa main screen ang tinuod nga mga account.",
+    "fresh": "Sugod og bag-o",
+    "freshNote": "Tinuod nga onboarding, dayon ang andam nga Grade 9 assignment"
+  },
+  "voice": {
+    "consentTitle": "Ang voice input kay alang sa 18+",
+    "consentWhat": "Isulat sa voice input ang imong gisulti, unya himuong typed math: speech recognition sa browser kung makaya, o on-device nga model kung dili.",
+    "consentPrivacy": "Mahimong i-process sa speech service sa imong browser ang audio, o ang mubong clip kay i-transcribe sa imong device ug dili gyud ma-save. Ang transcript ipadala sa text model kung online ka.",
+    "consentWithout": "Mahimo gihapon kang mag-type o mogamit sa keypad — walay mawala.",
+    "allow": "18+ ko — i-enable",
+    "under18": "Wala pa koy 18",
+    "adultsOnly": "Alang sa 18+ ra ang voice input. Pag-type na lang.",
+    "say": "Isulti",
+    "listening": "Naminaw… pindota aron mohunong",
+    "recording": "Nagre-record… pindota aron mohunong",
+    "writing": "Gisulat…",
+    "downloading": "Giandam ang offline voice…",
+    "transcribing": "Gisulat ang imong giingon, sa imong device…",
+    "noMath": "Walay nadunggan nga math. Usba?",
+    "micBlocked": "Tugoti ang mikropono aron maingon ang imong tubag.",
+    "failed": "Dili available ang voice karon. I-type na lang.",
+    "downloadOffline": "I-download ang offline voice",
+    "offlineReady": "Andam na ang offline voice sa imong device",
+    "offlineNeeded": "Morecord ug mosulat offline ang imong device (usa ka download)",
+    "offlineOptional": "Moandar gihapon offline human sa usa ka download",
+    "offlineFailed": "Napakya ang download — sulayi pag-usab sa Wi-Fi"
+  },
+  "lesson": {
+    "workedExample": "Gisulbad nga pananglitan",
+    "nextStep": "Sunod nga step",
+    "showAll": "Ipakita tanan",
+    "picture": "Tan-awa",
+    "commonMistake": "Kasagarang sayop",
+    "quickCheck": "Dali nga pangutana"
+  },
+  "check": {
+    "title": "Sinugdanan",
+    "preparing": "Giandam ang imong mga pangutana…",
+    "intro": "Mga 10 ka dali nga pangutana. Walay grado, walay pressure: gipakita ra niini sa Hopper asa magsugod, ug mohunong dayon kung klaro na.",
+    "questionOf": "Pangutana {n} sa {total}",
+    "dontKnow": "Wala pa ko kahibalo",
+    "needsConnection": "Kinahanglan og koneksyon kini nga check. Sulayi pag-usab kung online na ka.",
+    "retry": "Sulayi pag-usab",
+    "resultKicker": "Imong sinugdanan",
+    "gapTitle": "Sugdi sa {unit}",
+    "gapText": "Naay kulang nga pundasyon gikan sa Grade {from}. Kung maayo kini, mas sayon ang Grade {grade}.",
+    "currentTitle": "Lig-on ang imong mga pundasyon",
+    "currentText": "Lig-on ang imong mga pundasyon. Diri ka naglisod sa Grade {grade}, busa diri magsugod.",
+    "readyTitle": "Andam ka na sa Grade {grade}",
+    "readyText": "Sakto tanan, busa makasugod ka na dayon sa Grade {grade}.",
+    "score": "{score} sa {total} ang sakto",
+    "startLearning": "Sugdi ang pagtuon",
+    "backHome": "Balik sa home",
+    "startWith": "Sugdi sa",
+    "gapTextSome": "Kaya nimo ang pipila ka bahin sa Grade {grade}, pero naay kulang nga pundasyon gikan sa Grade {from}. Kung maayo kini, mas sayon na ang uban.",
+    "goingBack": "Balikan nato og gamay pa…",
+    "goingBackText": "Okay ra. Bag-o pa kanimo to, busa pipila ka mas sayon nga pangutana ang magpakita asa magsugod."
+  },
+  "practice": {
+    "showAnswer": "Ipakita ang tubag",
+    "skip": "Laktawi",
+    "answerIs": "Ang tubag",
+    "next": "Sunod",
+    "inARow": "{n} sunod-sunod!",
+    "stuck": "Naglisod? Okay ra.",
+    "endTitle": "Hapit na",
+    "endText": "Nakakuha ka og {score} sa {total}. Kinahanglan og {need} nga sakto aron mahuman.",
+    "again": "Pagpraktis pag-usab",
+    "review": "Basaha pag-usab ang leksyon",
+    "correct": "Sakto!",
+    "notQuite": "Dili pa"
+  },
+  "classes": {
+    "acrossTests": {
+      "one": "sa {count} ka test",
+      "other": "sa {count} ka test"
+    },
+    "allClasses": "Tanang klase",
+    "average": "Average sa klase",
+    "avg": "avg {n}%",
+    "deleteTest": "Papasa kining test",
+    "doneOf": "{done} sa {total} nahuman",
+    "exam": "Exam",
+    "examMany": "Exam · pipila ka topiko",
+    "examTitle": "Exam: {n} ka topiko",
+    "finish": "Humana",
+    "firstClass": "Himoa ang imong unang klase",
+    "fromTeacher": "Gikan sa imong magtutudlo",
+    "grade": "Grade",
+    "joinAnother": "Apil sa laing klase",
+    "joinedOn": "Miapil niadtong {date}",
+    "missedPct": "sayop {n}% sa higayon",
+    "mostMissed": "Kasagarang masayop",
+    "needsWork": "Kinahanglan pa tun-an",
+    "newClass": "Bag-ong klase",
+    "newClassSub": "Usa ka klase matag subject ug grade. Pwede ka adunay bisan pila.",
+    "noResults": "Wala pay resulta.",
+    "noStudents": "Wala pa. Moapil ang mga estudyante gamit ang code nga {code}.",
+    "noTests": "Wala pay napadala. Padala og quiz sa usa ka topiko, o exam sa pipila.",
+    "notSent": "Wala napadala ang resulta. Sulayan pag-usab kung online ka na.",
+    "oneTry": "Usa ka sulay matag pangutana. Ang score ra ang makita sa magtutudlo, dili ang imong mga tubag.",
+    "preparing": "Gi-andam ang imong test…",
+    "privacyNote": "Makita nimo ang resulta sa mga test nga gipadala niining klase. Pribado gihapon ang ilang kaugalingong praktis.",
+    "quarter": "Quarter {n}",
+    "quiz": "Quiz",
+    "quizOne": "Quiz · usa ka topiko",
+    "results": "Mga resulta",
+    "sendNote": "Gikan ang mga pangutana sa nasusi nga leksyon sa matag topiko. Madawat kini sa tibuok klase.",
+    "sendTest": "Padala og quiz o exam",
+    "sentToTeacher": "Napadala sa imong magtutudlo.",
+    "subject": "Subject",
+    "take": "Tubaga",
+    "testGone": "Wala na kining test.",
+    "testNeedsConnection": "Kinahanglan og koneksyon aron maandam ang test. Sulayi pag-usab kung online ka.",
+    "tests": "Mga test",
+    "testsDone": "{done} sa {total} ka test nahuman",
+    "testTitle": "Titulo",
+    "yourClasses": "Imong mga klase",
+    "yourScore": "Imong score"
+  }
+}

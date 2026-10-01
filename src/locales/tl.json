@@ -1,0 +1,742 @@
+{
+  "common": {
+    "checkWork": "I-check ang solusyon ko",
+    "onlyYou": "Ikaw lang ang nakakakita nito",
+    "isThisWhatYouWrote": "Ito ba ang isinulat mo?",
+    "yesCheck": "Oo, i-check",
+    "edit": "I-edit",
+    "foundIt": "Nahanap na",
+    "findRoot": "Hanapin ang ugat na gap",
+    "readAloud": "Basahin nang malakas",
+    "practice": "Practice",
+    "retry": "Subukan ulit ang orihinal na problem",
+    "addStep": "Magdagdag ng step",
+    "allCorrect": "Tama ang lahat ng step.",
+    "notDoneYet": "Tama ang lahat ng step. Ituloy hanggang mag-isa ang x.",
+    "engineLoading": "Naglo-load ang math checker…",
+    "engineReady": "Handa na ang math checker (gumagana offline)",
+    "gradeN": "Grade {n}",
+    "unknownSkill": "Hindi kilalang skill.",
+    "unknownUnit": "Hindi kilalang unit.",
+    "back": "Balik",
+    "home": "Home",
+    "gradeTitle": "Grade {n} · {title}"
+  },
+  "offline": {
+    "readyOffline": "Handa na offline",
+    "downloadOffline": "I-download para sa offline",
+    "get": "Kunin",
+    "failed": "{count} lesson ang hindi nakuha. Subukan ulit online."
+  },
+  "landing": {
+    "continueGoogle": "Magpatuloy gamit ang Google",
+    "useAnotherEmail": "Ibang email",
+    "emailPlaceholder": "email mo",
+    "sending": "Pinapadala…",
+    "sendLink": "Ipadala",
+    "continueEmail": "o gamit ang email",
+    "signIsntConnectedYet": "Hindi pa nakakonekta ang sign-in.",
+    "subtext": "Ipakita ang sagot mo. Hahanapin namin kung saan ka nagkamali, at ang naunang konseptong kulang sa iyo.",
+    "consent": "Sa pagpapatuloy, pumapayag kang gamitin ang work mo para hanapin ang gaps mo. Hindi nakikita ng AI ang pangalan mo, at mabubura mo ang data mo anumang oras (RA 10173).",
+    "stuckOn": "Nahihirapan sa {subject}?",
+    "notBadAt": "Hindi ka mahina sa {skill}.",
+    "missing": "Kulang ka lang sa",
+    "stories": {
+      "math": {
+        "word": "math",
+        "top": "Algebra",
+        "gap": "Trigonometry",
+        "end": "Integral (calculus)",
+        "endShort": "integral",
+        "gapShort": "trigonometry"
+      },
+      "physics": {
+        "word": "physics",
+        "top": "Fractions",
+        "gap": "Pag-ayos ng formula",
+        "end": "Kinematics (physics)",
+        "endShort": "kinematics",
+        "gapShort": "pag-ayos ng formula"
+      },
+      "chemistry": {
+        "word": "chemistry",
+        "top": "Atom",
+        "gap": "Valence shell",
+        "end": "Reaksyon (chemistry)",
+        "endShort": "reaksyon",
+        "gapShort": "valence shell"
+      }
+    },
+    "checkInbox": "Tingnan ang inbox mo. Nagpadala kami ng sign-in link sa {email}.",
+    "testMode": "local na test account"
+  },
+  "learn": {
+    "lessonNeedsConnectionPrepare": "Kailangan ng koneksyon para ihanda ang lesson na ito.",
+    "fixGap": "Ayusin ang gap",
+    "letsPractice": "Practice na!",
+    "answer": "Sagot mo",
+    "nice": "Tama!",
+    "notYetMakeSure": "Hindi pa — siguraduhing naka-expand.",
+    "notYetTryAgain": "Hindi pa — subukan ulit.",
+    "gapFixed": "Naayos ang gap!",
+    "nowGoBackProblem": "Ngayon, balikan ang problem na nagpahinto sa iyo.",
+    "backHome": "Bumalik"
+  },
+  "map": {
+    "myRoots": "Mga ugat ko",
+    "whereMathGrowsFrom": "Saan nanggagaling ang math mo",
+    "grade9TopFoundations": "Nasa itaas ang Grade 9. Pababa, ang mga pundasyon.",
+    "mastered": "kaya mo na",
+    "notCheckedYet": "hindi pa na-check",
+    "sharedMyTeacher": "Ibinahagi sa teacher",
+    "youveGot": "Kaya mo na ito ✓",
+    "gap": "Ito ang gap mo",
+    "notCheckedYet2": "Hindi pa na-check",
+    "theRoot": "ang ugat",
+    "gapLegend": "gap",
+    "nodeLabel": "{skill}, grade {grade}, {status}",
+    "status": {
+      "root": "ugat na gap",
+      "gap": "gap",
+      "mastered": "na-master",
+      "unknown": "hindi pa na-check"
+    },
+    "title": "Ang iyong mga ugat",
+    "timelineSub": "Mula sa iyong simula hanggang sa iyong grade, sunod-sunod. I-tap ang anumang hakbang para buksan.",
+    "youAreHere": "Nandito ka",
+    "inProgress": "ginagawa pa",
+    "doneOf": "{done} sa {total} tapos",
+    "takeCheck": "Kunin ang starting-point check para makita kung saan nagsisimula ang iyong mga ugat."
+  },
+  "settings": {
+    "me": "Ako",
+    "settings": "Settings",
+    "reading": "Pagbasa",
+    "textSize": "Laki ng text",
+    "easierReadFont": "Mas madaling basahing font",
+    "reduceMotion": "Bawasan ang animation",
+    "study": "Pag-aaral",
+    "examMode": "Paghahanda sa exam: dagdag na practice",
+    "examModeNote": "Ang mga bagong lesson ay may anim na practice item at exam tip, hanggang i-off mo ito.",
+    "privacyRa10173": "Privacy (RA 10173)",
+    "shareMySkillMap": "Ibahagi ang skill map ko sa teacher",
+    "downloadMyData": "I-download ang data ko",
+    "deleteAllDataDevice": "Burahin ang lahat ng data mo sa device na ito?",
+    "deleteMyData": "Burahin ang data ko",
+    "deleteAccountConfirm": "Burahin ang account at lahat ng data mo? Hindi na ito maibabalik.",
+    "deleteFailed": "Hindi na-delete ang account mo. Subukan muli, o bumalik kapag online ka.",
+    "aiDecisionsLog": "AI log",
+    "nothingYet": "Wala pa.",
+    "signOut": "Mag-sign out",
+    "backStart": "Bumalik sa simula",
+    "switchDemoAccount": "Lumipat ng demo account",
+    "resetDemoData": "I-reset ang demo",
+    "teacherSeesAssigned": "Ang score mo lang sa mga quiz at exam na ipinadala ng guro ang nakikita niya. Pribado ang sarili mong pagsasanay, aralin, at mga ugat.",
+    "language": "Wika",
+    "voiceTitle": "Voice input (18+)",
+    "voiceToggle": "Voice input (18+, device speech)",
+    "aiTitle": "Saan tumatakbo ang AI",
+    "aiText": "Mga lesson, hint at pagbasa ng litrato ng solusyon mo: GLM 5.3 Flash sa Together o Baseten (US). Math mo lang ang ipinapadala, hindi ang pangalan mo.",
+    "aiVoice": "Voice input, kung bubuksan mo lang: speech recognition sa device mo ang nagsusulat; ang transcript ay pumupunta sa text model sa itaas kapag online, at isinusulat sa device kapag offline. 18+ lang."
+  },
+  "solve": {
+    "problem": "Ang problem mo",
+    "retry": "Subukan ulit",
+    "nowProblemStopped": "Ngayon, ang problem na nagpahinto sa iyo.",
+    "firstStep": "Unang step mo…",
+    "nextStep": "Susunod na step…",
+    "demoKylasWork": "Demo: gawa ni Kyla",
+    "couldntReadProblemCan": "Hindi mabasa ang problem. Pakiulit.",
+    "problemStoppedSolved": "Ang problem na nagpahinto sa iyo — nasagot mo!",
+    "seeMySkillMap": "Tingnan ang skill map ko",
+    "backHome": "Bumalik",
+    "wrote": "Isinulat mo",
+    "should": "Dapat ay",
+    "missing": "Kulang",
+    "matchedKnownMistakePattern": "Tumugma sa kilalang pattern ng pagkakamali (sigurado). Ang tama at mali ay sinuri ng SymPy, hindi ng AI.",
+    "foundStepButNot": "Nahanap namin ang step, pero hindi pa kilala ang pattern. Hanapin natin ang gap sa ilang mabilis na tanong.",
+    "thanksTeacherWillSee": "Salamat — makikita ito ng teacher mo",
+    "diagnosisDoesntSeemRight": "Mukhang mali ang diagnosis?",
+    "couldntReadStep": "Hindi mabasa ang step {n}. Pakiulit.",
+    "brokeAtStep": "Nagkamali sa step {n}",
+    "aiSuggestion": "Hula ng AI ({pct}%). Ang tama at mali ay sinuri ng SymPy.",
+    "plusOneGapFixed": "+1 gap na naayos",
+    "snap": "Kunan ang solusyon ko",
+    "sayStep": "Sabihin ang step",
+    "reading": "Binabasa ang solusyon mo…",
+    "snapFailed": "Hindi mabasa ang litrato. Subukan ang mas malinaw, o i-type ito.",
+    "snapDone": "Tingnan kung tugma ang mga linya sa papel mo, tapos i-check."
+  },
+  "home": {
+    "continueFindingGap": "Ituloy ang paghahanap ng gap",
+    "rootGap": "Ang ugat ng gap mo",
+    "newFromMsSantos": "Bago mula kay Ms. Santos",
+    "class": "May klase ka ba?",
+    "enterTeachersClassCode": "Ilagay ang class code ng teacher mo",
+    "join": "Sumali",
+    "couldntFindCodeCheck": "Hindi nahanap ang code na iyon. Tingnan sa teacher mo.",
+    "skipPracticeOwn": "Puwede ka ring mag-practice nang mag-isa.",
+    "class2": "Klase",
+    "assignment": "Assignment",
+    "starterCheck": "Panimulang check",
+    "teacherCanSee": "Makikita ng teacher",
+    "onlyCanSee": "Ikaw lang ang makakakita",
+    "myRoots": "Mga ugat ko",
+    "stuck": "Na-stuck?",
+    "checkAnyProblem": "I-check ang kahit anong problem",
+    "selfPracticePrivate": "Pribado ang sariling practice",
+    "goodMorning": "Magandang umaga",
+    "goodAfternoon": "Magandang hapon",
+    "goodEvening": "Magandang gabi",
+    "dueFriday": "Due sa Biyernes",
+    "gapsFixed": {
+      "one": "{count} gap na naayos",
+      "other": "{count} gap na naayos"
+    },
+    "friend": "kaibigan",
+    "skillsMastered": {
+      "one": "{count} skill na na-master",
+      "other": "{count} skill na na-master"
+    },
+    "upNextUnit": "Susunod: {unit}",
+    "upNext": "Susunod",
+    "subjects": "Mga subject mo",
+    "nextIn": "Susunod: {unit}",
+    "more": "Iba pa",
+    "joinPrompt": "Nasa klase ka ba? Ilagay ang code ng teacher mo",
+    "start": "Simulan",
+    "findStart": "Hanapin natin ang panimulang punto mo",
+    "findStartSub": "Mga 10 mabilis na tanong sa {subject}",
+    "notChecked": "Hindi pa na-check",
+    "check": "I-check",
+    "yourGap": "Ang gap mo",
+    "startHere": "Magsimula rito",
+    "removedFromClass": "Inalis ka ng iyong guro sa klaseng ito. Iyo pa rin ang iyong progreso. Tanungin ang iyong guro kung dapat kang bumalik."
+  },
+  "teacher": {
+    "myClass": "Klase ko",
+    "chooseClass": "Klase",
+    "liveFromClass": "Live mula sa klase mo",
+    "loadingClass": "Naglo-load ng class work…",
+    "noClassWorkYet": "Wala pang class work. Lalabas dito ang mga shared na mapa at isinumiteng gawa ng mga student.",
+    "sentPractice": "Naipadalang practice",
+    "sentTitle": "Mga naipadala na",
+    "sentEmpty": "Wala pang naipadala. Mag-assign ng practice mula sa gap group sa itaas.",
+    "sentDoneOf": "{done}/{total} tapos",
+    "sentWaiting": "naghihintay",
+    "sentTried": "sinubukan",
+    "sentDone": "tapos",
+    "sentViewStudents": "Tingnan ang mga student",
+    "sentHide": "Itago",
+    "sentRemove": "Alisin",
+    "sentToCount": "{count} na student",
+    "classCode": "Class code",
+    "includesKylaLive": "Kasama si Kyla — live",
+    "suggestion": "mungkahi",
+    "basedOnlyClassCounts": "Batay lang sa bilang ng class — walang pangalan na ipinadala. Ikaw ang magpapasya.",
+    "students2": "Mga student",
+    "student": "Student",
+    "close": "Isara",
+    "seenAiAs": "Nakikita ng AI bilang",
+    "latestDiagnosis": "Huling diagnosis",
+    "noSubmittedWorkYet": "Wala pang ipinasa.",
+    "diagnosisCanOverride": "Diagnosis (puwedeng palitan)",
+    "noPattern": "— walang pattern —",
+    "overrodeEnginesDiagnosis": "Pinalitan mo ang diagnosis ng AI/engine.",
+    "sendPractice": "Ipadala ang practice?",
+    "cancel": "Kanselahin",
+    "send": "Ipadala",
+    "undo": "I-undo",
+    "createClass": "Gumawa ng klase",
+    "oneStep": "Isang hakbang",
+    "className": "Pangalan ng klase",
+    "sectionOptional": "Section (opsyonal)",
+    "createClass2": "Gumawa",
+    "youllGetCodeShare": "Bibigyan ka ng code na ibabahagi sa mga student.",
+    "class": "Iyong klase",
+    "copy": "Kopyahin",
+    "studentsEnterTheirHome": "Ipasok ito ng mga student sa Home nila para sumali.",
+    "noOneYetShare": "Wala pa. Ibahagi ang code.",
+    "howDashboardFillsOnce": "Ganito ang magiging itsura ng dashboard kapag may nag-submit na.",
+    "sentTo": {
+      "one": "Naipadala sa {count} student",
+      "other": "Naipadala sa {count} student"
+    },
+    "alreadyFixed": "{count} ang nakaayos na",
+    "assignTo": "Mag-assign ng practice sa {count} na ito",
+    "hiMakeClass": "Hi, {name}. Gumawa ng klase.",
+    "teacherFallback": "teacher",
+    "joined": {
+      "one": "{count} student ang sumali",
+      "other": "{count} student ang sumali"
+    },
+    "youOnlySeeAssigned": "Nakikita mo lang ang mga estudyante sa mga quiz at exam na ipinadala mo: ang score nila at kung aling paksa ang mali. Pribado ang sarili nilang pagsasanay.",
+    "insightFallback": "{count} sa {size} ang kulang sa \"{skill}\". Mungkahi: 10-minutong mini-lesson gamit ang area model, tapos 3 practice item bago ang susunod na quiz.",
+    "shareGapIn": "student ang may parehong gap sa {skill} {grade}",
+    "studentCount": {
+      "one": "{count} student",
+      "other": "{count} student"
+    },
+    "masteredCount": "{count} ang na-master",
+    "confirmPractice": "{count} student ang makakatanggap ng practice sa {skill}.",
+    "live": "live",
+    "sampleData": "Sample data",
+    "classNamePlaceholder": "Grade 9 Math",
+    "removeFromClass": "Alisin sa klase",
+    "removeConfirm": "Aalis si {name} sa klaseng ito. Kanila pa rin ang kanilang mga aralin at progreso; hindi mo na lang sila makikita. Hindi sila makakabalik gamit ang code maliban kung i-undo mo ito.",
+    "remove": "Alisin",
+    "removedName": "Inalis si {name}"
+  },
+  "trace": {
+    "noProblemAnalyzedYet": "Wala pang ina-analyze na problem.",
+    "found": "Nahanap!",
+    "diggingGap": "Hinahanap ang gap…",
+    "quickCheck": "Mabilis na check",
+    "answer": "Sagot mo",
+    "youveGotOneNot": "Kaya mo ito. Hindi ito ang gap.",
+    "letsLookOneLevel": "Dito pa tayo bababa.",
+    "foundRoot": "Nahanap na ang ugat",
+    "exactSkillWellFix": "Ito ang eksaktong skill na aayusin natin.",
+    "youreNotBadMath": "Hindi ka mahina sa math — isang skill lang ito, at kaya itong ayusin.",
+    "fixMyGap": "Ayusin ang gap ko",
+    "mistakeComesFrom": "Ang pagkakamali mo sa {from} ay galing sa skill sa {to}.",
+    "gradeN": "Grade {n}"
+  },
+  "unit": {
+    "lessonNeedsConnectionPrepare": "Kailangan ng koneksyon para ihanda ang lesson na ito.",
+    "staysPlanTryAgain": "Nasa plano mo pa rin ito. Subukan ulit kapag online ka na.",
+    "tryAgain": "Subukan ulit",
+    "letsPractice": "Practice na!",
+    "answer": "Sagot mo",
+    "nice": "Tama!",
+    "notYetTryAgain": "Hindi pa — subukan ulit.",
+    "unitDone": "Tapos ang unit!",
+    "backHome": "Bumalik",
+    "gradeQuarter": "Grade {grade} · Quarter {q}",
+    "notReady": "Hindi pa handa ang lesson na ito",
+    "notReadyText": "Ginagawa at sinusuri namin ang bawat lesson bago mo makita. Hindi pa ito pumasa. Subukan ulit mamaya."
+  },
+  "welcome": {
+    "firstThingsFirst": "Una sa lahat",
+    "hiWhatsName": "Kumusta! Ano ang pangalan mo?",
+    "whosUsingHopper": "Sino ka sa Hopper?",
+    "wellBuildStudyPlan": "Gagawa kami ng plano sa pag-aaral para sa iyo sa loob ng isang minuto. Walang account na kailangan.",
+    "oneMinuteSetUp": "Isang minuto lang para ihanda ang plano mo.",
+    "whatShouldCall": "Ano ang itatawag namin sa iyo?",
+    "firstName": "Unang pangalan",
+    "staysDeviceNeverSent": "Nasa device na ito lang. Hindi ito ipinapadala sa AI.",
+    "teacherCanSeeNever": "Makikita ito ng teacher mo. Hindi ito ipinapadala sa AI.",
+    "iAm": "Ako ay…",
+    "learnFindMyGaps": "Mag-aral at hanapin ang gap",
+    "runClass": "Pamahalaan ang klase",
+    "haveClassCode": "May class code ka ba?",
+    "classCodeOptional": "Class code (opsyonal)",
+    "couldntFindCodeCan": "Hindi nahanap ang code. Puwede mo itong idagdag mamaya.",
+    "studies": "Ikaw at ang pag-aaral mo",
+    "whatStudying": "Ano ang aaralin mo?",
+    "justStartingPointNot": "Panimulang punto lang ito, hindi ito sukat ng level mo. Susubukan ng Hopper kung nasaan ka talaga.",
+    "subjectsPickOneMore": "Mga subject (pumili ng isa o higit pa)",
+    "pickGradeSeeSubjects": "Pumili ng grade, o sabihing nag-aaral ka nang mag-isa, para makita ang mga subject mo.",
+    "language": "Wika",
+    "almostThere": "Halos tapos na",
+    "planIsReady": "Handa na ang plano mo",
+    "whatsGoal": "Ano ang layunin mo?",
+    "plan": "Ang plano mo",
+    "startHereWhenFind": "Magsisimula ka rito. Kapag may nakitang gap, magdaragdag kami ng mga naunang skill.",
+    "back": "Balik",
+    "start": "Tapos na",
+    "next": "Susunod",
+    "whereInSchool": "Nasaan ka sa school?",
+    "bands": "1–6 Elementarya · 7–10 Junior High · 11–12 Senior High",
+    "notInSchool": "Wala ako sa school. Nag-aaral ako nang mag-isa.",
+    "selfLearnerNote": "Magsisimula tayo sa tamang level ng bawat subject. Susuriin ng Hopper kung nasaan ka talaga.",
+    "stepOf": "HAKBANG {step} / {total}",
+    "goalSub": {
+      "catch_up": "Hanapin at punan ang mga gap mula sa nakaraang taon",
+      "keep_up": "Makasabay sa mga lesson ngayong taon",
+      "exam_prep": "I-practice ang lalabas sa exam",
+      "explore": "Mag-aral sa sarili mong bilis"
+    }
+  },
+  "curriculum": {
+    "subjects": {
+      "math": {
+        "name": "Mathematics",
+        "blurb": "Number sense, pagsukat, geometry, algebra, statistics"
+      },
+      "science": {
+        "name": "Science",
+        "blurb": "Matter, mga may buhay, force at energy, earth at space"
+      },
+      "general-math": {
+        "name": "General Mathematics",
+        "blurb": "Functions, business math, logic"
+      },
+      "general-science": {
+        "name": "General Science",
+        "blurb": "Matter, energy, living systems, earth systems"
+      },
+      "finite-math": {
+        "name": "Finite Mathematics",
+        "blurb": "Counting, probability, matrices, graphs"
+      },
+      "pre-calculus": {
+        "name": "Pre-Calculus",
+        "blurb": "Conics, trigonometry, series, vectors"
+      },
+      "advanced-math": {
+        "name": "Advanced Mathematics",
+        "blurb": "Functions, series, complex numbers, analytic geometry"
+      },
+      "basic-calculus": {
+        "name": "Basic Calculus",
+        "blurb": "Limits, derivatives, integrals"
+      },
+      "physics": {
+        "name": "Physics",
+        "blurb": "Galaw, energy, waves, kuryente"
+      },
+      "chemistry": {
+        "name": "Chemistry",
+        "blurb": "Matter, atoms, reactions, solutions"
+      },
+      "biology": {
+        "name": "Biology",
+        "blurb": "Cells, genetics, evolution, body systems"
+      },
+      "earth-space": {
+        "name": "Earth and Space Science",
+        "blurb": "Earth's systems, climate, stars, hazards"
+      }
+    },
+    "groups": {
+      "subjects": "Mga subject",
+      "core": "Core subjects",
+      "math": "Math electives",
+      "science": "Science electives"
+    },
+    "goals": {
+      "catch_up": "Habulin ang mga na-miss ko",
+      "keep_up": "Makasabay sa klase",
+      "exam_prep": "Maghanda sa exam",
+      "explore": "Nag-aaral lang"
+    },
+    "verifiers": {
+      "sympy": "Beripikado ng SymPy",
+      "arithmetic": "Eksaktong beripikado",
+      "statistics": "Beripikado sa kalkulasyon",
+      "geometry": "Beripikado sa kalkulasyon",
+      "units": "Beripikado gamit ang units",
+      "chemistry": "Beripikado sa balancing",
+      "llm": "Sinuri ng AI"
+    },
+    "domains": {
+      "math": {
+        "number": "Number sense",
+        "measure": "Pagsukat",
+        "geometry": "Geometry",
+        "patterns": "Patterns at algebra",
+        "algebra": "Algebra",
+        "functions": "Functions at graphs",
+        "data": "Statistics at probability",
+        "trig": "Trigonometry",
+        "calculus": "Limits at calculus"
+      },
+      "science": {
+        "matter": "Matter",
+        "living": "Mga may buhay at kanilang kapaligiran",
+        "force": "Force, galaw at energy",
+        "earth": "Earth at space"
+      },
+      "general-math": {
+        "functions": "Functions at graphs nito",
+        "exp-log": "Rational, exponential at logarithmic functions",
+        "business": "Business math: interest at annuities",
+        "logic": "Logic at reasoning"
+      },
+      "general-science": {
+        "nature": "Kalikasan ng science at pagsukat",
+        "matter-energy": "Matter at energy",
+        "living": "Mga living system",
+        "earth": "Mga earth system"
+      },
+      "finite-math": {
+        "counting": "Sets at counting",
+        "probability": "Probability",
+        "matrices": "Matrices at linear systems",
+        "graphs": "Graphs at networks"
+      },
+      "pre-calculus": {
+        "conics": "Conic sections",
+        "trig": "Trigonometric functions at identities",
+        "series": "Sequences, series at induction",
+        "vectors": "Polar coordinates at vectors"
+      },
+      "advanced-math": {
+        "functions": "Algebraic at transcendental functions",
+        "series": "Sequences at series",
+        "complex": "Complex numbers",
+        "analytic": "Analytic geometry"
+      },
+      "basic-calculus": {
+        "limits": "Limits at continuity",
+        "derivatives": "Derivatives",
+        "applications": "Applications ng derivatives",
+        "integrals": "Integrals"
+      },
+      "physics": {
+        "motion": "Galaw at force",
+        "energy": "Work, energy at power",
+        "waves": "Waves at optics",
+        "electricity": "Kuryente at magnetism"
+      },
+      "chemistry": {
+        "matter": "Matter at pagsukat",
+        "atoms": "Atoms at periodic table",
+        "reactions": "Chemical reactions at stoichiometry",
+        "solutions": "Solutions, acids at bases"
+      },
+      "biology": {
+        "cells": "Cells",
+        "genetics": "Heredity at genetics",
+        "evolution": "Evolution at ecology",
+        "body": "Mga body system"
+      },
+      "earth-space": {
+        "earth": "Estruktura at proseso ng Earth",
+        "climate": "Atmosphere at climate",
+        "space": "Mga bituin at solar system",
+        "hazards": "Resources at hazards"
+      }
+    }
+  },
+  "skills": {
+    "quad_sqrt": "Paglutas ng quadratic sa pagkuha ng square root",
+    "quad_factor": "Paglutas ng quadratic sa factoring",
+    "quad_formula": "Ang quadratic formula",
+    "special_products": "Special products: pag-square ng binomial",
+    "factoring": "Pag-factor ng trinomial",
+    "rational_expr": "Rational algebraic expressions",
+    "poly_mult": "Pag-multiply ng binomial",
+    "lin_eq": "Paglutas ng linear equation",
+    "sqrt_roots": "Square roots",
+    "distributive": "Ang distributive property",
+    "exponents": "Mga batas ng exponent",
+    "like_terms": "Pagsasama ng like terms",
+    "frac_ops": "Operasyon sa fractions",
+    "int_ops": "Operasyon sa integers"
+  },
+  "misconceptions": {
+    "binomial_square": {
+      "title": "Hiwalay na sinquare ang bawat term",
+      "what": "Isinulat mo ang $(a+b)^2$ bilang $a^2 + b^2$. Kapag sinquare ang sum, may middle term din: $2ab$."
+    },
+    "partial_distribution": {
+      "title": "Unang term lang ang na-multiply",
+      "what": "Ang numero sa labas ng parentheses ay dapat i-multiply sa lahat ng term sa loob, hindi lang sa una."
+    },
+    "negative_distribution": {
+      "title": "Nawala ang sign sa pag-distribute ng negative",
+      "what": "Ang negative sa labas ng parentheses ay nagpapalit ng sign ng bawat term sa loob."
+    },
+    "sign_not_changed": {
+      "title": "Inilipat ang term nang hindi pinalitan ang sign",
+      "what": "Ang paglipat ng term sa kabilang side ay paggawa ng kabaligtarang operasyon sa magkabilang side, kaya nagpapalit ang sign nito."
+    },
+    "divide_one_side_or_term": {
+      "title": "Bahagi lang ng equation ang na-divide",
+      "what": "Kapag nag-divide, lahat ng term sa magkabilang side ay dapat i-divide sa parehong numero."
+    },
+    "subtract_coefficient": {
+      "title": "Ibinawas ang coefficient sa halip na i-divide",
+      "what": "Ang $3x$ ay $3 \\times x$, kaya i-divide sa 3 para alisin ito, hindi ibawas ang 3."
+    },
+    "fraction_add_across": {
+      "title": "Diretsong pinagsama ang numerator at denominator",
+      "what": "Ang $\\frac{1}{2} + \\frac{1}{3}$ ay hindi $\\frac{2}{5}$. Kailangan ng common denominator bago mag-add."
+    },
+    "combine_unlike_terms": {
+      "title": "Pinagsama ang hindi magkatulad na term",
+      "what": "Ang $2x$ at $3$ ay hindi like terms, kaya hindi sila puwedeng gawing $5x$."
+    },
+    "like_terms_multiply": {
+      "title": "Na-multiply ang variable habang nag-a-add",
+      "what": "$2x + 3x = 5x$. Sa pag-add ng like terms, ang numero lang ang pinagsasama; hindi nagbabago ang variable."
+    },
+    "exponent_rules": {
+      "title": "Nagkapalit ang mga batas ng exponent",
+      "what": "Sa pag-multiply ng powers, ina-add ang exponents: $x^2 \\cdot x^3 = x^5$. Sa power ng power, mina-multiply: $(x^2)^3 = x^6$."
+    },
+    "sqrt_of_sum": {
+      "title": "Kinuha ang square root ng bawat term",
+      "what": "Ang $\\sqrt{x^2 + 9}$ ay hindi $x + 3$. Hindi puwedeng hatiin ang square root sa addition."
+    },
+    "sqrt_as_halving": {
+      "title": "Hinati sa dalawa sa halip na kunin ang square root",
+      "what": "Para alisin ang $x^2$, kunin ang square root, hindi i-divide sa 2."
+    },
+    "missing_negative_root": {
+      "title": "Nakalimutan ang negative na square root",
+      "what": "Parehong 49 ang $7^2$ at $(-7)^2$, kaya dalawa ang sagot sa square root: $\\pm$."
+    },
+    "divided_by_variable": {
+      "title": "Nag-divide sa variable at nawala ang isang sagot",
+      "what": "Kapag nag-divide sa $x$, nawawala ang $x = 0$. Ilipat lahat sa isang side at i-factor."
+    },
+    "lost_solution": {
+      "title": "May nawalang sagot",
+      "what": "Sa step na ito, may nawalang isang sagot ng equation."
+    }
+  },
+  "areaModel": {
+    "caption1": "Isang square na ang gilid ay {side}.",
+    "caption2": "Hatiin: {aSq} at {bSq} — ito ang nakita mo.",
+    "caption3": "Pero may dalawa pang piraso: {strip} at {strip}.",
+    "caption4": "Kabuuan: {aSq} + {two} + {bSq}. Ang {two} ang nawala.",
+    "next": "Susunod",
+    "replay": "Ulitin"
+  },
+  "nav": {
+    "home": "Home",
+    "roots": "Ugat",
+    "check": "Check",
+    "me": "Ako",
+    "switchLanguage": "Palitan ang wika"
+  },
+  "shell": {
+    "checkerFailed": "Hindi na-load ang math checker",
+    "daysPracticed": "Mga araw na nag-practice ka",
+    "daysPracticedCount": "{count} araw na nag-practice",
+    "gapsFixed": "Mga gap na naayos",
+    "gapsFixedCount": "{count} gap na naayos",
+    "xp": "XP",
+    "xpCount": "{count} XP"
+  },
+  "keypad": {
+    "label": "Mga simbolo ng math"
+  },
+  "demo": {
+    "title": "Demo",
+    "kicker": "Judging mode",
+    "heading": "Mga handang account",
+    "intro": "Nilalaktawan nito ang sign-in at gumagamit ng sample data (si Kyla at klase ng 30). Nasa main screen ang mga totoong account.",
+    "fresh": "Magsimula nang bago",
+    "freshNote": "Totoong onboarding, tapos ang handang Grade 9 assignment"
+  },
+  "voice": {
+    "consentTitle": "Ang voice input ay para sa 18+",
+    "consentWhat": "Isinusulat ng voice input ang sinasabi mo, tapos ginagawang typed math: speech recognition ng browser kung kaya nito, o on-device na model kung hindi.",
+    "consentPrivacy": "Maaaring iproseso ng speech service ng browser mo ang audio, o ang maikling clip ay isasalin sa device na ito at hindi sine-save. Ang transcript ay ipinapadala sa text model kapag online ka.",
+    "consentWithout": "Puwede ka pa ring mag-type o gumamit ng keypad — walang nawawala.",
+    "allow": "18+ ako — i-enable",
+    "under18": "Wala pa akong 18",
+    "adultsOnly": "Para sa 18+ lang ang voice input. Mag-type ka na lang.",
+    "say": "Sabihin",
+    "listening": "Nakikinig… pindutin para huminto",
+    "recording": "Nagre-record… pindutin para huminto",
+    "writing": "Isinusulat…",
+    "downloading": "Inihahanda ang offline voice…",
+    "transcribing": "Isinusulat ang sinabi mo, sa device na ito…",
+    "noMath": "Walang nakuhang math. Ulitin?",
+    "micBlocked": "Payagan ang mikropono para masabi ang sagot mo.",
+    "failed": "Hindi available ang voice ngayon. I-type na lang.",
+    "downloadOffline": "I-download ang offline voice",
+    "offlineReady": "Handa na ang offline voice sa device na ito",
+    "offlineNeeded": "Nagre-record at nagsusulat offline ang device na ito (isang download)",
+    "offlineOptional": "Gumagana rin offline pagkatapos ng isang download",
+    "offlineFailed": "Nabigo ang download — subukan ulit sa Wi-Fi"
+  },
+  "lesson": {
+    "workedExample": "Halimbawang sinagutan",
+    "nextStep": "Susunod na step",
+    "showAll": "Ipakita lahat",
+    "picture": "Tingnan",
+    "commonMistake": "Karaniwang mali",
+    "quickCheck": "Mabilis na tanong"
+  },
+  "check": {
+    "title": "Panimulang punto",
+    "preparing": "Inihahanda ang mga tanong mo…",
+    "intro": "Mga 10 mabilis na tanong. Walang grade, walang pressure: ipinapakita lang nito sa Hopper kung saan magsisimula, at humihinto agad kapag malinaw na.",
+    "questionOf": "Tanong {n} sa {total}",
+    "dontKnow": "Hindi ko pa alam",
+    "needsConnection": "Kailangan ng koneksyon para sa check na ito. Subukan ulit kapag online ka.",
+    "retry": "Subukan ulit",
+    "resultKicker": "Ang panimulang punto mo",
+    "gapTitle": "Magsimula sa {unit}",
+    "gapText": "May kulang na pundasyon mula sa Grade {from}. Kapag naayos ito, mas madali ang Grade {grade}.",
+    "currentTitle": "Matibay ang mga pundasyon mo",
+    "currentText": "Matibay ang mga pundasyon mo. Dito ka nahirapan sa Grade {grade}, kaya dito magsisimula.",
+    "readyTitle": "Handa ka na sa Grade {grade}",
+    "readyText": "Tama lahat, kaya puwede ka nang magsimula sa Grade {grade}.",
+    "score": "{score} sa {total} ang tama",
+    "startLearning": "Simulan ang pag-aaral",
+    "backHome": "Bumalik sa home",
+    "startWith": "Magsimula sa",
+    "gapTextSome": "Kaya mo ang ilang bahagi ng Grade {grade}, pero may kulang na pundasyon mula sa Grade {from}. Kapag naayos ito, mas madali na ang iba.",
+    "goingBack": "Balikan natin nang kaunti pa…",
+    "goingBackText": "Ayos lang. Bago pa sa iyo ang mga iyon, kaya ilang mas madaling tanong ang magpapakita kung saan magsisimula."
+  },
+  "practice": {
+    "showAnswer": "Ipakita ang sagot",
+    "skip": "Laktawan",
+    "answerIs": "Ang sagot",
+    "next": "Susunod",
+    "inARow": "{n} sunod-sunod!",
+    "stuck": "Nahihirapan? Ayos lang.",
+    "endTitle": "Malapit na",
+    "endText": "Nakakuha ka ng {score} sa {total}. Kailangan ng {need} tama para matapos.",
+    "again": "Magsanay ulit",
+    "review": "Basahin ulit ang aralin",
+    "correct": "Tama!",
+    "notQuite": "Hindi pa"
+  },
+  "classes": {
+    "acrossTests": {
+      "one": "sa {count} na test",
+      "other": "sa {count} na test"
+    },
+    "allClasses": "Lahat ng klase",
+    "average": "Average ng klase",
+    "avg": "avg {n}%",
+    "deleteTest": "Burahin ang test na ito",
+    "doneOf": "{done} sa {total} tapos",
+    "exam": "Exam",
+    "examMany": "Exam · ilang paksa",
+    "examTitle": "Exam: {n} paksa",
+    "finish": "Tapusin",
+    "firstClass": "Gawin ang iyong unang klase",
+    "fromTeacher": "Mula sa iyong guro",
+    "grade": "Grade",
+    "joinAnother": "Sumali sa ibang klase",
+    "joinedOn": "Sumali noong {date}",
+    "missedPct": "mali {n}% ng pagkakataon",
+    "mostMissed": "Pinakamadalas mali",
+    "needsWork": "Kailangang pag-aralan",
+    "newClass": "Bagong klase",
+    "newClassSub": "Isang klase bawat subject at grade. Puwede kang magkaroon ng kahit ilan.",
+    "noResults": "Wala pang resulta.",
+    "noStudents": "Wala pa. Sasali ang mga estudyante gamit ang code na {code}.",
+    "noTests": "Wala pang naipadala. Magpadala ng quiz sa isang paksa, o exam sa ilan.",
+    "notSent": "Hindi naipadala ang resulta. Susubukan ulit kapag online ka.",
+    "oneTry": "Isang subok bawat tanong. Ang score lang ang nakikita ng guro, hindi ang mga sagot mo.",
+    "preparing": "Inihahanda ang iyong test…",
+    "privacyNote": "Nakikita mo ang resulta ng mga test na ipinadala sa klaseng ito. Pribado pa rin ang sarili nilang pagsasanay.",
+    "quarter": "Quarter {n}",
+    "quiz": "Quiz",
+    "quizOne": "Quiz · isang paksa",
+    "results": "Mga resulta",
+    "sendNote": "Galing ang mga tanong sa nasuring aralin ng bawat paksa. Matatanggap ito ng buong klase.",
+    "sendTest": "Magpadala ng quiz o exam",
+    "sentToTeacher": "Naipadala sa iyong guro.",
+    "subject": "Subject",
+    "take": "Sagutan",
+    "testGone": "Wala na ang test na ito.",
+    "testNeedsConnection": "Kailangan ng koneksyon para ihanda ang test. Subukan ulit kapag online ka.",
+    "tests": "Mga test",
+    "testsDone": "{done} sa {total} test tapos",
+    "testTitle": "Pamagat",
+    "yourClasses": "Iyong mga klase",
+    "yourScore": "Iyong score"
+  }
+}

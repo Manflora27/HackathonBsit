@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { buildPlan, subjectLabel, verifierMeta, type SubjectId } from "../data/curriculum";
+import { buildPlan, startGrade, verifierMeta, type SubjectId } from "../data/curriculum";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 import { Icon } from "./Icon";
 
 /** The enrollment plan assembling itself: skeleton rows that resolve into units, one subject at a time. */
-export function PlanReveal({ subjects, grade, onReady }: { subjects: SubjectId[]; grade: number; onReady?: () => void }) {
-  const { lang, reduceMotion } = useStore();
+export function PlanReveal({ subjects, grade, onReady }: { subjects: SubjectId[]; grade: number | null; onReady?: () => void }) {
+  const { reduceMotion } = useStore();
+  const t = useT();
   const [ready, setReady] = useState(reduceMotion);
   useEffect(() => {
     if (reduceMotion) return void onReady?.();
@@ -20,22 +22,25 @@ export function PlanReveal({ subjects, grade, onReady }: { subjects: SubjectId[]
   return (
     <div className="space-y-5" data-testid="plan" aria-busy={!ready}>
       {subjects.map((s) => {
-        const units = buildPlan(s, grade);
+        const units = buildPlan(s, startGrade(s, grade));
+        // Self-learners get no school framing: subject only, no grade, no quarters.
+        const head = grade === null ? t.subject(s) : `${t.subject(s)} · ${t("common.gradeN", { n: startGrade(s, grade) })}`;
         return (
           <section key={s}>
-            <div className="kicker text-muted">{subjectLabel(s, lang)} · {lang === "fil" ? "Grade" : "Grade"} {grade}</div>
+            <div className="kicker text-muted">{head}</div>
             <ul className="mt-2 divide-y divide-line rounded-2xl border border-line bg-white/40">
               {units.map((u, i) => (
                 <li key={u.id} className="flex items-center gap-3 px-4 py-3">
                   {ready ? (
                     <motion.div className="flex w-full items-center gap-3" initial={reduceMotion ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: reduceMotion ? 0 : i * 0.05 }}>
-                      <span className="chip shrink-0 !px-2 text-[12px]">Q{u.quarter}</span>
-                      <span className="flex-1 text-[16px]">{u.title[lang]}</span>
+                      {/* School quarters mean nothing to self-learners (grade === null): the plan is just an ordered list. */}
+                      {grade !== null && <span className="chip shrink-0 !px-2 text-[12px]">Q{u.quarter}</span>}
+                      <span className="flex-1 text-[16px]">{t.unit(u)}</span>
                       <span className={`flex items-center gap-1 text-[12px] ${verifierMeta[u.verifier].verified ? "text-ok-dark" : "text-muted"}`}
-                        title={verifierMeta[u.verifier][lang]}>
+                        title={t.verifier(u.verifier)}>
                         {verifierMeta[u.verifier].verified ? <Icon name="check" size={14} strokeWidth={2.2} /> : <span aria-hidden>AI</span>}
-                        <span className="sr-only">{verifierMeta[u.verifier][lang]}</span>
+                        <span className="sr-only">{t.verifier(u.verifier)}</span>
                       </span>
                     </motion.div>
                   ) : (

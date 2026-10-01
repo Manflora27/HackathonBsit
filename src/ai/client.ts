@@ -2,6 +2,7 @@
 // so the app keeps working offline or when the proxy is down.
 import { misconceptions } from "../data";
 import type { Lang } from "../types";
+import { translate } from "../locales";
 
 async function post<T>(path: string, body: unknown, timeoutMs = 9000): Promise<T | null> {
   if (!navigator.onLine) return null;
@@ -44,46 +45,48 @@ export async function classifyWithAi(input: {
 export async function teacherInsight(input: { skill: string; count: number; classSize: number; lang: Lang }) {
   const r = await post<{ text: string }>("/api/ai", { op: "insight", ...input });
   if (r?.text) return { text: r.text, ai: true };
-  const text = input.lang === "fil"
-    ? `${input.count} sa ${input.classSize} ang kulang sa "${input.skill}". Mungkahi: 10-minutong mini-lesson gamit ang area model, tapos 3 practice item bago ang susunod na quiz.`
-    : `${input.count} of ${input.classSize} students are missing "${input.skill}". Suggestion: a 10-minute mini-lesson with the area model, then 3 practice items before the next quiz.`;
+  const text = translate(input.lang, "teacher.insightFallback", { count: input.count, size: input.classSize, skill: input.skill });
   return { text, ai: false };
 }
 
-const audioCache = new Map<string, string>();
+/** Photo of handwritten work -> typed lines (GLM vision). Mistakes are copied as written. */
+export async function readWork(image: string): Promise<{ problem: string; steps: string[] } | null> {
+  return post<{ problem: string; steps: string[] }>("/api/ai", { op: "read-work", image }, 30_000);
+}
 
-/** Read aloud: OpenRouter TTS through the proxy, falling back to the device voice. */
+export interface PlacementQuestion {
+  unitId: string;
+  level: "current" | "foundation";
+  kind: "typed" | "choice";
+  prompt: string;
+  given: string;
+  expected: string;
+  form: "any" | "expanded" | "factored" | "solved";
+  choices: string[];
+  answer: number;
+}
+
+/** A starting-point check for one subject (GLM). Null offline or on failure; the caller falls back. */
+export async function placementCheck(subject: string, grade: number | null, lang: Lang) {
+  return post<{ grade: number; questions: PlacementQuestion[] }>("/api/ai", { op: "placement", subject, grade, lang }, 30_000);
+}
+
+// Spoken math -> typed notation. The tiered recognizer lives in ./speech:
+// the browser's own speech recognition where available, otherwise a short
+// clip transcribed on-device (works offline, in Firefox, in Capacitor).
+// 18+ feature, see VoiceConsent.
+export { canVoiceInput, startVoiceInput, getSpeechBackend, isNativePlatform, speechLang } from "./speech";
+export type { SpeechBackend, VoiceCallbacks } from "./speech";
+
+/** Read aloud with the device's own voice. No recordings, no third party. */
 export async function readAloud(text: string, lang: Lang) {
-  const key = `${lang}:${text}`;
-  let url = audioCache.get(key);
-  if (!url && navigator.onLine) {
-    try {
-      const res = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text, lang }),
-      });
-      if (res.ok && res.headers.get("content-type")?.includes("audio")) {
-        url = URL.createObjectURL(await res.blob());
-        audioCache.set(key, url);
-      }
-    } catch {
-      /* fall through to device voice */
-    }
-  }
-  if (url) {
-    const audio = new Audio(url);
-    await audio.play().catch(() => {});
-    await new Promise((r) => (audio.onended = r));
-    return;
-  }
-  if ("speechSynthesis" in window) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang === "fil" ? "fil-PH" : "en-US";
-    await new Promise<void>((resolve) => {
-      u.onend = () => resolve();
-      u.onerror = () => resolve();
-      speechSynthesis.speak(u);
-    });
-  }
+  if (!("speechSynthesis" in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  // No common device voice speaks Cebuano; the Filipino voice reads it closest.
+  u.lang = lang === "en" ? "en-US" : "fil-PH";
+  await new Promise<void>((resolve) => {
+    u.onend = () => resolve();
+    u.onerror = () => resolve();
+    speechSynthesis.speak(u);
+  });
 }

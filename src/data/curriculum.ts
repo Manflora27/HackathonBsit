@@ -1,116 +1,207 @@
-import type { Lang } from "../types.js";
 
-/** Follows the Philippine system: Science is one integrated subject in Grades 3-10, and separate subjects in Grades 11-12. */
-export type SubjectId = "math" | "science" | "physics" | "chemistry" | "biology";
+import { MATATAG_MATH, MATATAG_SCIENCE, type MatatagCode } from "./matatag.js";
+
+/**
+ * Subjects as DepEd offers them. Grades 1-2: Mathematics. Grades 3-10: Mathematics and an integrated Science.
+ * Senior High (Strengthened SHS): core General Mathematics and General Science in Grade 11, then course electives
+ * (Pre-Calculus, Basic Calculus, Finite and Advanced Mathematics, Physics, Chemistry, Biology, Earth and Space Science).
+ * Source notes: docs/research/deped-curriculum-sources.md
+ */
+export type SubjectId =
+  | "math" | "science"
+  | "general-math" | "general-science"
+  | "finite-math" | "pre-calculus" | "advanced-math" | "basic-calculus"
+  | "physics" | "chemistry" | "biology" | "earth-space";
 export type VerifierId = "sympy" | "arithmetic" | "statistics" | "geometry" | "units" | "chemistry" | "llm";
 export type Goal = "catch_up" | "keep_up" | "exam_prep" | "explore";
 
 export const GRADES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
 
-export const subjectMeta: Record<SubjectId, { en: string; fil: string; blurb: { en: string; fil: string } }> = {
-  math: {
-    en: "Math", fil: "Math",
-    blurb: { en: "Number sense, measurement, geometry, algebra, statistics", fil: "Number sense, pagsukat, geometry, algebra, statistics" },
-  },
-  science: {
-    en: "Science", fil: "Science",
-    blurb: { en: "Matter, living things, force and energy, earth and space", fil: "Matter, mga may buhay, force at energy, earth at space" },
-  },
-  physics: {
-    en: "Physics", fil: "Physics",
-    blurb: { en: "Motion, energy, waves, electricity", fil: "Galaw, energy, waves, kuryente" },
-  },
-  chemistry: {
-    en: "Chemistry", fil: "Chemistry",
-    blurb: { en: "Matter, atoms, reactions, solutions", fil: "Matter, atoms, reactions, solutions" },
-  },
-  biology: {
-    en: "Biology", fil: "Biology",
-    blurb: { en: "Cells, genetics, evolution, body systems", fil: "Cells, genetics, evolution, body systems" },
-  },
+/**
+ * English names here are canonical (the API prompts use them). Translations live in src/locales under
+ * curriculum.subjects / groups / goals / domains / verifiers, keyed by id; a missing one shows the English.
+ */
+interface SubjectInfo { en: string; blurb: string }
+const S = (en: string, blurb: string): SubjectInfo => ({ en, blurb });
+
+export const subjectMeta: Record<SubjectId, SubjectInfo> = {
+  math: S("Mathematics", "Number sense, measurement, geometry, algebra, statistics"),
+  science: S("Science", "Matter, living things, force and energy, earth and space"),
+  "general-math": S("General Mathematics", "Functions, business math, logic"),
+  "general-science": S("General Science", "Matter, energy, living systems, earth systems"),
+  "finite-math": S("Finite Mathematics", "Counting, probability, matrices, graphs"),
+  "pre-calculus": S("Pre-Calculus", "Conics, trigonometry, series, vectors"),
+  "advanced-math": S("Advanced Mathematics", "Functions, series, complex numbers, analytic geometry"),
+  "basic-calculus": S("Basic Calculus", "Limits, derivatives, integrals"),
+  physics: S("Physics", "Motion, energy, waves, electricity"),
+  chemistry: S("Chemistry", "Matter, atoms, reactions, solutions"),
+  biology: S("Biology", "Cells, genetics, evolution, body systems"),
+  "earth-space": S("Earth and Space Science", "Earth's systems, climate, stars, hazards"),
 };
 
-/** Subjects offered at a grade, as in DepEd's K-12: Science from Grade 3 (integrated), then Physics, Chemistry and Biology in Senior High. */
-export function subjectsForGrade(grade: number): SubjectId[] {
-  if (grade >= 11) return ["math", "physics", "chemistry", "biology"];
-  if (grade >= 3) return ["math", "science"];
-  return ["math"];
+export interface SubjectGroup { id: "subjects" | "core" | "math" | "science"; en: string; subjects: SubjectId[] }
+
+/** The subjects offered at a grade, grouped the way a Senior High student meets them. Grades 1-10 are a single group. */
+export function subjectGroupsForGrade(grade: number): SubjectGroup[] {
+  if (grade >= 11) {
+    const groups: SubjectGroup[] = [];
+    if (grade === 11) groups.push({ id: "core", en: "Core subjects", subjects: ["general-math", "general-science"] });
+    groups.push(
+      { id: "math", en: "Math electives", subjects: ["pre-calculus", "basic-calculus", "finite-math", "advanced-math"] },
+      { id: "science", en: "Science electives", subjects: ["physics", "chemistry", "biology", "earth-space"] },
+    );
+    return groups;
+  }
+  return [{ id: "subjects", en: "Subjects", subjects: grade >= 3 ? ["math", "science"] : ["math"] }];
 }
 
-export const goalMeta: Record<Goal, { en: string; fil: string }> = {
-  catch_up: { en: "Catch up on what I missed", fil: "Habulin ang mga na-miss ko" },
-  keep_up: { en: "Keep up in class", fil: "Makasabay sa klase" },
-  exam_prep: { en: "Prepare for an exam", fil: "Maghanda sa exam" },
-  explore: { en: "Just exploring", fil: "Nag-e-explore lang" },
+export function subjectsForGrade(grade: number): SubjectId[] {
+  return subjectGroupsForGrade(grade).flatMap((g) => g.subjects);
+}
+
+/** What a grade requires rather than offers as electives: the integrated subjects (Grades 1-10) and the Grade 11 core. Grade 12 is all electives. */
+export function requiredSubjectsForGrade(grade: number): SubjectId[] {
+  return subjectGroupsForGrade(grade).filter((g) => g.id === "subjects" || g.id === "core").flatMap((g) => g.subjects);
+}
+
+/**
+ * Self-learners (not in school) have no grade: they see every subject, and each plan starts at a default level
+ * (Grade 7 for the integrated subjects, the course itself for Senior High). Hopper's checks then find their real level.
+ */
+export function subjectGroupsFor(grade: number | null): SubjectGroup[] {
+  if (grade !== null) return subjectGroupsForGrade(grade);
+  return [
+    { id: "subjects", en: "Subjects", subjects: ["math", "science"] },
+    ...subjectGroupsForGrade(12),
+  ];
+}
+
+export function subjectsFor(grade: number | null): SubjectId[] {
+  return subjectGroupsFor(grade).flatMap((g) => g.subjects);
+}
+
+/** The grade a subject's plan is built at: the learner's own, or the self-learner default. */
+export function startGrade(subject: SubjectId, grade: number | null): number {
+  if (grade !== null) return grade;
+  return subject === "math" || subject === "science" ? 7 : 11;
+}
+
+export const goalMeta: Record<Goal, { en: string }> = {
+  catch_up: { en: "Catch up on what I missed" },
+  keep_up: { en: "Keep up in class" },
+  exam_prep: { en: "Prepare for an exam" },
+  explore: { en: "Just learning" },
 };
 
 /** A coarse domain of a subject at some grade. Wording is ours; structure follows grade, quarter, domain. */
 interface Domain {
   id: string;
+  /** catalog key under curriculum.domains, e.g. "math.algebra" */
+  key: string;
   en: string;
-  fil: string;
   verifier: VerifierId;
 }
 
-const D = (id: string, en: string, fil: string, verifier: VerifierId): Domain => ({ id, en, fil, verifier });
+const D = (owner: string, id: string, en: string, verifier: VerifierId): Domain => ({ id, key: `${owner}.${id}`, en, verifier });
 
 // Math strands as in the K-12 curriculum.
 const MATH_DOMAINS = {
-  number: D("number", "Number sense", "Number sense", "arithmetic"),
-  measure: D("measure", "Measurement", "Pagsukat", "arithmetic"),
-  geometry: D("geometry", "Geometry", "Geometry", "geometry"),
-  patterns: D("patterns", "Patterns and algebra", "Patterns at algebra", "sympy"),
-  algebra: D("algebra", "Algebra", "Algebra", "sympy"),
-  functions: D("functions", "Functions and graphs", "Functions at graphs", "sympy"),
-  data: D("data", "Statistics and probability", "Statistics at probability", "statistics"),
-  trig: D("trig", "Trigonometry", "Trigonometry", "sympy"),
-  calculus: D("calculus", "Limits and calculus", "Limits at calculus", "sympy"),
+  number: D("math", "number", "Number sense", "arithmetic"),
+  measure: D("math", "measure", "Measurement", "arithmetic"),
+  geometry: D("math", "geometry", "Geometry", "geometry"),
+  patterns: D("math", "patterns", "Patterns and algebra", "sympy"),
+  algebra: D("math", "algebra", "Algebra", "sympy"),
+  functions: D("math", "functions", "Functions and graphs", "sympy"),
+  data: D("math", "data", "Statistics and probability", "statistics"),
+  trig: D("math", "trig", "Trigonometry", "sympy"),
+  calculus: D("math", "calculus", "Limits and calculus", "sympy"),
 };
 
 function mathDomains(g: number): Domain[] {
   const M = MATH_DOMAINS;
   if (g <= 6) return [M.number, M.measure, M.geometry, M.patterns, M.data];
   if (g <= 8) return [M.number, M.measure, M.geometry, M.patterns, M.data];
-  if (g <= 10) return [M.patterns, M.geometry, M.trig, M.data];
-  return [M.functions, M.algebra, M.trig, M.data, ...(g === 12 ? [M.calculus] : [])];
+  return [M.patterns, M.geometry, M.trig, M.data];
 }
 
 // Integrated Science (Grades 3-10): Matter; Living Things and Their Environment; Force, Motion and Energy; Earth and Space.
 function scienceDomains(g: number): Domain[] {
   return [
-    D("matter", "Matter", "Matter", g >= 8 ? "chemistry" : "llm"),
-    D("living", "Living things and their environment", "Mga may buhay at kanilang kapaligiran", "llm"),
-    D("force", "Force, motion and energy", "Force, galaw at energy", "units"),
-    D("earth", "Earth and space", "Earth at space", "llm"),
+    D("science", "matter", "Matter", g >= 8 ? "chemistry" : "llm"),
+    D("science", "living", "Living things and their environment", "llm"),
+    D("science", "force", "Force, motion and energy", "units"),
+    D("science", "earth", "Earth and space", "llm"),
   ];
 }
 
-// Senior High subjects are separate, each with its own plan.
-const SHS_DOMAINS: Record<"physics" | "chemistry" | "biology", Domain[]> = {
+// Senior High courses, each with its own plan. Domains are ours (coarse); a course's guide has the real competencies.
+const SHS_DOMAINS: Partial<Record<SubjectId, Domain[]>> = {
+  "general-math": [
+    D("general-math", "functions", "Functions and their graphs", "sympy"),
+    D("general-math", "exp-log", "Rational, exponential and logarithmic functions", "sympy"),
+    D("general-math", "business", "Business math: interest and annuities", "arithmetic"),
+    D("general-math", "logic", "Logic and reasoning", "llm"),
+  ],
+  "general-science": [
+    D("general-science", "nature", "Nature of science and measurement", "llm"),
+    D("general-science", "matter-energy", "Matter and energy", "units"),
+    D("general-science", "living", "Living systems", "llm"),
+    D("general-science", "earth", "Earth systems", "llm"),
+  ],
+  "finite-math": [
+    D("finite-math", "counting", "Sets and counting", "statistics"),
+    D("finite-math", "probability", "Probability", "statistics"),
+    D("finite-math", "matrices", "Matrices and linear systems", "sympy"),
+    D("finite-math", "graphs", "Graphs and networks", "llm"),
+  ],
+  "pre-calculus": [
+    D("pre-calculus", "conics", "Conic sections", "sympy"),
+    D("pre-calculus", "trig", "Trigonometric functions and identities", "sympy"),
+    D("pre-calculus", "series", "Sequences, series and induction", "sympy"),
+    D("pre-calculus", "vectors", "Polar coordinates and vectors", "sympy"),
+  ],
+  "advanced-math": [
+    D("advanced-math", "functions", "Algebraic and transcendental functions", "sympy"),
+    D("advanced-math", "series", "Sequences and series", "sympy"),
+    D("advanced-math", "complex", "Complex numbers", "sympy"),
+    D("advanced-math", "analytic", "Analytic geometry", "sympy"),
+  ],
+  "basic-calculus": [
+    D("basic-calculus", "limits", "Limits and continuity", "sympy"),
+    D("basic-calculus", "derivatives", "Derivatives", "sympy"),
+    D("basic-calculus", "applications", "Applications of derivatives", "sympy"),
+    D("basic-calculus", "integrals", "Integrals", "sympy"),
+  ],
   physics: [
-    D("motion", "Motion and forces", "Galaw at force", "units"),
-    D("energy", "Work, energy and power", "Work, energy at power", "units"),
-    D("waves", "Waves and optics", "Waves at optics", "units"),
-    D("electricity", "Electricity and magnetism", "Kuryente at magnetism", "units"),
+    D("physics", "motion", "Motion and forces", "units"),
+    D("physics", "energy", "Work, energy and power", "units"),
+    D("physics", "waves", "Waves and optics", "units"),
+    D("physics", "electricity", "Electricity and magnetism", "units"),
   ],
   chemistry: [
-    D("matter", "Matter and measurement", "Matter at pagsukat", "llm"),
-    D("atoms", "Atoms and the periodic table", "Atoms at periodic table", "llm"),
-    D("reactions", "Chemical reactions and stoichiometry", "Chemical reactions at stoichiometry", "chemistry"),
-    D("solutions", "Solutions, acids and bases", "Solutions, acids at bases", "llm"),
+    D("chemistry", "matter", "Matter and measurement", "llm"),
+    D("chemistry", "atoms", "Atoms and the periodic table", "llm"),
+    D("chemistry", "reactions", "Chemical reactions and stoichiometry", "chemistry"),
+    D("chemistry", "solutions", "Solutions, acids and bases", "llm"),
   ],
   biology: [
-    D("cells", "Cells", "Cells", "llm"),
-    D("genetics", "Heredity and genetics", "Heredity at genetics", "llm"),
-    D("evolution", "Evolution and ecology", "Evolution at ecology", "llm"),
-    D("body", "Body systems", "Mga body system", "llm"),
+    D("biology", "cells", "Cells", "llm"),
+    D("biology", "genetics", "Heredity and genetics", "llm"),
+    D("biology", "evolution", "Evolution and ecology", "llm"),
+    D("biology", "body", "Body systems", "llm"),
+  ],
+  "earth-space": [
+    D("earth-space", "earth", "Earth's structure and processes", "llm"),
+    D("earth-space", "climate", "Atmosphere and climate", "llm"),
+    D("earth-space", "space", "Stars and the solar system", "llm"),
+    D("earth-space", "hazards", "Resources and hazards", "llm"),
   ],
 };
 
 function domainsFor(subject: SubjectId, grade: number): Domain[] {
   if (subject === "math") return mathDomains(grade);
   if (subject === "science") return scienceDomains(grade);
-  return SHS_DOMAINS[subject];
+  return SHS_DOMAINS[subject] ?? [];
 }
 
 export interface PlanUnit {
@@ -119,14 +210,70 @@ export interface PlanUnit {
   grade: number;
   quarter: 1 | 2 | 3 | 4;
   domain: string;
-  title: { en: string; fil: string };
+  /** English title; titleKey finds its translation under curriculum.domains */
+  title: string;
+  titleKey: string;
   verifier: VerifierId;
   /** Lessons are generated and cached on demand. "outline" means none exists yet. */
   status: "outline";
 }
 
-/** The enrollment plan: the syllabus for the learner's stated class. The gap finder can insert earlier units later. */
-export function buildPlan(subject: SubjectId, grade: number): PlanUnit[] {
+/** The plan unit for a MATATAG Math domain or Science theme, with the topics the guide lists. */
+const MATATAG_VERIFIER: Record<MatatagCode, VerifierId> = { NA: "sympy", MG: "geometry", DP: "statistics" };
+
+/** Science quarters are themed; the theme picks the unit's strand and verifier. */
+function scienceTheme(theme: string, grade: number): { id: string; verifier: VerifierId } {
+  const t = theme.toLowerCase();
+  if (t.includes("material")) return { id: "matter", verifier: grade >= 8 ? "chemistry" : "llm" };
+  if (t.includes("life") || t.includes("living")) return { id: "living", verifier: "llm" };
+  if (t.includes("force")) return { id: "force", verifier: "units" };
+  return { id: "earth", verifier: "llm" };
+}
+
+/** MATATAG Math (Grades 1-10): one unit per content domain per quarter, in the guide's own sequence. */
+function matatagMathPlan(grade: number): PlanUnit[] {
+  const quarters = MATATAG_MATH[grade] ?? {};
+  const units: PlanUnit[] = [];
+  for (const quarter of [1, 2, 3, 4] as const) {
+    for (const d of quarters[quarter] ?? []) {
+      const slug = d.code.toLowerCase();
+      units.push(...perTopic(`math-g${grade}-q${quarter}-${slug}`, d.topics, {
+        subject: "math", grade, quarter, domain: slug, verifier: MATATAG_VERIFIER[d.code],
+      }));
+    }
+  }
+  return units;
+}
+
+/**
+ * One unit per topic the guide lists, so every topic gets its own place on the path and its own lesson.
+ * The first topic keeps the domain's id (saved progress, placements and cached lessons still point at it);
+ * the rest are numbered after it.
+ */
+function perTopic(base: string, topics: string[], at: Omit<PlanUnit, "id" | "title" | "titleKey" | "status">): PlanUnit[] {
+  return topics.map((topic, i) => {
+    const id = i ? `${base}-${i + 1}` : base;
+    return { ...at, id, title: topic.charAt(0).toUpperCase() + topic.slice(1), titleKey: `matatag.${id}`, status: "outline" };
+  });
+}
+
+/** MATATAG Science (Grades 3-10): each quarter's theme, one unit per topic. */
+function matatagSciencePlan(grade: number): PlanUnit[] {
+  const quarters = MATATAG_SCIENCE[grade] ?? {};
+  const units: PlanUnit[] = [];
+  for (const quarter of [1, 2, 3, 4] as const) {
+    const rec = quarters[quarter];
+    if (!rec) continue;
+    const theme = scienceTheme(rec.theme, grade);
+    units.push(...perTopic(`science-g${grade}-q${quarter}-${theme.id}`, rec.topics, {
+      subject: "science", grade, quarter, domain: theme.id, verifier: theme.verifier,
+    }));
+  }
+  return units;
+}
+
+/** Senior High keeps its coarse course domains until the Strengthened SHS guides are mapped. */
+function domainPlan(subject: SubjectId, grade: number): PlanUnit[] {
   const domains = domainsFor(subject, grade);
   const units: PlanUnit[] = [];
   const quarters = [1, 2, 3, 4] as const;
@@ -137,7 +284,8 @@ export function buildPlan(subject: SubjectId, grade: number): PlanUnit[] {
       units.push({
         id: `${subject}-g${grade}-q${quarter}-${d.id}`,
         subject, grade, quarter, domain: d.id,
-        title: { en: d.en, fil: d.fil },
+        title: d.en,
+        titleKey: d.key,
         verifier: d.verifier,
         status: "outline",
       }),
@@ -146,21 +294,51 @@ export function buildPlan(subject: SubjectId, grade: number): PlanUnit[] {
   return units.sort((a, b) => a.quarter - b.quarter);
 }
 
-export const verifierMeta: Record<VerifierId, { en: string; fil: string; verified: boolean }> = {
-  sympy: { en: "Verified by SymPy", fil: "Beripikado ng SymPy", verified: true },
-  arithmetic: { en: "Verified exactly", fil: "Eksaktong beripikado", verified: true },
-  statistics: { en: "Verified by calculation", fil: "Beripikado sa kalkulasyon", verified: true },
-  geometry: { en: "Verified by calculation", fil: "Beripikado sa kalkulasyon", verified: true },
-  units: { en: "Verified with units", fil: "Beripikado gamit ang units", verified: true },
-  chemistry: { en: "Verified by balancing", fil: "Beripikado sa balancing", verified: true },
-  llm: { en: "AI-checked", fil: "Sinuri ng AI", verified: false },
+/** The enrollment plan: the syllabus for the learner's stated class, following the DepEd guide per quarter. */
+export function buildPlan(subject: SubjectId, grade: number): PlanUnit[] {
+  if (subject === "math" && MATATAG_MATH[grade]) return matatagMathPlan(grade);
+  if (subject === "science" && MATATAG_SCIENCE[grade]) return matatagSciencePlan(grade);
+  return domainPlan(subject, grade);
+}
+
+export const verifierMeta: Record<VerifierId, { en: string; verified: boolean }> = {
+  sympy: { en: "Verified by SymPy", verified: true },
+  arithmetic: { en: "Verified exactly", verified: true },
+  statistics: { en: "Verified by calculation", verified: true },
+  geometry: { en: "Verified by calculation", verified: true },
+  units: { en: "Verified with units", verified: true },
+  chemistry: { en: "Verified by balancing", verified: true },
+  llm: { en: "AI-checked", verified: false },
 };
 
-export const subjectLabel = (s: SubjectId, lang: Lang) => subjectMeta[s][lang];
 
-/** Resolve a unit id like "math-g8-q2-algebra" back to its plan unit. */
+/** Resolve a unit id like "math-g8-q2-na" back to its plan unit. */
 export function unitById(id: string): PlanUnit | null {
-  const m = /^(math|science|physics|chemistry|biology)-g(\d+)-q\d-/.exec(id);
+  const m = /^([a-z-]+)-g(\d+)-q\d-/.exec(id);
+  if (m && !(m[1] in subjectMeta)) return null;
   if (!m) return null;
   return buildPlan(m[1] as SubjectId, Number(m[2])).find((u) => u.id === id) ?? null;
+}
+
+const MATH_FAMILY = new Set<SubjectId>(["math", "general-math", "finite-math", "pre-calculus", "advanced-math", "basic-calculus"]);
+export const isMathSubject = (s: SubjectId) => MATH_FAMILY.has(s);
+
+/**
+ * What a starting-point check draws from: the learner's own units, plus foundations from one and two grades
+ * earlier. Senior High courses rest on Grade 9-10 Mathematics or Science. Unique by domain, so every unit is a real lesson.
+ */
+/** The grade-by-grade subject a subject's foundations live in, and the first grade it's taught. */
+export function foundationOf(subject: SubjectId): { base: SubjectId; lowest: number } {
+  const base: SubjectId = subject === "math" || subject === "science" ? subject : isMathSubject(subject) ? "math" : "science";
+  return { base, lowest: base === "science" ? 3 : 1 };
+}
+
+export function placementUnits(subject: SubjectId, grade: number): { current: PlanUnit[]; foundation: PlanUnit[] } {
+  // Every topic once (Senior High domains repeat across quarters with the same title).
+  const uniq = (us: PlanUnit[]) => us.filter((u, i) => us.findIndex((v) => v.title === u.title && v.grade === u.grade) === i);
+  const current = uniq(buildPlan(subject, grade));
+  const { base, lowest } = foundationOf(subject);
+  const earlier = subject === base ? [grade - 1, grade - 2] : [10, 9];
+  const foundation = uniq(earlier.filter((g) => g >= lowest).flatMap((g) => buildPlan(base, g)));
+  return { current, foundation };
 }

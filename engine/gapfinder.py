@@ -18,7 +18,12 @@ from sympy import (
     Add,
     Eq,
     FiniteSet,
+    Ge,
+    Gt,
     Integer,
+    Intersection,
+    Le,
+    Lt,
     Mul,
     Pow,
     Rational,
@@ -30,8 +35,11 @@ from sympy import (
     preorder_traversal,
     solveset,
     sqrt,
+    limit,
     together,
+    Union,
 )
+from sympy.solvers.inequalities import solve_univariate_inequality
 from sympy.parsing.sympy_parser import (
     convert_xor,
     implicit_multiplication_application,
@@ -42,6 +50,22 @@ from sympy.parsing.sympy_parser import (
 TRANSFORMS = standard_transformations + (implicit_multiplication_application, convert_xor)
 LOCALS = {c: Symbol(c) for c in "abcdfghjkmnpqrstuvwxyz"}
 LOCALS["sqrt"] = sqrt
+
+
+def _mean(*xs):
+    return Add(*xs) / len(xs)
+
+
+def _median(*xs):
+    v = sorted(xs, key=lambda t: float(t))
+    n = len(v)
+    return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
+
+
+# Calculus and statistics as lessons write them: limit(f, x, a), mean(2, 4, 6), median(3, 5, 7).
+LOCALS["limit"] = limit
+LOCALS["mean"] = _mean
+LOCALS["median"] = _median
 
 
 class ParseError(ValueError):
@@ -63,6 +87,10 @@ def normalize(text: str) -> str:
         .replace("÷", "/")
         .replace("²", "^2")
         .replace("³", "^3")
+        .replace("≤", "<=")
+        .replace("≥", ">=")
+        .replace("=<", "<=")
+        .replace("=>", ">=")
         .replace("+-", "±")
         .replace("+/-", "±")
     )
@@ -91,13 +119,16 @@ class Step:
     expr: object = None  # set when the line has no '='
     eqs: list = field(default_factory=list)  # list[(lhs, rhs)] evaluated
     raw_eqs: list = field(default_factory=list)  # same, unevaluated
+    ineq: object = None  # solution set (over the reals) when the line is an inequality
+    ineq_latex: str = ""
+    ineq_solved: bool = False  # every comparison is the variable against numbers, e.g. 2<x<3 or x>=4
 
     @property
     def is_eq(self) -> bool:
         return bool(self.eqs)
 
     def symbols(self):
-        out = set()
+        out = set(getattr(self, "_ineq_syms", set()))
         if self.expr is not None:
             out |= self.expr.free_symbols
         for l, r in self.eqs:
@@ -105,16 +136,65 @@ class Step:
         return out
 
     def to_latex(self) -> str:
+        if self.ineq is not None:
+            return self.ineq_latex
         if self.expr is not None:
             return latex(self.raw_expr)
         parts = [f"{latex(l)} = {latex(r)}" for l, r in self.raw_eqs]
         return r" \quad\text{or}\quad ".join(parts)
 
 
+_REL = {"<": Lt, "<=": Le, ">": Gt, ">=": Ge}
+_REL_TEX = {"<": " < ", "<=": " \\le ", ">": " > ", ">=": " \\ge "}
+
+
+def parse_inequality(text: str, s: str) -> Step:
+    """'x^2-5x+6<0', '2<x<3', 'x<-3 or x>3' -> the solution set over the reals (one variable)."""
+    sets, tex, syms, solved = [], [], set(), True
+    for chunk in [c.strip() for c in re.split(r"\bor\b", s) if c.strip()]:
+        parts = re.split(r"(<=|>=|<|>)", chunk)
+        sides, ops = [p.strip() for p in parts[0::2]], parts[1::2]
+        if len(sides) < 2 or "=" in chunk.replace("<=", "").replace(">=", ""):
+            raise ParseError("not an inequality")
+        ev = [_parse_side(x, True) for x in sides]
+        raw = [_parse_side(x, False) for x in sides]
+        for e in ev:
+            syms |= e.free_symbols
+        rels = [_REL[o](ev[i], ev[i + 1]) for i, o in enumerate(ops)]
+        sets.append(rels)
+        tex.append("".join(latex(raw[i]) + (_REL_TEX[ops[i]] if i < len(ops) else "") for i in range(len(raw))))
+        for i in range(len(ops)):
+            pair = (ev[i], ev[i + 1])
+            if not (any(isinstance(x, Symbol) for x in pair) and any(x.is_number for x in pair)):
+                solved = False
+    if len(syms) != 1:
+        raise ParseError("inequalities need exactly one variable")
+    var = next(iter(syms))
+    total = None
+    for rels in sets:
+        part = S.Reals
+        for r in rels:
+            if r in (S.true, S.false):
+                part = part if r == S.true else S.EmptySet
+                continue
+            part = Intersection(part, solve_univariate_inequality(r, var, relational=False))
+        total = part if total is None else Union(total, part)
+    step = Step(text=text, ineq=total, ineq_latex="\\quad\\text{or}\\quad ".join(tex), ineq_solved=solved)
+    step._ineq_syms = {var}
+    return step
+
+
 def parse_step(text: str) -> Step:
     s = normalize(text)
     if not s:
         raise ParseError("empty line")
+    if re.search(r"[<>]", s):
+        try:
+            return parse_inequality(text, s)
+        except ParseError:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            raise ParseError(str(exc)) from exc
     chunks = [c.strip() for c in re.split(r"\bor\b|,|;", s) if c.strip()]
     if len(chunks) > 1 and not all("=" in c for c in chunks):
         chunks = [s]
@@ -181,6 +261,10 @@ def _sets_equal(a, b):
 
 def equivalent(a: Step, b: Step, var=None):
     """True / False / None (couldn't verify)."""
+    if a.ineq is not None or b.ineq is not None:
+        if a.ineq is None or b.ineq is None:
+            return False
+        return _sets_equal(a.ineq, b.ineq)
     if a.expr is not None and b.expr is not None:
         return _is_zero(a.expr - b.expr)
     if a.is_eq and b.is_eq:
@@ -205,6 +289,8 @@ def equivalent(a: Step, b: Step, var=None):
 
 
 def is_solved_form(step: Step, var) -> bool:
+    if step.ineq is not None:
+        return step.ineq_solved
     if not step.is_eq:
         return False
     for l, r in step.eqs:
@@ -766,6 +852,9 @@ def check_answer(expected: str, answer: str, form: str = "any") -> dict:
         return check_units(expected, answer)
     try:
         e, a = parse_step(expected), parse_step(answer)
+        # "4" for an equation in one variable means "x = 4" (learners and keys both write it that way).
+        if e.is_eq and a.expr is not None and a.expr.is_number and len(e.symbols()) == 1:
+            a = parse_step(f"{next(iter(e.symbols()))} = {answer}")
     except ParseError:
         return {"correct": False, "reason": "unparsed"}
     eq = equivalent(e, a)

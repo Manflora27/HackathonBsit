@@ -220,11 +220,10 @@ Each one must **show the core idea** (find the real gap), not just decorate. Ran
 | # | Moment | Cost | Tier |
 |---|---|---|---|
 | 1 | **"Time travel" trace:** each skill node carries its grade level, and the trace narrates "Your Grade 9 quadratics mistake → comes from a **Grade 7** skill." Show the real MATATAG code under the gap. | ~30 min (grade field in JSON) | Must |
-| 2 | **"Try to fool it":** a QR code on the final slide plus a challenge card ("Solve this and make a mistake on purpose"). Judges see their own error circled on their own phone. | Almost no build; needs a robust engine on the challenge problems (add them to the golden set) | Should |
-| 3 | **Live teacher dashboard:** teammates submit from 3–4 phones during the demo, and the grid updates in real time ("14 → 17 students missing negative fractions"). | 1–2 h (Supabase Realtime subscription) | Should |
-| 4 | **Airplane mode:** it still diagnoses offline. | Already in the plan | Should |
-| 5 | **Retry payoff:** the problem that stopped her gets solved, and the node turns ✓ with a short, calm celebration. | 30 min | Should |
-| 6 | **Taglish voice:** "x squared minus tatlo equals..." → parsed into math. | Already planned (STT) | Nice |
+| 2 | **Live teacher dashboard:** teammates submit from 3–4 phones during the demo, and the grid updates in real time ("14 → 17 students missing negative fractions"). | 1–2 h (Supabase Realtime subscription) | Should |
+| 3 | **Airplane mode:** it still diagnoses offline. | Already in the plan | Should |
+| 4 | **Retry payoff:** the problem that stopped her gets solved, and the node turns ✓ with a short, calm celebration. | 30 min | Should |
+| 5 | **Taglish voice:** "x squared minus tatlo equals..." → parsed into math. | Already planned (STT) | Nice |
 
 **Skip:** badges and points, avatars and mascots, 3D/AR, a general chatbot. They're common at hackathons and don't show the gap-finding idea.
 
@@ -425,7 +424,7 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
    7. The skill turns ✓.
 4. **Offline moment** (~30 s, if built): turn on airplane mode and run a common error. It still diagnoses.
 5. **Teacher view** (~1.5 min), on a laptop: Kyla is one of 14 with the same gap → review → assign practice to all 14.
-6. **Architecture, privacy, test results** (~45 s). Show the QR code so judges can try it on their own phones.
+6. **Architecture, privacy, test results** (~45 s).
 7. **Close** (~30 s): "Anyone can use it on their own," then the closing line.
 
 ## Future Work
@@ -474,6 +473,8 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 
 ## To Fill In
 - MATATAG competency codes (left blank in `src/data/skills.json` until verified)
+- Strengthened SHS quarter maps for the Grade 11-12 electives (currently coarse domains)
+- tl/ceb translations for the MATATAG plan unit titles (`src/data/matatag.ts` topics show English)
 - Native-speaker review of the Filipino explanations
 
 ## Update (Oct 1): Onboarding, STEM, generated lessons
@@ -484,6 +485,7 @@ Decisions from the design review. Where they conflict with earlier sections, thi
 **Onboarding (first run).** Three screens with a progress bar: (1) name, role, optional class code; (2) subjects (multi-select), current grade as a self-reported baseline (not a verified level), language; (3) goal, then the enrollment plan assembles from skeleton rows. Home holds no problems: it shows the next unit per subject, class, and assigned practice. Stored in `profiles` (`0003_onboarding.sql`); guests keep it in the local store. The demo runs through a fresh onboarding.
 
 **Curriculum skeleton.** Fixed, not generated: grade → quarter → domain, following DepEd's structure with our own wording. DepEd's guides are marked copyrighted, so no competency text is copied; cite the source, ask DepEd before commercial use. Skill IDs are ours (MATATAG publishes no codes). The plan starts at the stated grade; the gap finder inserts earlier prerequisites when it finds a real gap. Source notes: `docs/research/deped-curriculum-sources.md`.
+**MATATAG quarter map (Oct 1, later).** Math G1-10 and Science G3-10 plans now follow the quarter tables of the official MATATAG guides: `src/data/matatag.ts` holds, per grade and quarter, the Math content domains (NA/MG/DP) with their topics and the Science quarter theme (Materials / Life / Force / Earth, rotating by grade) with its topics. `buildPlan` turns those into plan units, so the plan reveal shows what the class actually covers each quarter. SHS electives still use the coarse course domains until the Strengthened SHS guides are mapped; plan unit titles fall back to English in tl/ceb for now.
 
 **Verifier per skill type** (details: `docs/research/verifiers.md`). Every unit carries a verifier tag:
 
@@ -531,3 +533,7 @@ One animated character, built from scratch (no third-party character code). **Bi
 - Android toolchain for the Capacitor APK.
 
 **Not built yet:** voice input (STT), photo input, one-tap install button, "Ask why?" chat, Kapampangan, Ollama, LMS integration.
+
+**Added Oct 1 (teacher classroom loop):** the teacher dashboard now reads the real class instead of the labeled sample — rosters, shared skill maps and class-visible attempts come from Supabase per selected class, with a class switcher, a sent-practice list, and realtime updates (`src/classroom.ts`). Students upload attempts only when class-assigned or when "share my skill map with my teacher" is on; turning sharing off deletes the server copy of their progress. Teachers send gap-practice assignments to the `assignments` table. The demo path still uses the same-device seed. Gemini was removed on legal review (its terms bar API clients directed at under-18s): voice input is 18+ and runs on the device's speech recognition, with only the transcript reaching the text model.
+
+**Added Oct 1 (goal chooser removed):** the onboarding “What's your goal?” step asked overlapping questions (exam prep *is* catch-up), so it was removed — step 3 is now the plan reveal only, and new onboardings store `goal: null`. Personalization is derived per lesson instead (`src/goals.ts`, `lessonGoal({examMode, behind, inClass})`): the exam-prep Settings toggle (`examMode`) yields 6 practice items + an exam tip, a lesson that is a gap opens with where the topic comes from, class members get a quarter tie-in, otherwise a why-it-works paragraph (`api/lesson.ts` GOAL_HINTS). Correctness never depends on it — every key is engine-checked, cached lessons are served as-is, and only the non-personal enum reaches the model. Home ordering is the same for everyone (root gap leads).

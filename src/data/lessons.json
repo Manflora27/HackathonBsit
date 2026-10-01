@@ -1,8 +1,12 @@
 {
-  "_note": "Pre-generated base explanations (offline). Filipino text needs a native-speaker spot check before the pitch. 'spoken' is what read-aloud says, never raw LaTeX.",
+  "_note": "Pre-generated base explanations (offline). Tagalog ('fil') and Bisaya ('ceb') text need a native-speaker spot check before the pitch. 'spoken' is what read-aloud says, never raw LaTeX.",
   "lessons": {
     "poly_mult": {
       "visual": "area-model",
+      "visualArgs": {
+        "a": "x",
+        "b": 3
+      },
       "en": {
         "body": [
           "Multiplying two binomials is like finding the area of a rectangle whose sides are split into parts.",
@@ -19,14 +23,38 @@
         ],
         "spoken": "Ang pag-multiply ng dalawang binomial ay parang paghahanap ng area ng rectangle. Sa x plus 3 times x plus 3, hatiin ang square sa apat: isang x squared, dalawang 3 x, at isang 9. Pagsamahin lahat: x squared plus 6 x plus 9."
       },
+      "ceb": {
+        "body": [
+          "Ang pag-multiply sa duha ka binomial sama ra sa pagpangita sa area sa rectangle nga gibahin ang mga kilid.",
+          "Sa $(x+3)(x+3)$, ang matag kilid kay $x + 3$. Bahina ang square sa upat ka piraso: usa ka $x^2$, duha ka $3x$ nga strip, ug usa ka $9$.",
+          "I-add ang tanang piraso: $x^2 + 3x + 3x + 9 = x^2 + 6x + 9$. Ang matag term sa usa ka kilid mo-multiply sa matag term sa pikas kilid."
+        ],
+        "spoken": "Ang pag-multiply sa duha ka binomial sama ra sa pagpangita sa area sa rectangle nga gibahin ang mga kilid. Sa x plus 3 times x plus 3, bahina ang square sa upat ka piraso: usa ka x squared, duha ka strip nga 3 x, ug usa ka 9. I-add ang tanang piraso: x squared plus 6 x plus 9. Ang matag term sa usa ka kilid mo-multiply sa matag term sa pikas kilid."
+      },
       "practice": [
-        {"prompt": "Expand", "given": "(x+1)(x+4)", "form": "expanded"},
-        {"prompt": "Expand", "given": "(x+5)(x+5)", "form": "expanded"},
-        {"prompt": "Expand", "given": "(x+2)(x-3)", "form": "expanded"}
+        {
+          "prompt": "Expand",
+          "given": "(x+1)(x+4)",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Expand",
+          "given": "(x+5)(x+5)",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Expand",
+          "given": "(x+2)(x-3)",
+          "form": "expanded"
+        }
       ]
     },
     "special_products": {
       "visual": "area-model",
+      "visualArgs": {
+        "a": "a",
+        "b": "b"
+      },
       "en": {
         "body": [
           "$(a+b)^2$ means $(a+b)(a+b)$. Picture a square with side $a + b$.",
@@ -43,188 +71,494 @@
         ],
         "spoken": "Ang a plus b squared ay a plus b times a plus b. May apat na bahagi: a squared, b squared, at dalawang a b. Kaya a squared plus 2 a b plus b squared. Ang middle term ang madalas makalimutan."
       },
+      "ceb": {
+        "body": [
+          "Ang $(a+b)^2$ nagpasabot og $(a+b)(a+b)$. Hunahunaa ang square nga ang kilid kay $a + b$.",
+          "Naa kini upat ka piraso: $a^2$, $b^2$, ug duha ka $ab$ nga rectangle. Busa $(a+b)^2 = a^2 + 2ab + b^2$.",
+          "Ang middle term nga $2ab$ mao ang sayon makalimtan."
+        ],
+        "spoken": "Ang a plus b, squared, nagpasabot og a plus b times a plus b. Hunahunaa ang square nga ang kilid kay a plus b. Naa kini upat ka piraso: a squared, b squared, ug duha ka a b nga rectangle. Busa ang a plus b squared kay a squared plus 2 a b plus b squared. Ang middle term mao ang sayon makalimtan."
+      },
       "practice": [
-        {"prompt": "Expand", "given": "(x+4)^2", "form": "expanded"},
-        {"prompt": "Expand", "given": "(x-3)^2", "form": "expanded"},
-        {"prompt": "Expand", "given": "(2x+1)^2", "form": "expanded"}
+        {
+          "prompt": "Expand",
+          "given": "(x+4)^2",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Expand",
+          "given": "(x-3)^2",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Expand",
+          "given": "(2x+1)^2",
+          "form": "expanded"
+        }
       ]
     },
     "distributive": {
       "en": {
-        "body": ["The number outside multiplies every term inside: $3(x+4) = 3x + 12$.", "With a negative outside, every sign inside flips: $-2(x-5) = -2x + 10$."],
+        "body": [
+          "The number outside multiplies every term inside: $3(x+4) = 3x + 12$.",
+          "With a negative outside, every sign inside flips: $-2(x-5) = -2x + 10$."
+        ],
         "spoken": "The number outside multiplies every term inside. 3 times x plus 4 is 3 x plus 12. With a negative outside, every sign inside flips."
       },
       "fil": {
-        "body": ["Ang numero sa labas ay mina-multiply sa bawat term sa loob: $3(x+4) = 3x + 12$.", "Kapag negative ang nasa labas, nagpapalit ang bawat sign sa loob: $-2(x-5) = -2x + 10$."],
+        "body": [
+          "Ang numero sa labas ay mina-multiply sa bawat term sa loob: $3(x+4) = 3x + 12$.",
+          "Kapag negative ang nasa labas, nagpapalit ang bawat sign sa loob: $-2(x-5) = -2x + 10$."
+        ],
         "spoken": "Ang numero sa labas ay mina-multiply sa bawat term sa loob. Kapag negative ang nasa labas, nagpapalit ang bawat sign sa loob."
       },
+      "ceb": {
+        "body": [
+          "Ang numero sa gawas mo-multiply sa matag term sa sulod: $3(x+4) = 3x + 12$.",
+          "Kung negative ang naa sa gawas, mabali ang matag sign sa sulod: $-2(x-5) = -2x + 10$."
+        ],
+        "spoken": "Ang numero sa gawas mo-multiply sa matag term sa sulod. Ang 3 times x plus 4 kay 3 x plus 12. Kung negative ang naa sa gawas, mabali ang matag sign sa sulod."
+      },
       "practice": [
-        {"prompt": "Expand", "given": "4(x+2)", "form": "expanded"},
-        {"prompt": "Expand", "given": "-3(x-4)", "form": "expanded"},
-        {"prompt": "Expand", "given": "5(2x-1)", "form": "expanded"}
+        {
+          "prompt": "Expand",
+          "given": "4(x+2)",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Expand",
+          "given": "-3(x-4)",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Expand",
+          "given": "5(2x-1)",
+          "form": "expanded"
+        }
       ]
     },
     "lin_eq": {
       "en": {
-        "body": ["An equation is a balance. Whatever you do to one side, do to the other.", "To move $+3$ across, subtract 3 from both sides, so it shows up as $-3$. To undo $2x$, divide both sides by 2."],
+        "body": [
+          "An equation is a balance. Whatever you do to one side, do to the other.",
+          "To move $+3$ across, subtract 3 from both sides, so it shows up as $-3$. To undo $2x$, divide both sides by 2."
+        ],
         "spoken": "An equation is a balance. Whatever you do to one side, do to the other. To move plus 3 across, subtract 3 from both sides. To undo 2 x, divide both sides by 2."
       },
       "fil": {
-        "body": ["Ang equation ay parang timbangan. Anuman ang gawin sa isang side, gawin din sa kabila.", "Para ilipat ang $+3$, ibawas ang 3 sa magkabilang side, kaya magiging $-3$. Para alisin ang $2x$, i-divide sa 2 ang magkabilang side."],
+        "body": [
+          "Ang equation ay parang timbangan. Anuman ang gawin sa isang side, gawin din sa kabila.",
+          "Para ilipat ang $+3$, ibawas ang 3 sa magkabilang side, kaya magiging $-3$. Para alisin ang $2x$, i-divide sa 2 ang magkabilang side."
+        ],
         "spoken": "Ang equation ay parang timbangan. Anuman ang gawin sa isang side, gawin din sa kabila."
       },
+      "ceb": {
+        "body": [
+          "Ang equation sama sa timbangan. Bisan unsa imong buhaton sa usa ka kilid, buhata usab sa pikas.",
+          "Aron ibalhin ang $+3$, i-subtract ang 3 sa duha ka kilid, busa mahimo kining $-3$. Aron i-undo ang $2x$, i-divide sa 2 ang duha ka kilid."
+        ],
+        "spoken": "Ang equation sama sa timbangan. Bisan unsa imong buhaton sa usa ka kilid, buhata usab sa pikas. Aron ibalhin ang plus 3, i-subtract ang 3 sa duha ka kilid. Aron i-undo ang 2 x, i-divide sa 2 ang duha ka kilid."
+      },
       "practice": [
-        {"prompt": "Solve", "given": "3x+5=20", "form": "solved"},
-        {"prompt": "Solve", "given": "x-7=-2", "form": "solved"},
-        {"prompt": "Solve", "given": "4x-6=10", "form": "solved"}
+        {
+          "prompt": "Solve",
+          "given": "3x+5=20",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "x-7=-2",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "4x-6=10",
+          "form": "solved"
+        }
       ]
     },
     "exponents": {
       "en": {
-        "body": ["Multiplying powers with the same base adds the exponents: $x^3 \\cdot x^2 = x^5$.", "A power of a power multiplies them: $(x^2)^3 = x^6$."],
+        "body": [
+          "Multiplying powers with the same base adds the exponents: $x^3 \\cdot x^2 = x^5$.",
+          "A power of a power multiplies them: $(x^2)^3 = x^6$."
+        ],
         "spoken": "Multiplying powers with the same base adds the exponents. A power of a power multiplies them."
       },
       "fil": {
-        "body": ["Sa pag-multiply ng powers na pareho ang base, ina-add ang exponents: $x^3 \\cdot x^2 = x^5$.", "Sa power ng power, mina-multiply: $(x^2)^3 = x^6$."],
+        "body": [
+          "Sa pag-multiply ng powers na pareho ang base, ina-add ang exponents: $x^3 \\cdot x^2 = x^5$.",
+          "Sa power ng power, mina-multiply: $(x^2)^3 = x^6$."
+        ],
         "spoken": "Sa pag-multiply ng powers na pareho ang base, ina-add ang exponents. Sa power ng power, mina-multiply."
       },
+      "ceb": {
+        "body": [
+          "Ang pag-multiply sa powers nga parehas og base nag-add sa exponents: $x^3 \\cdot x^2 = x^5$.",
+          "Ang power sa power nag-multiply niini: $(x^2)^3 = x^6$."
+        ],
+        "spoken": "Ang pag-multiply sa powers nga parehas og base nag-add sa exponents. Ang power sa power nag-multiply niini."
+      },
       "practice": [
-        {"prompt": "Simplify", "given": "x^4*x^3", "form": "any"},
-        {"prompt": "Simplify", "given": "(x^3)^2", "form": "any"},
-        {"prompt": "Simplify", "given": "x*x^5", "form": "any"}
+        {
+          "prompt": "Simplify",
+          "given": "x^4*x^3",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "(x^3)^2",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "x*x^5",
+          "form": "any"
+        }
       ]
     },
     "like_terms": {
       "en": {
-        "body": ["Like terms have the same variable part. Add their numbers and keep the variable: $4x + 3x = 7x$.", "$2x$ and $3$ aren't like terms, so $2x + 3$ stays as it is."],
+        "body": [
+          "Like terms have the same variable part. Add their numbers and keep the variable: $4x + 3x = 7x$.",
+          "$2x$ and $3$ aren't like terms, so $2x + 3$ stays as it is."
+        ],
         "spoken": "Like terms have the same variable part. Add their numbers and keep the variable. 4 x plus 3 x is 7 x."
       },
       "fil": {
-        "body": ["Ang like terms ay may parehong variable. I-add ang mga numero at panatilihin ang variable: $4x + 3x = 7x$.", "Hindi like terms ang $2x$ at $3$, kaya mananatili ang $2x + 3$."],
+        "body": [
+          "Ang like terms ay may parehong variable. I-add ang mga numero at panatilihin ang variable: $4x + 3x = 7x$.",
+          "Hindi like terms ang $2x$ at $3$, kaya mananatili ang $2x + 3$."
+        ],
         "spoken": "Ang like terms ay may parehong variable. I-add ang mga numero at panatilihin ang variable."
       },
+      "ceb": {
+        "body": [
+          "Ang like terms parehas og variable. I-add ang ilang mga numero ug ipabilin ang variable: $4x + 3x = 7x$.",
+          "Ang $2x$ ug $3$ dili like terms, busa ang $2x + 3$ magpabilin ingon niana."
+        ],
+        "spoken": "Ang like terms parehas og variable. I-add ang ilang mga numero ug ipabilin ang variable. Ang 4 x plus 3 x kay 7 x."
+      },
       "practice": [
-        {"prompt": "Simplify", "given": "5x+2x-3", "form": "expanded"},
-        {"prompt": "Simplify", "given": "3y-y+4", "form": "expanded"},
-        {"prompt": "Simplify", "given": "2x+7+x", "form": "expanded"}
+        {
+          "prompt": "Simplify",
+          "given": "5x+2x-3",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "3y-y+4",
+          "form": "expanded"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "2x+7+x",
+          "form": "expanded"
+        }
       ]
     },
     "frac_ops": {
       "en": {
-        "body": ["To add fractions, first rewrite them with the same denominator: $\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$.", "Watch the signs: $-\\frac{3}{4} + \\frac{1}{2} = -\\frac{3}{4} + \\frac{2}{4} = -\\frac{1}{4}$."],
+        "body": [
+          "To add fractions, first rewrite them with the same denominator: $\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$.",
+          "Watch the signs: $-\\frac{3}{4} + \\frac{1}{2} = -\\frac{3}{4} + \\frac{2}{4} = -\\frac{1}{4}$."
+        ],
         "spoken": "To add fractions, first rewrite them with the same denominator. One half plus one third is three sixths plus two sixths, which is five sixths."
       },
       "fil": {
-        "body": ["Para mag-add ng fractions, gawing pareho muna ang denominator: $\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$.", "Bantayan ang sign: $-\\frac{3}{4} + \\frac{1}{2} = -\\frac{1}{4}$."],
+        "body": [
+          "Para mag-add ng fractions, gawing pareho muna ang denominator: $\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$.",
+          "Bantayan ang sign: $-\\frac{3}{4} + \\frac{1}{2} = -\\frac{1}{4}$."
+        ],
         "spoken": "Para mag-add ng fractions, gawing pareho muna ang denominator."
       },
+      "ceb": {
+        "body": [
+          "Aron mag-add og fractions, isulat una sila nga parehas og denominator: $\\frac{1}{2} + \\frac{1}{3} = \\frac{3}{6} + \\frac{2}{6} = \\frac{5}{6}$.",
+          "Bantayi ang mga sign: $-\\frac{3}{4} + \\frac{1}{2} = -\\frac{3}{4} + \\frac{2}{4} = -\\frac{1}{4}$."
+        ],
+        "spoken": "Aron mag-add og fractions, isulat una sila nga parehas og denominator. Ang one half plus one third kay three sixths plus two sixths, nga five sixths."
+      },
       "practice": [
-        {"prompt": "Simplify", "given": "1/4+2/3", "form": "any"},
-        {"prompt": "Simplify", "given": "-2/5+1/2", "form": "any"},
-        {"prompt": "Simplify", "given": "3/4-5/6", "form": "any"}
+        {
+          "prompt": "Simplify",
+          "given": "1/4+2/3",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "-2/5+1/2",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "3/4-5/6",
+          "form": "any"
+        }
       ]
     },
     "int_ops": {
       "en": {
-        "body": ["Same signs multiply to a positive; different signs multiply to a negative: $(-4)(-6) = 24$.", "Adding a negative moves left on the number line: $24 + (-7) = 17$."],
+        "body": [
+          "Same signs multiply to a positive; different signs multiply to a negative: $(-4)(-6) = 24$.",
+          "Adding a negative moves left on the number line: $24 + (-7) = 17$."
+        ],
         "spoken": "Same signs multiply to a positive. Different signs multiply to a negative. Adding a negative moves left on the number line."
       },
       "fil": {
-        "body": ["Kapag pareho ang sign, positive ang product; kapag magkaiba, negative: $(-4)(-6) = 24$.", "Ang pag-add ng negative ay paggalaw pakaliwa sa number line: $24 + (-7) = 17$."],
+        "body": [
+          "Kapag pareho ang sign, positive ang product; kapag magkaiba, negative: $(-4)(-6) = 24$.",
+          "Ang pag-add ng negative ay paggalaw pakaliwa sa number line: $24 + (-7) = 17$."
+        ],
         "spoken": "Kapag pareho ang sign, positive ang product. Kapag magkaiba, negative."
       },
+      "ceb": {
+        "body": [
+          "Ang parehas nga sign kung i-multiply mahimong positive; ang lahi nga sign mahimong negative: $(-4)(-6) = 24$.",
+          "Ang pag-add og negative molihok pawala sa number line: $24 + (-7) = 17$."
+        ],
+        "spoken": "Ang parehas nga sign kung i-multiply mahimong positive. Ang lahi nga sign mahimong negative. Ang pag-add og negative molihok pawala sa number line."
+      },
       "practice": [
-        {"prompt": "Simplify", "given": "(-3)(-5)", "form": "any"},
-        {"prompt": "Simplify", "given": "-8+3", "form": "any"},
-        {"prompt": "Simplify", "given": "(-2)(7)-4", "form": "any"}
+        {
+          "prompt": "Simplify",
+          "given": "(-3)(-5)",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "-8+3",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "(-2)(7)-4",
+          "form": "any"
+        }
       ]
     },
     "sqrt_roots": {
       "en": {
-        "body": ["The square root asks: what number times itself gives this? $\\sqrt{81} = 9$ because $9 \\cdot 9 = 81$.", "Square roots don't split across addition: $\\sqrt{9 + 16} = 5$, not $3 + 4$."],
+        "body": [
+          "The square root asks: what number times itself gives this? $\\sqrt{81} = 9$ because $9 \\cdot 9 = 81$.",
+          "Square roots don't split across addition: $\\sqrt{9 + 16} = 5$, not $3 + 4$."
+        ],
         "spoken": "The square root asks what number times itself gives this. The square root of 81 is 9."
       },
       "fil": {
-        "body": ["Ang square root ay nagtatanong: anong numero ang kapag mina-multiply sa sarili ay ito? $\\sqrt{81} = 9$ dahil $9 \\cdot 9 = 81$.", "Hindi puwedeng hatiin ang square root sa addition: $\\sqrt{9 + 16} = 5$, hindi $3 + 4$."],
+        "body": [
+          "Ang square root ay nagtatanong: anong numero ang kapag mina-multiply sa sarili ay ito? $\\sqrt{81} = 9$ dahil $9 \\cdot 9 = 81$.",
+          "Hindi puwedeng hatiin ang square root sa addition: $\\sqrt{9 + 16} = 5$, hindi $3 + 4$."
+        ],
         "spoken": "Ang square root ay nagtatanong kung anong numero ang kapag mina-multiply sa sarili ay ito."
       },
+      "ceb": {
+        "body": [
+          "Ang square root nangutana: unsang numero nga i-multiply sa iyang kaugalingon ang mohatag niini? $\\sqrt{81} = 9$ tungod kay $9 \\cdot 9 = 81$.",
+          "Ang square root dili mabahin sa addition: $\\sqrt{9 + 16} = 5$, dili $3 + 4$."
+        ],
+        "spoken": "Ang square root nangutana kung unsang numero nga i-multiply sa iyang kaugalingon ang mohatag niini. Ang square root sa 81 kay 9."
+      },
       "practice": [
-        {"prompt": "Simplify", "given": "sqrt(64)", "form": "any"},
-        {"prompt": "Simplify", "given": "sqrt(9+16)", "form": "any"},
-        {"prompt": "Simplify", "given": "sqrt(144)", "form": "any"}
+        {
+          "prompt": "Simplify",
+          "given": "sqrt(64)",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "sqrt(9+16)",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "sqrt(144)",
+          "form": "any"
+        }
       ]
     },
     "quad_sqrt": {
       "en": {
-        "body": ["If $(x+3)^2 = 49$, then $x + 3$ is a number whose square is 49: either $7$ or $-7$.", "So $x + 3 = \\pm 7$, which gives two answers."],
+        "body": [
+          "If $(x+3)^2 = 49$, then $x + 3$ is a number whose square is 49: either $7$ or $-7$.",
+          "So $x + 3 = \\pm 7$, which gives two answers."
+        ],
         "spoken": "If x plus 3 squared equals 49, then x plus 3 is either 7 or negative 7. That gives two answers."
       },
       "fil": {
-        "body": ["Kung $(x+3)^2 = 49$, ang $x + 3$ ay numerong 49 ang square: $7$ o $-7$.", "Kaya $x + 3 = \\pm 7$, at dalawa ang sagot."],
+        "body": [
+          "Kung $(x+3)^2 = 49$, ang $x + 3$ ay numerong 49 ang square: $7$ o $-7$.",
+          "Kaya $x + 3 = \\pm 7$, at dalawa ang sagot."
+        ],
         "spoken": "Kung x plus 3 squared ay 49, ang x plus 3 ay 7 o negative 7. Dalawa ang sagot."
       },
+      "ceb": {
+        "body": [
+          "Kung $(x+3)^2 = 49$, ang $x + 3$ usa ka numero nga ang square kay 49: $7$ o $-7$.",
+          "Busa $x + 3 = \\pm 7$, nga naghatag og duha ka tubag."
+        ],
+        "spoken": "Kung ang x plus 3 squared kay 49, ang x plus 3 kay 7 o negative 7. Duha ka tubag ang mogawas."
+      },
       "practice": [
-        {"prompt": "Solve", "given": "x^2=16", "form": "solved"},
-        {"prompt": "Solve", "given": "(x-1)^2=9", "form": "solved"},
-        {"prompt": "Solve", "given": "(x+2)^2=25", "form": "solved"}
+        {
+          "prompt": "Solve",
+          "given": "x^2=16",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "(x-1)^2=9",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "(x+2)^2=25",
+          "form": "solved"
+        }
       ]
     },
     "quad_factor": {
       "en": {
-        "body": ["Get everything on one side so it equals 0, then factor.", "If $(x-2)(x-3) = 0$, one of the factors must be 0, so $x = 2$ or $x = 3$."],
+        "body": [
+          "Get everything on one side so it equals 0, then factor.",
+          "If $(x-2)(x-3) = 0$, one of the factors must be 0, so $x = 2$ or $x = 3$."
+        ],
         "spoken": "Get everything on one side so it equals zero, then factor. If a product is zero, one of the factors must be zero."
       },
       "fil": {
-        "body": ["Ilipat lahat sa isang side para maging 0, saka i-factor.", "Kung $(x-2)(x-3) = 0$, isa sa mga factor ay 0, kaya $x = 2$ o $x = 3$."],
+        "body": [
+          "Ilipat lahat sa isang side para maging 0, saka i-factor.",
+          "Kung $(x-2)(x-3) = 0$, isa sa mga factor ay 0, kaya $x = 2$ o $x = 3$."
+        ],
         "spoken": "Ilipat lahat sa isang side para maging zero, saka i-factor."
       },
+      "ceb": {
+        "body": [
+          "Ibalhin tanan sa usa ka kilid aron mahimong 0, dayon i-factor.",
+          "Kung $(x-2)(x-3) = 0$, usa sa mga factor kinahanglan 0, busa $x = 2$ o $x = 3$."
+        ],
+        "spoken": "Ibalhin tanan sa usa ka kilid aron mahimong zero, dayon i-factor. Kung zero ang product, usa sa mga factor kinahanglan zero."
+      },
       "practice": [
-        {"prompt": "Solve", "given": "x^2-7x+12=0", "form": "solved"},
-        {"prompt": "Solve", "given": "x^2=4x", "form": "solved"},
-        {"prompt": "Solve", "given": "x^2+x-6=0", "form": "solved"}
+        {
+          "prompt": "Solve",
+          "given": "x^2-7x+12=0",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "x^2=4x",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "x^2+x-6=0",
+          "form": "solved"
+        }
       ]
     },
     "factoring": {
       "en": {
-        "body": ["Factoring undoes multiplying. For $x^2 + 5x + 6$, find two numbers that multiply to 6 and add to 5: 2 and 3.", "So $x^2 + 5x + 6 = (x+2)(x+3)$."],
+        "body": [
+          "Factoring undoes multiplying. For $x^2 + 5x + 6$, find two numbers that multiply to 6 and add to 5: 2 and 3.",
+          "So $x^2 + 5x + 6 = (x+2)(x+3)$."
+        ],
         "spoken": "Factoring undoes multiplying. Find two numbers that multiply to 6 and add to 5. They are 2 and 3."
       },
       "fil": {
-        "body": ["Ang factoring ay kabaligtaran ng multiplication. Sa $x^2 + 5x + 6$, hanapin ang dalawang numerong 6 ang product at 5 ang sum: 2 at 3.", "Kaya $x^2 + 5x + 6 = (x+2)(x+3)$."],
+        "body": [
+          "Ang factoring ay kabaligtaran ng multiplication. Sa $x^2 + 5x + 6$, hanapin ang dalawang numerong 6 ang product at 5 ang sum: 2 at 3.",
+          "Kaya $x^2 + 5x + 6 = (x+2)(x+3)$."
+        ],
         "spoken": "Ang factoring ay kabaligtaran ng multiplication. Hanapin ang dalawang numerong 6 ang product at 5 ang sum."
       },
+      "ceb": {
+        "body": [
+          "Ang factoring nag-undo sa pag-multiply. Para sa $x^2 + 5x + 6$, pangitaa ang duha ka numero nga ang product kay 6 ug ang sum kay 5: 2 ug 3.",
+          "Busa $x^2 + 5x + 6 = (x+2)(x+3)$."
+        ],
+        "spoken": "Ang factoring nag-undo sa pag-multiply. Pangitaa ang duha ka numero nga ang product kay 6 ug ang sum kay 5. Kini ang 2 ug 3."
+      },
       "practice": [
-        {"prompt": "Factor", "given": "x^2+7x+10", "form": "factored"},
-        {"prompt": "Factor", "given": "x^2-x-6", "form": "factored"},
-        {"prompt": "Factor", "given": "x^2+6x+9", "form": "factored"}
+        {
+          "prompt": "Factor",
+          "given": "x^2+7x+10",
+          "form": "factored"
+        },
+        {
+          "prompt": "Factor",
+          "given": "x^2-x-6",
+          "form": "factored"
+        },
+        {
+          "prompt": "Factor",
+          "given": "x^2+6x+9",
+          "form": "factored"
+        }
       ]
     },
     "rational_expr": {
       "en": {
-        "body": ["Factor the top and bottom first, then cancel common factors: $\\frac{x^2-9}{x+3} = \\frac{(x+3)(x-3)}{x+3} = x - 3$."],
+        "body": [
+          "Factor the top and bottom first, then cancel common factors: $\\frac{x^2-9}{x+3} = \\frac{(x+3)(x-3)}{x+3} = x - 3$."
+        ],
         "spoken": "Factor the top and bottom first, then cancel common factors."
       },
       "fil": {
-        "body": ["I-factor muna ang itaas at ibaba, saka i-cancel ang magkaparehong factor: $\\frac{x^2-9}{x+3} = x - 3$."],
+        "body": [
+          "I-factor muna ang itaas at ibaba, saka i-cancel ang magkaparehong factor: $\\frac{x^2-9}{x+3} = x - 3$."
+        ],
         "spoken": "I-factor muna ang itaas at ibaba, saka i-cancel ang magkaparehong factor."
       },
+      "ceb": {
+        "body": [
+          "I-factor una ang ibabaw ug ilawom, dayon i-cancel ang parehas nga factor: $\\frac{x^2-9}{x+3} = \\frac{(x+3)(x-3)}{x+3} = x - 3$."
+        ],
+        "spoken": "I-factor una ang ibabaw ug ilawom, dayon i-cancel ang parehas nga factor."
+      },
       "practice": [
-        {"prompt": "Simplify", "given": "(x^2-4)/(x-2)", "form": "any"},
-        {"prompt": "Simplify", "given": "(x^2+5x+6)/(x+2)", "form": "any"}
+        {
+          "prompt": "Simplify",
+          "given": "(x^2-4)/(x-2)",
+          "form": "any"
+        },
+        {
+          "prompt": "Simplify",
+          "given": "(x^2+5x+6)/(x+2)",
+          "form": "any"
+        }
       ]
     },
     "quad_formula": {
       "en": {
-        "body": ["For $ax^2 + bx + c = 0$: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$."],
+        "body": [
+          "For $ax^2 + bx + c = 0$: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$."
+        ],
         "spoken": "x equals negative b, plus or minus the square root of b squared minus 4 a c, all over 2 a."
       },
       "fil": {
-        "body": ["Para sa $ax^2 + bx + c = 0$: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$."],
+        "body": [
+          "Para sa $ax^2 + bx + c = 0$: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$."
+        ],
         "spoken": "x ay negative b, plus o minus ang square root ng b squared minus 4 a c, lahat over 2 a."
       },
+      "ceb": {
+        "body": [
+          "Para sa $ax^2 + bx + c = 0$: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$."
+        ],
+        "spoken": "Ang x kay negative b, plus o minus ang square root sa b squared minus 4 a c, tanan over 2 a."
+      },
       "practice": [
-        {"prompt": "Solve", "given": "x^2+4x+3=0", "form": "solved"},
-        {"prompt": "Solve", "given": "x^2-2x-8=0", "form": "solved"}
+        {
+          "prompt": "Solve",
+          "given": "x^2+4x+3=0",
+          "form": "solved"
+        },
+        {
+          "prompt": "Solve",
+          "given": "x^2-2x-8=0",
+          "form": "solved"
+        }
       ]
     }
   }

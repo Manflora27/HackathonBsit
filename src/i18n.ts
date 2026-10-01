@@ -1,34 +1,41 @@
+import { Fragment, createElement, useCallback, type ReactNode } from "react";
 import { useStore } from "./store";
+import { goalMeta, subjectMeta, verifierMeta, type Goal, type PlanUnit, type SubjectGroup, type SubjectId, type VerifierId } from "./data/curriculum";
+import { raw, translate, translateMaybe, type PluralKey, type StringKey, type Vars } from "./locales";
 import type { Lang } from "./types";
 
-const STRINGS = {
-  tagline: { en: "Find the one skill behind the mistake.", fil: "Hanapin ang isang skill sa likod ng pagkakamali." },
-  checkWork: { en: "Check my work", fil: "I-check ang solusyon ko" },
-  stuck: { en: "Stuck on a problem?", fil: "Na-stuck sa isang problem?" },
-  mySkillMap: { en: "My skill map", fil: "Aking skill map" },
-  assignments: { en: "Assignments", fil: "Mga assignment" },
-  onlyYou: { en: "Only you can see this", fil: "Ikaw lang ang nakakakita nito" },
-  isThisWhatYouWrote: { en: "Is this what you wrote?", fil: "Ito ba ang isinulat mo?" },
-  yesCheck: { en: "Yes, check it", fil: "Oo, i-check" },
-  edit: { en: "Edit", fil: "I-edit" },
-  foundIt: { en: "Found it", fil: "Nahanap na" },
-  findRoot: { en: "Find the root gap", fil: "Hanapin ang ugat na gap" },
-  readAloud: { en: "Read aloud", fil: "Basahin nang malakas" },
-  practice: { en: "Practice", fil: "Practice" },
-  retry: { en: "Retry the original problem", fil: "Subukan ulit ang orihinal na problem" },
-  step: { en: "Step", fil: "Step" },
-  addStep: { en: "Add a step", fil: "Magdagdag ng step" },
-  allCorrect: { en: "Every step checks out.", fil: "Tama ang lahat ng step." },
-  notDoneYet: { en: "Every step is correct so far. Keep going until x is alone.", fil: "Tama ang lahat ng step. Ituloy hanggang mag-isa ang x." },
-  submit: { en: "Submit", fil: "Ipasa" },
-  next: { en: "Next", fil: "Susunod" },
-  engineLoading: { en: "Math checker loading…", fil: "Naglo-load ang math checker…" },
-  engineReady: { en: "Math checker ready (works offline)", fil: "Handa na ang math checker (gumagana offline)" },
-} satisfies Record<string, Record<Lang, string>>;
+export { LANGS, normalizeLang, type StringKey } from "./locales";
 
-export type StringKey = keyof typeof STRINGS;
+/** Topic lists from the curriculum guides are lowercase; titles start with a capital. */
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Like translate, but placeholders can be elements: rich("x.y", { email: <b>{email}</b> }). */
+function translateRich(lang: Lang, key: StringKey, parts: Record<string, ReactNode>): ReactNode {
+  return raw(lang, key).split(/(\{\w+\})/g).map((chunk, i) => {
+    const name = /^\{(\w+)\}$/.exec(chunk)?.[1];
+    return createElement(Fragment, { key: i }, name && name in parts ? parts[name] : chunk);
+  });
+}
+
+export function useLang(): Lang {
+  return useStore((s) => s.lang);
+}
 
 export function useT() {
-  const lang = useStore((s) => s.lang);
-  return (key: StringKey) => STRINGS[key][lang];
+  const lang = useLang();
+  const t = useCallback((key: StringKey, vars?: Vars) => translate(lang, key, vars), [lang]);
+  return Object.assign(t, {
+    lang,
+    rich: (key: StringKey, parts: Record<string, ReactNode>) => translateRich(lang, key, parts),
+    maybe: (key: string) => translateMaybe(lang, key),
+    plural: (key: PluralKey, count: number, vars?: Vars) =>
+      translate(lang, `${key}.${count === 1 ? "one" : "other"}` as StringKey, { count, ...vars }),
+    // Curriculum content: English lives in the data, translations under curriculum.* in the catalogs.
+    subject: (id: SubjectId) => translateMaybe(lang, `curriculum.subjects.${id}.name`) ?? subjectMeta[id].en,
+    subjectBlurb: (id: SubjectId) => translateMaybe(lang, `curriculum.subjects.${id}.blurb`) ?? subjectMeta[id].blurb,
+    group: (g: SubjectGroup) => translateMaybe(lang, `curriculum.groups.${g.id}`) ?? g.en,
+    goal: (g: Goal) => translateMaybe(lang, `curriculum.goals.${g}`) ?? goalMeta[g].en,
+    unit: (u: PlanUnit) => cap(translateMaybe(lang, `curriculum.domains.${u.titleKey}`) ?? translateMaybe(lang, u.titleKey) ?? u.title),
+    verifier: (v: VerifierId) => translateMaybe(lang, `curriculum.verifiers.${v}`) ?? verifierMeta[v].en,
+  });
 }

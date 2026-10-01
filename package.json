@@ -11,11 +11,15 @@
     "predev": "node scripts/fetch-pyodide.mjs",
     "prebuild": "node scripts/fetch-pyodide.mjs",
     "test:engine": "cd engine && uv run --no-project --with pytest --with sympy pytest -q",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "cap:sync": "npm run build && npx cap sync"
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.2",
     "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource-variable/literata": "^5.3.0",
     "@fontsource/young-serif": "^5.3.0",
+    "@huggingface/transformers": "^4.3.0",
     "@supabase/supabase-js": "^2.117.2",
     "katex": "^0.18.10",
     "motion": "^13.4.6",
@@ -26,6 +30,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/katex": "^0.16.8",

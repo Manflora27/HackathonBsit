@@ -2,11 +2,11 @@
 @import "katex/dist/katex.min.css";
 @import "@fontsource/young-serif/400.css";
 @import "@fontsource-variable/atkinson-hyperlegible-next/wght.css";
+@import "@fontsource-variable/literata/opsz.css";
 @import "./assets/ambient.css";
-@import "./assets/braun.css";
 
 /*
- * Gap Finder — "find the root".
+ * Hopper — "find the root".
  * Warm ivory paper, pine ink, persimmon for gaps, moss for mastered.
  * Signature motif: a hand-drawn ink circle, the way a teacher circles a mistake.
  */
@@ -30,6 +30,8 @@
   --color-ochre: #c8912b;
   --font-sans: "Atkinson Hyperlegible Next Variable", "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+  /* Reading serif for lesson text: sits with Young Serif headings and KaTeX's serif math. */
+  --font-serif: "Literata Variable", Georgia, "Times New Roman", serif;
 }
 
 html {
@@ -52,7 +54,9 @@ h1, h2, h3, .font-display {
 .readable-font h1,
 .readable-font h2,
 .readable-font h3,
-.readable-font .font-display {
+.readable-font .font-display,
+.readable-font .font-serif,
+.readable-font .prose-lesson {
   font-family: Verdana, Tahoma, sans-serif !important;
   letter-spacing: 0.02em;
   word-spacing: 0.08em;
@@ -76,6 +80,7 @@ h1, h2, h3, .font-display {
   clip-path: inset(0 100% 0 0);
   animation: gf-draw 0.7s 0.15s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
+@keyframes slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(330%); } }
 @keyframes gf-draw { to { clip-path: inset(0 0 0 0); } }
 
 @keyframes gf-shake {
@@ -84,6 +89,11 @@ h1, h2, h3, .font-display {
   50% { transform: translateX(4px); }
   75% { transform: translateX(-2px); }
 }
+/* Lesson prose: long-form reading, set straight on the page. */
+.prose-lesson { font-family: var(--font-serif); font-size: 1.125rem; line-height: 1.65; font-weight: 400; }
+.prose-lesson strong { font-weight: 640; }
+.prose-lesson .katex { font-size: 1.08em; }
+
 .shake { animation: gf-shake 0.4s ease-in-out; }
 /* Bilog, the ink circle with eyes (components/Bilog.tsx). */
 .bilog { overflow: visible; }
@@ -154,4 +164,3 @@ h1, h2, h3, .font-display {
   .rule { @apply h-px w-full bg-line; }
   .btn-ghost:active:not(:disabled), .key:active { background-color: rgb(236 229 214 / .8); }
 }
-@keyframes gf-ring { to { stroke-dashoffset: 0; } }

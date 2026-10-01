@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { type SubjectId } from "../data/curriculum";
 import { downloadPack, packStatus } from "../lessons/pack";
-import { useStore } from "../store";
 import { Icon } from "./Icon";
+import { useT } from "../i18n";
 
-/** "Download for offline" for one subject and grade. */
+/**
+ * "Download for offline" for one subject and grade, as a small round button:
+ * a ring fills as lessons are saved, and it turns into a check once the whole plan is on the device.
+ */
 export function OfflinePack({ subject, grade }: { subject: SubjectId; grade: number }) {
-  const fil = useStore((s) => s.lang) === "fil";
+  const t = useT();
   const [st, setSt] = useState<{ have: number; total: number } | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(0);
@@ -14,8 +17,11 @@ export function OfflinePack({ subject, grade }: { subject: SubjectId; grade: num
   useEffect(() => { void packStatus(subject, grade).then(setSt); }, [subject, grade]);
   if (!st) return null;
   const complete = st.have === st.total;
+  const R = 15, C = 2 * Math.PI * R;
+  const label = `${complete ? t("offline.readyOffline") : t("offline.downloadOffline")} · ${st.have}/${st.total}`;
 
-  async function go() {
+  async function go(e: React.MouseEvent) {
+    e.stopPropagation();
     setBusy(true);
     setFailed(0);
     const r = await downloadPack(subject, grade, (have, total) => setSt({ have, total }));
@@ -24,17 +30,16 @@ export function OfflinePack({ subject, grade }: { subject: SubjectId; grade: num
   }
 
   return (
-    <div className="card-flat mt-2 flex items-center gap-3 !p-3 text-[14px]" data-testid={`pack-${subject}`}>
-      <Icon name="download" size={18} className={complete ? "text-ok" : "text-muted"} />
-      <div className="flex-1">
-        <div>
-          {complete ? (fil ? "Handa na offline" : "Ready offline") : fil ? "I-download para sa offline" : "Download for offline"}
-          <span className="text-muted"> · {st.have}/{st.total}</span>
-        </div>
-        <div className="mt-1 h-1 overflow-hidden rounded-full bg-soft"><div className="h-full rounded-full bg-ok transition-all" style={{ width: `${(st.have / st.total) * 100}%` }} /></div>
-        {failed > 0 && <div className="mt-1 text-gap-dark">{fil ? `${failed} lesson ang hindi nakuha. Subukan ulit online.` : `${failed} lessons couldn't be prepared. Try again when online.`}</div>}
-      </div>
-      {!complete && <button className="btn-ghost btn-sm" onClick={go} disabled={busy} data-testid={`pack-go-${subject}`}>{busy ? "…" : fil ? "Kunin" : "Get"}</button>}
-    </div>
+    <span className="relative inline-flex" data-testid={`pack-${subject}`}>
+      <button type="button" onClick={go} disabled={busy || complete} aria-label={label} title={failed ? t("offline.failed", { count: failed }) : label}
+        className={`relative flex h-9 w-9 items-center justify-center rounded-full ${complete ? "text-ok" : failed ? "text-gap-dark" : "text-muted"}`} data-testid={`pack-go-${subject}`}>
+        <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90" aria-hidden>
+          <circle cx="18" cy="18" r={R} fill="none" stroke="currentColor" strokeOpacity=".18" strokeWidth="2" />
+          <circle cx="18" cy="18" r={R} fill="none" stroke="var(--color-ok)" strokeWidth="2" strokeLinecap="round"
+            strokeDasharray={C} strokeDashoffset={C * (1 - st.have / st.total)} className="transition-[stroke-dashoffset] duration-500" />
+        </svg>
+        <Icon name={complete ? "check" : "download"} size={15} strokeWidth={complete ? 2.4 : 1.8} className={busy ? "animate-pulse" : ""} />
+      </button>
+    </span>
   );
 }
