@@ -476,6 +476,36 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 - MATATAG competency codes (left blank in `src/data/skills.json` until verified)
 - Native-speaker review of the Filipino explanations
 
+## Update (Oct 1): Onboarding, STEM, generated lessons
+Decisions from the design review. Where they conflict with earlier sections, this section wins.
+
+**Scope.** Math and Science (Physics and Chemistry), Grades 1–12. The claim becomes: *verified where we can, AI-checked where we can't, and the UI says which.*
+
+**Onboarding (first run).** Three screens with a progress bar: (1) name, role, optional class code; (2) subjects (multi-select), current grade as a self-reported baseline (not a verified level), language; (3) goal, then the enrollment plan assembles from skeleton rows. Home holds no problems: it shows the next unit per subject, class, and assigned practice. Stored in `profiles` (`0003_onboarding.sql`); guests keep it in the local store. The demo runs through a fresh onboarding.
+
+**Curriculum skeleton.** Fixed, not generated: grade → quarter → domain, following DepEd's structure with our own wording. DepEd's guides are marked copyrighted, so no competency text is copied; cite the source, ask DepEd before commercial use. Skill IDs are ours (MATATAG publishes no codes). The plan starts at the stated grade; the gap finder inserts earlier prerequisites when it finds a real gap. Source notes: `docs/research/deped-curriculum-sources.md`.
+
+**Verifier per skill type** (details: `docs/research/verifiers.md`). Every unit carries a verifier tag:
+
+| Domain | Verifier |
+|---|---|
+| Algebra, equations | SymPy (existing engine) |
+| Grades 1–6 arithmetic, fractions | `Fraction` / `Decimal`, misconception replay |
+| Statistics | stdlib `statistics`, `scipy.stats` (one quartile convention per item) |
+| Geometry | `sympy.geometry`, `shapely`, formula table |
+| Physics units | `sympy.physics.units` / `unyt` |
+| Chemistry | own formula parser + nullspace balancer + small element table (no `chempy`) |
+| Word problems | authored templates + student-confirmed equation checked by SymPy |
+| Proofs, conceptual, diagrams | LLM-judged against an authored rubric, labelled "AI-checked", lower confidence in gap traces |
+
+**Lessons are generated, then cached.** The LLM writes lessons, explanations and practice for every skill (including the original 14). Content is generated on demand into a cache shared by all users (no student data). Nothing is cached unless its answer keys pass the verifier for that skill. The UI shows skeleton loaders while generating; on timeout the skill stays in the plan as "needs a connection". The team warms the cache by running the demo beforehand.
+
+**Offline packs.** A "Download for offline" button per subject and grade stores lessons, practice and keys in IndexedDB.
+
+**Cut order if time runs short:** Chemistry beyond balancing and moles → LLM-judged skills → offline packs → Science above the demo grades. Not cut: onboarding, the Math plan, the verified-cache gate. Teacher-side subject filtering is later.
+
+**Known risk.** SymPy runs in the browser (Pyodide), so the verification gate runs on the client before a lesson is published to the shared cache. A hostile client could publish unverified content. Follow-up: re-check on the server (Python function with SymPy) before marking `verified`.
+
 ## Build Status
 **Built and tested** (`npm run test:engine`: 43 passing; `npm run test:e2e`: demo flow + airplane mode, passing):
 - Engine (`engine/gapfinder.py`): step verification, 15 misconception types via buggy rules, wrong-term circling, answer/form checking, answer keys. Runs in Pyodide, fully offline.
@@ -483,6 +513,8 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 - Teacher dashboard: gap groups ("14 share a gap · 1 already fixed it"), confirm-before-assign with undo, students × skills grid, diagnosis override, CSV export, live updates across tabs.
 - Consent (RA 10173), settings (language, text size, readable font, reduced motion, share toggle, download/delete data, AI log), PWA manifest + offline precache.
 - AI proxy (`api/ai.ts`, `api/tts.ts`) with non-AI fallbacks; Supabase schema with RLS (`supabase/migrations/0001_init.sql`).
+
+**Added Oct 1 (branch `onboarding-and-curriculum`):** three-screen onboarding with plan reveal, Grades 1–12 Math/Science skeleton with verifier tags, profile migration `0003`, plan-based home. In progress: lesson generation and verified cache.
 
 **Needs the team:**
 - Vercel deploy + `OPENROUTER_API_KEY` (AI features currently use fallbacks).
