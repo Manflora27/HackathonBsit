@@ -6,12 +6,13 @@ import { lessonGoal } from "../goals";
 import { Icon } from "../components/Icon";
 import { Shell } from "../components/Shell";
 import { unitById } from "../data/curriculum";
-import { getLesson, unitTarget, type CachedLesson } from "../lessons/pipeline";
+import { competenciesFor } from "../data/competencies";
+import { getLesson, unitTarget, type CachedLesson, type LessonPreview } from "../lessons/pipeline";
 import { useT } from "../i18n";
 import { useStore } from "../store";
 import { Bilog } from "../components/Bilog";
 import { Burst, Practice, XP_DONE } from "../components/Practice";
-import { LessonView } from "../components/LessonView";
+import { LessonPreviewView, LessonView } from "../components/LessonView";
 
 /** Lesson outline while the lesson is fetched or generated. */
 function LessonSkeleton() {
@@ -40,13 +41,17 @@ export default function Unit() {
   const [stage, setStage] = useState<"learn" | "practice">(() => (useStore.getState().practiceResume[unitId] ? "practice" : "learn"));
   const [done, setDone] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [preview, setPreview] = useState<LessonPreview | null>(null);
 
   useEffect(() => {
     if (!unit) return;
     let live = true;
     setState("loading");
-    getLesson(unitTarget(unit), lessonGoal({ examMode, behind: progress[unit.id] === "gap" || !!trace?.rootSkill, inClass: classes.length > 0 })).then((r) => {
+    setPreview(null);
+    const streaming = { lang, onPreview: (p: LessonPreview) => live && setPreview(p) };
+    getLesson(unitTarget(unit), lessonGoal({ examMode, behind: progress[unit.id] === "gap" || !!trace?.rootSkill, inClass: classes.length > 0 }), streaming).then((r) => {
       if (!live) return;
+      setPreview(null);
       setState(r ?? "failed");
       setDone(false);
     });
@@ -66,7 +71,7 @@ export default function Unit() {
     </header>
   );
 
-  if (state === "loading") return <Shell tabs={false} back="/student" title={title}>{head}<LessonSkeleton /></Shell>;
+  if (state === "loading") return <Shell tabs={false} back="/student" title={title}>{head}{preview ? <LessonPreviewView preview={preview} /> : <LessonSkeleton />}</Shell>;
   if (state === "failed")
     return (
       <Shell tabs={false} back="/student" title={title}>
@@ -81,6 +86,7 @@ export default function Unit() {
     );
 
   const { lesson, verified } = state;
+  const comps = competenciesFor(unit.id);
   const need = globalThis.Math.min(2, lesson.practice.length);
 
   return (
@@ -90,6 +96,16 @@ export default function Unit() {
         {verified ? <Icon name="check" size={14} className="text-ok" /> : <span className="chip !px-2 text-[11px]">AI</span>}
         {t.verifier(verified ? unit.verifier : "llm")}
       </div>
+
+      {stage === "learn" && comps.length > 0 && (
+        <details className="mt-4 rounded-2xl bg-white/40 px-4 py-3" data-testid="competencies">
+          <summary className="cursor-pointer text-[14px] font-semibold">{t("unit.competencies")}</summary>
+          <ul className="mt-2 space-y-1.5 text-[14px] leading-snug">
+            {comps.map((c) => <li key={c.id}>{c.text} <span className="whitespace-nowrap text-[11px] text-muted">{c.id}</span></li>)}
+          </ul>
+          <p className="mt-2 text-[12px] text-muted">{t("unit.competencySource")}</p>
+        </details>
+      )}
 
       {stage === "learn" && <LessonView lesson={lesson} lang={lang} onPractice={() => setStage("practice")} />}
 

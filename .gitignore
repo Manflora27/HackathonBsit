@@ -39,3 +39,7 @@ playwright-report/
 
 # Supabase CLI scratch
 supabase/.temp/
+
+# Lesson audit drafts (the report, audit/report.md, is committed)
+audit/lessons/
+audit/prereqs/

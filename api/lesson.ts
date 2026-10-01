@@ -1,6 +1,8 @@
-import { chatJson, json } from "./_openrouter.js";
+import { REVIEW, chatJson, chatJsonStream, json, ndjson, type Sink } from "./_openrouter.js";
 import { subjectMeta } from "../src/data/curriculum.js";
+import { competenciesFor } from "../src/data/competencies.js";
 import { resolve, sign, type Target } from "./_lessons.js";
+import { checkFigure } from "../src/lessons/checks.js";
 
 const FORMS = ["any", "expanded", "factored", "solved", "units", "chemistry"];
 
@@ -35,33 +37,29 @@ const figure = obj({
   shade: arr(obj({ from: num, to: num })),
 });
 
-const schema = {
-  type: "object",
-  additionalProperties: false,
-  required: ["en", "fil", "ceb", "checkAnswer", "example", "figure", "practice"],
-  properties: {
-    checkAnswer: { type: "integer" },
-    example,
-    figure,
-    en: text,
-    fil: text,
-    ceb: text,
-    practice: {
-      type: "array",
-      items: {
-        type: "object",
-        additionalProperties: false,
-        required: ["prompt", "given", "form", "expected"],
-        properties: {
-          prompt: { type: "string" },
-          given: { type: "string" },
-          form: { type: "string", enum: FORMS },
-          expected: { type: "string" },
-        },
-      },
+const practice = {
+  type: "array",
+  items: {
+    type: "object",
+    additionalProperties: false,
+    required: ["prompt", "given", "form", "expected"],
+    properties: {
+      prompt: { type: "string" },
+      given: { type: "string" },
+      form: { type: "string", enum: FORMS },
+      expected: { type: "string" },
     },
   },
 };
+
+type TextLang = "en" | "fil" | "ceb";
+
+/** Models write fields in schema order: the learner's own language goes first so it's what streams in first. */
+function schemaFor(first: TextLang = "en") {
+  const langs = [first, ...(["en", "fil", "ceb"] as const).filter((l) => l !== first)];
+  const properties: Record<string, object> = { ...Object.fromEntries(langs.map((l) => [l, text])), example, figure, checkAnswer: { type: "integer" }, practice };
+  return { type: "object", additionalProperties: false, required: Object.keys(properties), properties };
+}
 
 const HINTS: Record<string, string> = {
   statistics: "Use form 'any'. 'given' is the arithmetic to compute, e.g. (2+4+6)/3 for the mean of 2, 4, 6; put the words in 'prompt'.",
@@ -80,7 +78,7 @@ const GOAL_HINTS: Record<string, string> = {
 };
 
 // Only curriculum-level fields reach the model. No user data.
-async function generate(b: Target, goal: string | null) {
+async function generate(b: Target, goal: string | null, stream?: { lang: TextLang; sink: Sink }) {
   const system = [
     "You are an expert teacher writing one lesson for a Filipino learner, aligned to the standard school curriculum. The learner may have no teacher nearby: the lesson alone must make the idea click, not just state it.",
     "Teach in this order, the way people actually learn: a concrete puzzle first, the idea built from numbers the learner can check, the general rule only after the pattern is seen, then why it works, then the classic mistake.",
@@ -110,8 +108,12 @@ async function generate(b: Target, goal: string | null) {
     ...(HINTS[b.verifier] ? [HINTS[b.verifier]] : []),
     ...(goal && GOAL_HINTS[goal] ? [GOAL_HINTS[goal]] : []),
   ].join(" ");
-  const user = `Subject: ${subjectMeta[b.subject].en}. Grade ${b.grade}, quarter ${b.quarter}. Domain: ${b.title}. Answers are checked by: ${b.verifier}.`;
-  return shape(await chatJson<Raw>(system, user, schema, "lesson"));
+  // The unit's DepEd learning competencies: the lesson and its practice should get the learner able to do these.
+  const comps = competenciesFor(b.id);
+  const user = `Subject: ${subjectMeta[b.subject].en}. Grade ${b.grade}, quarter ${b.quarter}. Domain: ${b.title}. Answers are checked by: ${b.verifier}.`
+    + (comps.length ? `\nLearning competencies this lesson serves (DepEd MATATAG): by the end the learner can\n${comps.map((c) => `- ${c.text}`).join("\n")}\nTeach toward these and make the practice exercise them; if there are many, focus on the ones that can be practiced with a calculation.` : "");
+  const schema = schemaFor(stream?.lang);
+  return shape(stream ? await chatJsonStream<Raw>(system, user, schema, "lesson", stream.sink) : await chatJson<Raw>(system, user, schema, "lesson"));
 }
 
 type Raw = {
@@ -140,13 +142,68 @@ function shape(r: Raw) {
   return { en: r.en, fil: r.fil, ceb: r.ceb, checkAnswer: r.checkAnswer, practice: r.practice, ...(example ? { example } : {}), ...(figure ? { figure } : {}) };
 }
 
+type Draft = ReturnType<typeof shape>;
+type Check = { question: string; choices: string[]; why: string };
+
+/**
+ * A second, independent reading of the concept check: a fresh call sees only the question and choices
+ * and picks the answer. If it disagrees with the generator's key, the key can't be trusted.
+ */
+async function secondOpinion(c: Check): Promise<number | null> {
+  try {
+    const r = await chatJson<{ answer: number }>(
+      "Answer the multiple-choice question. Reply with the 0-based index of the single correct choice. If none or more than one is correct, reply -1.",
+      `${c.question}\n${c.choices.map((x, i) => `${i}. ${x}`).join("\n")}`,
+      { type: "object", additionalProperties: false, required: ["answer"], properties: { answer: { type: "integer" } } },
+      "concept_check",
+      REVIEW,
+    );
+    return r.answer;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Generate, then repair what can be checked exactly before the draft is signed: graph points that aren't
+ * on their function are removed, and a concept check the second reading disagrees with is removed.
+ * `notes` lists what was dropped, for the audit report.
+ */
+export async function generateLesson(target: Target, goal: string | null, stream?: Parameters<typeof generate>[2]): Promise<{ draft: Draft; notes: string[] }> {
+  const draft = await generate(target, goal, stream);
+  const notes: string[] = [];
+  const fig = checkFigure(draft.figure as never);
+  notes.push(...fig.dropped);
+  const en = draft.en as { check?: Check };
+  const langs = [draft.en, draft.fil, draft.ceb] as { check?: Check }[];
+  const n = en.check?.choices.length ?? 0;
+  let keep = n === 3 && langs.every((l) => l?.check?.choices.length === n) && draft.checkAnswer >= 0 && draft.checkAnswer < n;
+  if (keep) {
+    const other = await secondOpinion(en.check!);
+    if (other !== draft.checkAnswer) {
+      keep = false;
+      notes.push(`concept check: key says ${draft.checkAnswer}, second reading says ${other}`);
+    }
+  } else if (n) notes.push("concept check: malformed");
+  if (!keep) for (const l of langs) if (l) delete l.check;
+  return { draft: { ...draft, ...(fig.figure ? { figure: fig.figure } : { figure: undefined }), checkAnswer: keep ? draft.checkAnswer : -1 }, notes };
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const target = resolve(body.id);
     if (!target) return json({ error: "unknown lesson" }, 400);
     const goal = typeof body.goal === "string" && body.goal in GOAL_HINTS ? body.goal : null;
-    const draft = await generate(target, goal);
+    // Streamed: the text shows up as it's written; the finished, repaired and signed lesson comes last.
+    if (body.stream) {
+      const lang: TextLang = body.lang === "ceb" ? "ceb" : body.lang === "tl" || body.lang === "fil" ? "fil" : "en";
+      return ndjson(async (sink) => {
+        const { draft } = await generateLesson(target, goal, { lang, sink });
+        return { ...(draft as object), sig: sign(target.id, draft) };
+      });
+    }
+    const { draft } = await generateLesson(target, goal);
     // Signed so /api/publish can tell this exact content came from here.
     return json({ ...(draft as object), sig: sign(target.id, draft) });
   } catch (e) {

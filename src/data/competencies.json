@@ -1,0 +1,4157 @@
+{
+ "source": "DepEd MATATAG Curriculum Guides, Mathematics (Grades 1-10) and Science (Grades 3-10), August 2023. Competency text is DepEd's; ids are app-defined (DepEd publishes no MATATAG codes).",
+ "generatedAt": "2026-10-01T18:37:26.419Z",
+ "model": "deepseek/deepseek-v4.1-flash",
+ "competencies": [
+  {
+   "id": "MAT-G1-Q1-001",
+   "unit": "math-g1-q1-mg",
+   "text": "Identify simple 2-dimensional shapes (triangle, rectangle, square) of different size and in different orientation."
+  },
+  {
+   "id": "MAT-G1-Q1-002",
+   "unit": "math-g1-q1-mg",
+   "text": "Compare and distinguish 2-dimensional shapes according to features such as sides and corners."
+  },
+  {
+   "id": "MAT-G1-Q1-003",
+   "unit": "math-g1-q1-mg",
+   "text": "Compose and decompose triangles, squares, and rectangles."
+  },
+  {
+   "id": "MAT-G1-Q1-004",
+   "unit": "math-g1-q1-na",
+   "text": "Count up to 100 (includes counting up or down from a given number and identifying a number that is 1 more or 1 less than a given number)."
+  },
+  {
+   "id": "MAT-G1-Q1-005",
+   "unit": "math-g1-q1-na",
+   "text": "Read and write numerals up to 100."
+  },
+  {
+   "id": "MAT-G1-Q1-006",
+   "unit": "math-g1-q1-na",
+   "text": "Recognize and represent numbers up to 100 using a variety of concrete and pictorial models (e.g., number line, block or bar models, and numerals)."
+  },
+  {
+   "id": "MAT-G1-Q1-007",
+   "unit": "math-g1-q1-na",
+   "text": "Compare two numbers up to 20."
+  },
+  {
+   "id": "MAT-G1-Q1-008",
+   "unit": "math-g1-q1-na",
+   "text": "Order numbers up to 20 from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G1-Q1-009",
+   "unit": "math-g1-q1-na-2",
+   "text": "Describe the position of objects using ordinal numbers: 1st, 2nd, 3rd, up to 10th."
+  },
+  {
+   "id": "MAT-G1-Q1-010",
+   "unit": "math-g1-q1-na-3",
+   "text": "Compose and decompose numbers up to 10 using concrete materials (e.g., 5 is 5 and 0; 4 and 1; 3 and 2; 2 and 3; 1 and 4; 0 and 5)."
+  },
+  {
+   "id": "MAT-G1-Q1-011",
+   "unit": "math-g1-q1-na-3",
+   "text": "Illustrate addition of numbers with sums up to 20 using a variety of concrete and pictorial models and describes addition as “counting up,” and “putting together.”"
+  },
+  {
+   "id": "MAT-G1-Q1-012",
+   "unit": "math-g1-q1-na-3",
+   "text": "Illustrate by applying the following properties of addition, using sums up to 20: a. the sum of zero and any number is equal to the number, and b. changing the order of the addends does not change the sum."
+  },
+  {
+   "id": "MAT-G1-Q1-013",
+   "unit": "math-g1-q1-na-3",
+   "text": "Solve problems (given orally or in pictures) involving addition with sums up to 20."
+  },
+  {
+   "id": "MAT-G1-Q2-001",
+   "unit": "math-g1-q2-mg",
+   "text": "Measure the length of an object and the distance between two objects using non-standard units."
+  },
+  {
+   "id": "MAT-G1-Q2-002",
+   "unit": "math-g1-q2-mg",
+   "text": "Compare lengths and distances using non-standard units."
+  },
+  {
+   "id": "MAT-G1-Q2-003",
+   "unit": "math-g1-q2-mg",
+   "text": "Solve problems involving lengths and distances using non-standard units."
+  },
+  {
+   "id": "MAT-G1-Q2-004",
+   "unit": "math-g1-q2-na",
+   "text": "Order numbers up to 100 from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G1-Q2-005",
+   "unit": "math-g1-q2-na",
+   "text": "Counts by 2s, 5s and 10s up to 100."
+  },
+  {
+   "id": "MAT-G1-Q2-006",
+   "unit": "math-g1-q2-na",
+   "text": "Determine a. the place value of a digit in a 2-digit number, b. the value of a digit, and c. the digit of a number, given its place value"
+  },
+  {
+   "id": "MAT-G1-Q2-007",
+   "unit": "math-g1-q2-na",
+   "text": "Decompose any 2-digit number into tens and ones."
+  },
+  {
+   "id": "MAT-G1-Q2-008",
+   "unit": "math-g1-q2-na-2",
+   "text": "Add numbers by expressing addends as tens and ones (expanded form)."
+  },
+  {
+   "id": "MAT-G1-Q2-009",
+   "unit": "math-g1-q2-na-2",
+   "text": "Add numbers with sums up to 100 without regrouping, using a variety of concrete and pictorial models for: a. 2-digit and 1-digit numbers, and b. 2-digit and 2-digit numbers."
+  },
+  {
+   "id": "MAT-G1-Q2-010",
+   "unit": "math-g1-q2-na-2",
+   "text": "Solve problems (given orally or in pictures) involving addition with sums up to 100 without regrouping."
+  },
+  {
+   "id": "MAT-G1-Q3-001",
+   "unit": "math-g1-q3-dp",
+   "text": "Collect data in one variable through a simple interview."
+  },
+  {
+   "id": "MAT-G1-Q3-002",
+   "unit": "math-g1-q3-dp",
+   "text": "Present data in a pictograph without a scale."
+  },
+  {
+   "id": "MAT-G1-Q3-003",
+   "unit": "math-g1-q3-dp",
+   "text": "Interpret a pictograph without a scale."
+  },
+  {
+   "id": "MAT-G1-Q3-004",
+   "unit": "math-g1-q3-dp",
+   "text": "Organize data in a pictograph without a scale into a table."
+  },
+  {
+   "id": "MAT-G1-Q3-005",
+   "unit": "math-g1-q3-na",
+   "text": "Illustrate subtraction involving numbers up to 20 using a variety of concrete and pictorial models, and describes subtraction as “taking away.”"
+  },
+  {
+   "id": "MAT-G1-Q3-006",
+   "unit": "math-g1-q3-na",
+   "text": "Find the missing number in addition or subtraction sentences involving numbers up to 20."
+  },
+  {
+   "id": "MAT-G1-Q3-007",
+   "unit": "math-g1-q3-na",
+   "text": "Write an equivalent expression to a given addition or subtraction expression (e.g., 2+3 = 1+4; 10-5 = 6-1)."
+  },
+  {
+   "id": "MAT-G1-Q3-008",
+   "unit": "math-g1-q3-na",
+   "text": "Solve subtraction problems (given orally or in pictures) where both numbers are less than 20."
+  },
+  {
+   "id": "MAT-G1-Q3-009",
+   "unit": "math-g1-q3-na",
+   "text": "Subtract numbers where both numbers are less than 100 using concrete and pictorial models, without regrouping: a. 2-digit minus 1-digit numbers, and b. 2-digit minus 2-digit numbers."
+  },
+  {
+   "id": "MAT-G1-Q3-010",
+   "unit": "math-g1-q3-na",
+   "text": "Subtract numbers by expressing minuends and subtrahends as tens and ones (expanded form), without regrouping."
+  },
+  {
+   "id": "MAT-G1-Q3-011",
+   "unit": "math-g1-q3-na-2",
+   "text": "Determine the next term/s in a repeating pattern (patterns could use rhythmic properties, visual elements in the arts,...) (e.g., numbers: 2, 4, 2, 4__, __; letters: a, b, c, a, b, c, a, __, __,)."
+  },
+  {
+   "id": "MAT-G1-Q3-012",
+   "unit": "math-g1-q3-na-2",
+   "text": "Create repeating patterns using objects, images, or numbers."
+  },
+  {
+   "id": "MAT-G1-Q4-001",
+   "unit": "math-g1-q4-na",
+   "text": "Illustrate 1/2 and 1/4 as parts of a whole."
+  },
+  {
+   "id": "MAT-G1-Q4-002",
+   "unit": "math-g1-q4-na",
+   "text": "Compare 1/2 and 1/4 using models."
+  },
+  {
+   "id": "MAT-G1-Q4-003",
+   "unit": "math-g1-q4-na",
+   "text": "Count halves and quarters"
+  },
+  {
+   "id": "MAT-G1-Q4-004",
+   "unit": "math-g1-q4-na-2",
+   "text": "Recognize coins (excluding centavo coins) and bills up to ₱100 and their notations."
+  },
+  {
+   "id": "MAT-G1-Q4-005",
+   "unit": "math-g1-q4-na-2",
+   "text": "Determine the value of a number of bills and/or a number of coins (excluding centavo coins) up to ₱100."
+  },
+  {
+   "id": "MAT-G1-Q4-006",
+   "unit": "math-g1-q4-na-2",
+   "text": "Compare different denominations of peso coins (excluding centavo coins) and bills up to ₱100."
+  },
+  {
+   "id": "MAT-G1-Q4-007",
+   "unit": "math-g1-q4-na-3",
+   "text": "Solve 1-step problems (given orally or in pictures) involving addition of money where the sum is up to ₱100, or subtraction of money where both amounts are less than ₱100."
+  },
+  {
+   "id": "MAT-G1-Q4-008",
+   "unit": "math-g1-q4-mg",
+   "text": "Identify the position of objects moved in half turn or in quarter turn, in clockwise or in counter-clockwise direction, given an initial facing direction."
+  },
+  {
+   "id": "MAT-G1-Q4-009",
+   "unit": "math-g1-q4-mg-2",
+   "text": "Read and write time by the hour, half hour, and quarter hour using an analog clock."
+  },
+  {
+   "id": "MAT-G1-Q4-010",
+   "unit": "math-g1-q4-mg-2",
+   "text": "Give the days of the week and months of the year in the correct order."
+  },
+  {
+   "id": "MAT-G1-Q4-011",
+   "unit": "math-g1-q4-mg-2",
+   "text": "Determine the day and month of the year using a calendar."
+  },
+  {
+   "id": "MAT-G1-Q4-012",
+   "unit": "math-g1-q4-mg-2",
+   "text": "Solve problems involving time (hour, half hour, quarter hour, days in a week, and months in a year)."
+  },
+  {
+   "id": "MAT-G2-Q1-001",
+   "unit": "math-g2-q1-mg",
+   "text": "Represent and describe circles, half circles and quarter circles."
+  },
+  {
+   "id": "MAT-G2-Q1-002",
+   "unit": "math-g2-q1-mg",
+   "text": "Compose and decompose composite figures made up of squares, rectangles, triangles, circles, half circles, and quarter circles, using cut-outs and square grids."
+  },
+  {
+   "id": "MAT-G2-Q1-003",
+   "unit": "math-g2-q1-mg-2",
+   "text": "Describe and draw the effect of one-direction multi-step slide (or translation) in basic shapes and figures."
+  },
+  {
+   "id": "MAT-G2-Q1-004",
+   "unit": "math-g2-q1-na",
+   "text": "Count up to 1000."
+  },
+  {
+   "id": "MAT-G2-Q1-005",
+   "unit": "math-g2-q1-na",
+   "text": "Read and write numerals up to 1000."
+  },
+  {
+   "id": "MAT-G2-Q1-006",
+   "unit": "math-g2-q1-na",
+   "text": "Recognize and represent numbers up to 1000 using a variety of concrete and pictorial models, and numerals."
+  },
+  {
+   "id": "MAT-G2-Q1-007",
+   "unit": "math-g2-q1-na",
+   "text": "Count by 2s, 5s, 10s, 20s, 50s, and 100s (not beyond 1000)."
+  },
+  {
+   "id": "MAT-G2-Q1-008",
+   "unit": "math-g2-q1-na",
+   "text": "Order numbers up to 1000 from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G2-Q1-009",
+   "unit": "math-g2-q1-na-2",
+   "text": "Describe the position of objects using ordinal numbers up to 20th."
+  },
+  {
+   "id": "MAT-G2-Q1-010",
+   "unit": "math-g2-q1-na",
+   "text": "Determine a. the place value of a digit in a 3-digit number, b. the value of a digit, and c. the digit of a number, given its place value."
+  },
+  {
+   "id": "MAT-G2-Q1-011",
+   "unit": "math-g2-q1-na-3",
+   "text": "Illustrate addition of 2-digit and by 1-digit numbers as “counting up” on the number line."
+  },
+  {
+   "id": "MAT-G2-Q1-012",
+   "unit": "math-g2-q1-na-3",
+   "text": "Add numbers with sums up to 1000 in expanded form."
+  },
+  {
+   "id": "MAT-G2-Q1-013",
+   "unit": "math-g2-q1-na-3",
+   "text": "Add numbers with sums up to 1000, with or without regrouping."
+  },
+  {
+   "id": "MAT-G2-Q1-014",
+   "unit": "math-g2-q1-na-3",
+   "text": "Illustrate and apply the following properties of addition using sums up to 1000: a. the sum of zero and any number is equal to the number, b. changing the order of the addends does not change the sum, and c. changing the grouping of the addends does not change the sum."
+  },
+  {
+   "id": "MAT-G2-Q2-001",
+   "unit": "math-g2-q2-na",
+   "text": "Determine and write the value of a number of bills, or a number of coins, or a combination of bills and coins up to ₱1000 (centavo coins only, peso coins only, peso bills only, combined peso coins and peso bills)."
+  },
+  {
+   "id": "MAT-G2-Q2-002",
+   "unit": "math-g2-q2-na",
+   "text": "Compare the values of different denominations of peso coins and bills up to ₱1000."
+  },
+  {
+   "id": "MAT-G2-Q2-003",
+   "unit": "math-g2-q2-na",
+   "text": "Solve problems involving addition with sums up to 1000, including problems involving money, with and without regrouping."
+  },
+  {
+   "id": "MAT-G2-Q2-004",
+   "unit": "math-g2-q2-mg",
+   "text": "Measure and compare lengths of objects, in meters (m) or centimeters (cm), and distance in meters, using appropriate measuring tools."
+  },
+  {
+   "id": "MAT-G2-Q2-005",
+   "unit": "math-g2-q2-mg",
+   "text": "Identify and use the appropriate unit (m or cm) to measure the length of an object and the distance between two locations."
+  },
+  {
+   "id": "MAT-G2-Q2-006",
+   "unit": "math-g2-q2-mg",
+   "text": "Estimate length using meters or centimeters, and distance using meters."
+  },
+  {
+   "id": "MAT-G2-Q2-007",
+   "unit": "math-g2-q2-mg",
+   "text": "Solve problems involving length and distance."
+  },
+  {
+   "id": "MAT-G2-Q2-008",
+   "unit": "math-g2-q2-na-2",
+   "text": "Illustrate subtraction of 2-digit by 1-digit on the number line and as an inverse of addition."
+  },
+  {
+   "id": "MAT-G2-Q2-009",
+   "unit": "math-g2-q2-na-2",
+   "text": "Subtract numbers where both numbers are less than 100 with regrouping: a. 2-digit minus 1-digit numbers, and b. 2-digit minus 2-digit numbers."
+  },
+  {
+   "id": "MAT-G2-Q2-010",
+   "unit": "math-g2-q2-na-2",
+   "text": "Solve problems (given orally or in pictures) involving subtraction where both numbers are less than 100, with and without regrouping."
+  },
+  {
+   "id": "MAT-G2-Q2-011",
+   "unit": "math-g2-q2-na-2",
+   "text": "Subtract numbers, where both numbers are less than 1000, with and without regrouping."
+  },
+  {
+   "id": "MAT-G2-Q2-012",
+   "unit": "math-g2-q2-na-2",
+   "text": "Solve 1- and 2-step problems involving subtraction where both numbers are less than 1000 (including problems involving money), with and without regrouping."
+  },
+  {
+   "id": "MAT-G2-Q2-013",
+   "unit": "math-g2-q2-na-3",
+   "text": "Determine the next term/s in increasing or decreasing patterns, e.g., numbers, letters and rhythmic properties, visual elements in arts, and repetitions."
+  },
+  {
+   "id": "MAT-G2-Q2-014",
+   "unit": "math-g2-q2-na-3",
+   "text": "Create increasing or decreasing patterns."
+  },
+  {
+   "id": "MAT-G2-Q3-001",
+   "unit": "math-g2-q3-dp",
+   "text": "Present raw data, or data in tabular form, in a pictograph with a scale, or vice versa."
+  },
+  {
+   "id": "MAT-G2-Q3-002",
+   "unit": "math-g2-q3-dp",
+   "text": "Interpret data in tabular form and in a pictograph with or without scale."
+  },
+  {
+   "id": "MAT-G2-Q3-003",
+   "unit": "math-g2-q3-na",
+   "text": "Count the number of concrete objects in a group by repeated addition and create equal groups, using language such as “5 groups of 3” and “5 threes”."
+  },
+  {
+   "id": "MAT-G2-Q3-004",
+   "unit": "math-g2-q3-na",
+   "text": "Illustrate and write multiplication as repeated addition, using a variety of concrete and pictorial models and numerals, and using a. groups of equal quantities, b. arrays, c. counting by multiples, and d. equal jumps on a number line."
+  },
+  {
+   "id": "MAT-G2-Q3-005",
+   "unit": "math-g2-q3-na",
+   "text": "Multiply numbers using the 2, 3, 4, 5, and 10 multiplication tables."
+  },
+  {
+   "id": "MAT-G2-Q3-006",
+   "unit": "math-g2-q3-na",
+   "text": "Solve multiplication problems using the 2, 3, 4, 5, and 10 multiplication tables, including problems involving money."
+  },
+  {
+   "id": "MAT-G2-Q3-007",
+   "unit": "math-g2-q3-na",
+   "text": "Illustrate division through equal distribution of a number of objects into several groups."
+  },
+  {
+   "id": "MAT-G2-Q3-008",
+   "unit": "math-g2-q3-na",
+   "text": "Illustrate and write division expressions using a variety of concrete and pictorial models and numerals, in modelling division as: a. equal sharing or formation of equal groups of objects, and b. repeated subtraction."
+  },
+  {
+   "id": "MAT-G2-Q3-009",
+   "unit": "math-g2-q3-na",
+   "text": "Divide numbers using the 2, 3 4, 5, and 10 multiplication tables."
+  },
+  {
+   "id": "MAT-G2-Q3-010",
+   "unit": "math-g2-q3-na",
+   "text": "Find the missing number in a number sentence involving multiplication or division by 2, 3, 4, 5, and 10."
+  },
+  {
+   "id": "MAT-G2-Q3-011",
+   "unit": "math-g2-q3-na-2",
+   "text": "Distinguish even and odd numbers using division by 2."
+  },
+  {
+   "id": "MAT-G2-Q3-012",
+   "unit": "math-g2-q3-na",
+   "text": "Solve division problems using the 2, 3, 4, 5, and 10 multiplication tables, including problems involving money."
+  },
+  {
+   "id": "MAT-G2-Q4-001",
+   "unit": "math-g2-q4-na",
+   "text": "Represent and identify unit fractions with denominators 2, 3, 4, 5, 6, and 8."
+  },
+  {
+   "id": "MAT-G2-Q4-002",
+   "unit": "math-g2-q4-na",
+   "text": "Read and write unit fractions in fraction notation."
+  },
+  {
+   "id": "MAT-G2-Q4-003",
+   "unit": "math-g2-q4-na",
+   "text": "Order unit fractions from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G2-Q4-004",
+   "unit": "math-g2-q4-na",
+   "text": "Represent and identify similar fractions with denominators 2, 3, 4, 5, 6, and 8 using groups of objects, fraction charts, fraction tiles, and the number line."
+  },
+  {
+   "id": "MAT-G2-Q4-005",
+   "unit": "math-g2-q4-na",
+   "text": "Read and write similar fractions in fraction notation."
+  },
+  {
+   "id": "MAT-G2-Q4-006",
+   "unit": "math-g2-q4-na",
+   "text": "Order similar fractions from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G2-Q4-007",
+   "unit": "math-g2-q4-mg",
+   "text": "Describe the duration of an event in terms of number of days and/or weeks using a calendar."
+  },
+  {
+   "id": "MAT-G2-Q4-008",
+   "unit": "math-g2-q4-mg",
+   "text": "Read and write time in hours and minutes, with a.m. and p.m., using an analog clock."
+  },
+  {
+   "id": "MAT-G2-Q4-009",
+   "unit": "math-g2-q4-mg",
+   "text": "Solve problems involving elapsed time (minutes in an hour, hours in a day, days in a week), including timetables."
+  },
+  {
+   "id": "MAT-G2-Q4-010",
+   "unit": "math-g2-q4-mg-2",
+   "text": "Identify and explain the difference between straight and curved lines, and flat and curved surfaces of 3-dimensional objects."
+  },
+  {
+   "id": "MAT-G2-Q4-011",
+   "unit": "math-g2-q4-mg-3",
+   "text": "Identify and measure the perimeter of a plane figure using appropriate tools."
+  },
+  {
+   "id": "MAT-G2-Q4-012",
+   "unit": "math-g2-q4-mg-3",
+   "text": "Find the perimeter of triangles, squares, and rectangles."
+  },
+  {
+   "id": "MAT-G2-Q4-013",
+   "unit": "math-g2-q4-mg-3",
+   "text": "Solve problems involving perimeter of triangles, squares, and rectangles."
+  },
+  {
+   "id": "MAT-G3-Q1-001",
+   "unit": "math-g3-q1-mg",
+   "text": "Illustrate and estimate the area of a square or rectangle using square tile units."
+  },
+  {
+   "id": "MAT-G3-Q1-002",
+   "unit": "math-g3-q1-mg",
+   "text": "Explore inductively the derivation of the formulas for the areas of a square and a rectangle using square tile units."
+  },
+  {
+   "id": "MAT-G3-Q1-003",
+   "unit": "math-g3-q1-mg",
+   "text": "Find the areas of squares and rectangles in sq. cm and sq. m."
+  },
+  {
+   "id": "MAT-G3-Q1-004",
+   "unit": "math-g3-q1-mg",
+   "text": "Solve problems involving areas of squares and rectangles."
+  },
+  {
+   "id": "MAT-G3-Q1-005",
+   "unit": "math-g3-q1-mg-2",
+   "text": "Recognize, using models, and draws a point, line, line segment, and ray."
+  },
+  {
+   "id": "MAT-G3-Q1-006",
+   "unit": "math-g3-q1-mg-3",
+   "text": "Recognize and draw parallel, intersecting, and perpendicular lines."
+  },
+  {
+   "id": "MAT-G3-Q1-007",
+   "unit": "math-g3-q1-mg-2",
+   "text": "Identify and draw line segments of equal length using a ruler."
+  },
+  {
+   "id": "MAT-G3-Q1-008",
+   "unit": "math-g3-q1-na",
+   "text": "Represent numbers up to 10 000 using pictorial models and numerals."
+  },
+  {
+   "id": "MAT-G3-Q1-009",
+   "unit": "math-g3-q1-na",
+   "text": "Read and write numbers up to 10 000 in numerals and in words."
+  },
+  {
+   "id": "MAT-G3-Q1-010",
+   "unit": "math-g3-q1-na-2",
+   "text": "Describe the position of objects using ordinal numbers up to 100th."
+  },
+  {
+   "id": "MAT-G3-Q1-011",
+   "unit": "math-g3-q1-na",
+   "text": "Determine a. the place value of a digit in a 4-digit number, b. the value of a digit, and c. the digit of number, given its place value."
+  },
+  {
+   "id": "MAT-G3-Q1-012",
+   "unit": "math-g3-q1-na",
+   "text": "Round numbers to the nearest ten, hundred, or thousand."
+  },
+  {
+   "id": "MAT-G3-Q1-013",
+   "unit": "math-g3-q1-na",
+   "text": "Compare numbers up to 10 000 using the symbols =, >, and <."
+  },
+  {
+   "id": "MAT-G3-Q1-014",
+   "unit": "math-g3-q1-na",
+   "text": "Order numbers up to 10 000 from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G3-Q2-001",
+   "unit": "math-g3-q2-mg",
+   "text": "Measure mass in grams (g), kilograms (kg) and/or milligrams (mg), using appropriate measuring tools."
+  },
+  {
+   "id": "MAT-G3-Q2-002",
+   "unit": "math-g3-q2-mg",
+   "text": "Estimate mass of an object using grams, kilograms, and/or milligrams."
+  },
+  {
+   "id": "MAT-G3-Q2-003",
+   "unit": "math-g3-q2-mg",
+   "text": "Compare masses of objects including the use of a balance scale."
+  },
+  {
+   "id": "MAT-G3-Q2-004",
+   "unit": "math-g3-q2-mg",
+   "text": "Measure capacity in liters (L) and/or milliliters (mL), using appropriate measuring tools."
+  },
+  {
+   "id": "MAT-G3-Q2-005",
+   "unit": "math-g3-q2-mg",
+   "text": "Estimate capacity using liters and/or milliliters."
+  },
+  {
+   "id": "MAT-G3-Q2-006",
+   "unit": "math-g3-q2-mg",
+   "text": "Compare capacities of two containers."
+  },
+  {
+   "id": "MAT-G3-Q2-007",
+   "unit": "math-g3-q2-na",
+   "text": "Read and write money in words and using: a. Philippine currency symbols (₱ and PhP) up to ₱10 000, and b. the centavo sign."
+  },
+  {
+   "id": "MAT-G3-Q2-008",
+   "unit": "math-g3-q2-na",
+   "text": "Add numbers with sums up to 10 000, with and without regrouping."
+  },
+  {
+   "id": "MAT-G3-Q2-009",
+   "unit": "math-g3-q2-na",
+   "text": "Estimate the sum of addends with up to 4 digits."
+  },
+  {
+   "id": "MAT-G3-Q2-010",
+   "unit": "math-g3-q2-na",
+   "text": "Solve problems involving addition of numbers with sums up to 10 000, including problems involving money."
+  },
+  {
+   "id": "MAT-G3-Q2-011",
+   "unit": "math-g3-q2-na",
+   "text": "Subtract numbers, where both numbers are less than 10 000, with and without regrouping."
+  },
+  {
+   "id": "MAT-G3-Q2-012",
+   "unit": "math-g3-q2-na",
+   "text": "Estimate the difference of two numbers of up to 4 digits."
+  },
+  {
+   "id": "MAT-G3-Q2-013",
+   "unit": "math-g3-q2-na",
+   "text": "Perform addition and subtraction of 3 to 4 numbers of up to 2 digits, observing correct order of operations."
+  },
+  {
+   "id": "MAT-G3-Q2-014",
+   "unit": "math-g3-q2-na",
+   "text": "Solve problems involving addition and subtraction with 3 to 4 numbers of up to 2 digits, including problems involving money."
+  },
+  {
+   "id": "MAT-G3-Q3-001",
+   "unit": "math-g3-q3-dp-2",
+   "text": "Collect data from experiments with a small number of possible outcomes (e.g., rolling a die or tossing a coin)."
+  },
+  {
+   "id": "MAT-G3-Q3-002",
+   "unit": "math-g3-q3-dp",
+   "text": "Present data in tables and single bar graphs (horizontal and vertical)."
+  },
+  {
+   "id": "MAT-G3-Q3-003",
+   "unit": "math-g3-q3-dp",
+   "text": "Interpret data in tables and single bar graphs (horizontal and vertical)."
+  },
+  {
+   "id": "MAT-G3-Q3-004",
+   "unit": "math-g3-q3-dp",
+   "text": "Solve problems using data presented in a single bar graph (horizontal and vertical)."
+  },
+  {
+   "id": "MAT-G3-Q3-005",
+   "unit": "math-g3-q3-dp-2",
+   "text": "Describe and compare outcomes in real-life situations using the following terms: equally likely, less/least likely, more/most likely, certain, and impossible."
+  },
+  {
+   "id": "MAT-G3-Q3-006",
+   "unit": "math-g3-q3-na",
+   "text": "Multiply numbers using the 6, 7, 8, and 9 multiplication tables."
+  },
+  {
+   "id": "MAT-G3-Q3-007",
+   "unit": "math-g3-q3-na-2",
+   "text": "Illustrate and apply properties of multiplication for the 6, 7, 8, and 9 multiplication tables: a. one multiplied by any number is equal to the number; b. zero multiplied by any number is zero; c. changing the order of the numbers being multiplied does not change the product; d. changing the grouping of the numbers being multiplied does not change the product; and e. multiplying the sum of two addends by a number is the same as the sum of the products of a number by each addend."
+  },
+  {
+   "id": "MAT-G3-Q3-008",
+   "unit": "math-g3-q3-na-3",
+   "text": "Multiply numbers with and without regrouping: a. 2- to 3-digit numbers by a 1-digit number, and b. 2- to 4-digit numbers by a number whose leading digit is the only non-zero digit, with products up to 10 000."
+  },
+  {
+   "id": "MAT-G3-Q3-009",
+   "unit": "math-g3-q3-na-4",
+   "text": "Estimate the product of 2- to 3-digit numbers by 1- to 2-digit numbers by estimating the factors using multiples of 10."
+  },
+  {
+   "id": "MAT-G3-Q3-010",
+   "unit": "math-g3-q3-na-3",
+   "text": "Solve 1-to 2-step multiplication problems, including problems involving money."
+  },
+  {
+   "id": "MAT-G3-Q3-011",
+   "unit": "math-g3-q3-na-5",
+   "text": "Determine the missing term/s in a pattern with repeating and increasing components or repeating and decreasing components (e.g., 1a, 1b, 1c, 2a, 2b, 2c,...)."
+  },
+  {
+   "id": "MAT-G3-Q3-012",
+   "unit": "math-g3-q3-na-6",
+   "text": "Explain how to generate a given pattern with repeating and increasing components or repeating and decreasing components."
+  },
+  {
+   "id": "MAT-G3-Q4-001",
+   "unit": "math-g3-q4-na",
+   "text": "Illustrate division through equal jumps on the number line and as inverse of multiplication."
+  },
+  {
+   "id": "MAT-G3-Q4-002",
+   "unit": "math-g3-q4-na",
+   "text": "Divide numbers using the 6, 7, 8, and 9 multiplication tables."
+  },
+  {
+   "id": "MAT-G3-Q4-003",
+   "unit": "math-g3-q4-na",
+   "text": "Find the missing number in a number sentence involving multiplication or division by 6, 7, 8, and 9 (e.g., __ x 7 = 56; 56 ÷ __ = 7)."
+  },
+  {
+   "id": "MAT-G3-Q4-004",
+   "unit": "math-g3-q4-na-2",
+   "text": "Divide numbers with and without remainder: a. 2- to 3-digit numbers by 1-digit number without remainder, b. 2-digit numbers by 1-digit number with remainder, and c. 2- to 4-digit numbers by 10,100, and 1000."
+  },
+  {
+   "id": "MAT-G3-Q4-005",
+   "unit": "math-g3-q4-na-3",
+   "text": "Estimate the quotient of 2- to 3-digit numbers divided by 1- to 2-digit numbers, using multiples of 10 or 100 as appropriate"
+  },
+  {
+   "id": "MAT-G3-Q4-006",
+   "unit": "math-g3-q4-na-2",
+   "text": "Solve division problems involving 2- to 3 -digit numbers by a 1-digit number, including problems involving money."
+  },
+  {
+   "id": "MAT-G3-Q4-007",
+   "unit": "math-g3-q4-na-4",
+   "text": "Represent fractions that are equal to one and greater than one using models."
+  },
+  {
+   "id": "MAT-G3-Q4-008",
+   "unit": "math-g3-q4-na-4",
+   "text": "Add and subtract similar fractions using models."
+  },
+  {
+   "id": "MAT-G3-Q4-009",
+   "unit": "math-g3-q4-mg-2",
+   "text": "Describe and draw the effect of a two-direction multi-step slide (or translation) in basic shapes and figures."
+  },
+  {
+   "id": "MAT-G3-Q4-010",
+   "unit": "math-g3-q4-mg",
+   "text": "Identify shapes or figures that show line symmetry by drawing the line of symmetry."
+  },
+  {
+   "id": "MAT-G3-Q4-011",
+   "unit": "math-g3-q4-mg",
+   "text": "Complete a figure that is symmetric with respect to a line."
+  },
+  {
+   "id": "MAT-G4-Q1-001",
+   "unit": "math-g4-q1-mg",
+   "text": "Illustrate different angles (right, acute, and obtuse) using models."
+  },
+  {
+   "id": "MAT-G4-Q1-002",
+   "unit": "math-g4-q1-mg",
+   "text": "Measure and draw angles using a protractor."
+  },
+  {
+   "id": "MAT-G4-Q1-003",
+   "unit": "math-g4-q1-mg-2",
+   "text": "Draw and state the properties of triangles and quadrilaterals."
+  },
+  {
+   "id": "MAT-G4-Q1-004",
+   "unit": "math-g4-q1-mg-2",
+   "text": "Classify triangles and quadrilaterals according to sides and angles."
+  },
+  {
+   "id": "MAT-G4-Q1-005",
+   "unit": "math-g4-q1-mg-2",
+   "text": "Differentiate different quadrilaterals."
+  },
+  {
+   "id": "MAT-G4-Q1-006",
+   "unit": "math-g4-q1-mg-3",
+   "text": "Find the perimeter of quadrilaterals that are not squares or rectangles."
+  },
+  {
+   "id": "MAT-G4-Q1-007",
+   "unit": "math-g4-q1-mg-3",
+   "text": "Find the perimeter of composite figures composed of triangles and quadrilaterals."
+  },
+  {
+   "id": "MAT-G4-Q1-008",
+   "unit": "math-g4-q1-na",
+   "text": "Read and write numbers up to 1 000 000 in numerals and in words."
+  },
+  {
+   "id": "MAT-G4-Q1-009",
+   "unit": "math-g4-q1-na",
+   "text": "Determine a. the place value of a digit in a 6-digit number, b. the value of a digit, and c. the digit of number, given its place value."
+  },
+  {
+   "id": "MAT-G4-Q1-010",
+   "unit": "math-g4-q1-na",
+   "text": "Compare numbers up to 1 000 000 using =, < and >."
+  },
+  {
+   "id": "MAT-G4-Q1-011",
+   "unit": "math-g4-q1-na",
+   "text": "Round numbers to the nearest hundred thousand."
+  },
+  {
+   "id": "MAT-G4-Q1-012",
+   "unit": "math-g4-q1-na-2",
+   "text": "Estimate the sum and difference of two 5- to 6-digit numbers by rounding the addends to the nearest large place value of the numbers."
+  },
+  {
+   "id": "MAT-G4-Q1-013",
+   "unit": "math-g4-q1-na-2",
+   "text": "Add numbers with sums up to 1 000 000 and subtracts numbers where both numbers are less than 1 000 000, with and without regrouping."
+  },
+  {
+   "id": "MAT-G4-Q2-001",
+   "unit": "math-g4-q2-na",
+   "text": "Multiply two numbers with and without regrouping: a. 3- to 4-digit numbers by a 1-digit number, and b. 2- to 3-digit numbers by 2-digit numbers, with products up to 1 000 000."
+  },
+  {
+   "id": "MAT-G4-Q2-002",
+   "unit": "math-g4-q2-na",
+   "text": "Estimate the result of multiplying two numbers where the product is less than 1 000 000."
+  },
+  {
+   "id": "MAT-G4-Q2-003",
+   "unit": "math-g4-q2-na",
+   "text": "Solve multi-step problems involving one or more of the four operations with results of calculations up to 1 000 000, including problems involving money."
+  },
+  {
+   "id": "MAT-G4-Q2-004",
+   "unit": "math-g4-q2-na",
+   "text": "Divide two numbers with and without regrouping a. 3- to 4-digit numbers by 1-digit numbers b. 2- to 3-digit numbers by 2-digit numbers"
+  },
+  {
+   "id": "MAT-G4-Q2-005",
+   "unit": "math-g4-q2-na",
+   "text": "Estimate the quotient when dividing 3- to 4-digit dividends by 1- to 2-digit divisors, by first estimating the dividends and divisors using multiples of 10."
+  },
+  {
+   "id": "MAT-G4-Q2-006",
+   "unit": "math-g4-q2-na",
+   "text": "Represent situations involving one or more of the four operations using a number sentence."
+  },
+  {
+   "id": "MAT-G4-Q2-007",
+   "unit": "math-g4-q2-na",
+   "text": "Perform two or more different operations by applying the MDAS rules."
+  },
+  {
+   "id": "MAT-G4-Q2-008",
+   "unit": "math-g4-q2-mg",
+   "text": "Convert common units of measure from larger to smaller units, and vice versa: a. meter and centimeter, b. kilometer and meter, c. kilogram and gram, d. gram and milligram, and e. liter and milliliter."
+  },
+  {
+   "id": "MAT-G4-Q2-009",
+   "unit": "math-g4-q2-mg",
+   "text": "Convert time measures from smaller to larger units, and vice versa: a. seconds to minutes, b. minutes to hours, c. hours to days, d. days to weeks e. weeks to months, and f. months to years."
+  },
+  {
+   "id": "MAT-G4-Q2-010",
+   "unit": "math-g4-q2-mg",
+   "text": "Solve problems involving conversion of units of length, mass, capacity, and time, including problems involving elapsed time in hours and minutes."
+  },
+  {
+   "id": "MAT-G4-Q2-011",
+   "unit": "math-g4-q2-na",
+   "text": "Identify proper fractions, improper fractions, and mixed numbers."
+  },
+  {
+   "id": "MAT-G4-Q2-012",
+   "unit": "math-g4-q2-na",
+   "text": "Rewrite improper fractions into mixed numbers, and vice versa."
+  },
+  {
+   "id": "MAT-G4-Q2-013",
+   "unit": "math-g4-q2-na",
+   "text": "Plot fraction (proper fractions, improper fractions, and mixed numbers) with denominators 2, 4, 5, and 10 on the number line."
+  },
+  {
+   "id": "MAT-G4-Q2-014",
+   "unit": "math-g4-q2-na",
+   "text": "Add and subtract similar fractions: a. two proper fractions, b. two mixed numbers, c. a mixed number and a proper fraction, d. a whole number and a proper fraction, and e. a whole number and a mixed number."
+  },
+  {
+   "id": "MAT-G4-Q3-001",
+   "unit": "math-g4-q3-na",
+   "text": "Represent dissimilar fractions, with denominators up to 10, using models."
+  },
+  {
+   "id": "MAT-G4-Q3-002",
+   "unit": "math-g4-q3-na",
+   "text": "Compare dissimilar fractions using the symbols =, >, and <."
+  },
+  {
+   "id": "MAT-G4-Q3-003",
+   "unit": "math-g4-q3-na",
+   "text": "Order dissimilar fractions from smallest to largest, and vice versa."
+  },
+  {
+   "id": "MAT-G4-Q3-004",
+   "unit": "math-g4-q3-na",
+   "text": "Generate equivalent fractions using models."
+  },
+  {
+   "id": "MAT-G4-Q3-005",
+   "unit": "math-g4-q3-na",
+   "text": "Determine equivalent fractions."
+  },
+  {
+   "id": "MAT-G4-Q3-006",
+   "unit": "math-g4-q3-na-2",
+   "text": "Identify the multiples of given numbers up to 100."
+  },
+  {
+   "id": "MAT-G4-Q3-007",
+   "unit": "math-g4-q3-na-2",
+   "text": "Find all the factors of a given number up to 100."
+  },
+  {
+   "id": "MAT-G4-Q3-008",
+   "unit": "math-g4-q3-na",
+   "text": "Reduce fractions to simplest form."
+  },
+  {
+   "id": "MAT-G4-Q3-009",
+   "unit": "math-g4-q3-na-3",
+   "text": "Add and subtract dissimilar fractions using models."
+  },
+  {
+   "id": "MAT-G4-Q3-010",
+   "unit": "math-g4-q3-na-3",
+   "text": "Add and subtract dissimilar fractions: a. two proper fractions, b. two mixed numbers, c. a mixed number and a proper fraction, d. a whole number and a proper fraction, and e. a whole number and a mixed number."
+  },
+  {
+   "id": "MAT-G4-Q3-011",
+   "unit": "math-g4-q3-na-3",
+   "text": "Solve multi-step problems involving addition and/or subtraction of fractions."
+  },
+  {
+   "id": "MAT-G4-Q3-012",
+   "unit": "math-g4-q3-mg",
+   "text": "Identify symmetry with respect to a line."
+  },
+  {
+   "id": "MAT-G4-Q3-013",
+   "unit": "math-g4-q3-mg",
+   "text": "Complete a figure that is symmetric with respect to a line."
+  },
+  {
+   "id": "MAT-G4-Q3-014",
+   "unit": "math-g4-q3-mg-2",
+   "text": "Draws the image of an object after applying reflection with respect to a line, including glide reflection."
+  },
+  {
+   "id": "MAT-G4-Q4-001",
+   "unit": "math-g4-q4-dp",
+   "text": "Collect data with time element using appropriate sources."
+  },
+  {
+   "id": "MAT-G4-Q4-002",
+   "unit": "math-g4-q4-dp",
+   "text": "Present data in a tabular form, or in a single line graph."
+  },
+  {
+   "id": "MAT-G4-Q4-003",
+   "unit": "math-g4-q4-dp",
+   "text": "Interpret data presented in a tabular form, or in a single line graph."
+  },
+  {
+   "id": "MAT-G4-Q4-004",
+   "unit": "math-g4-q4-dp",
+   "text": "Solve problems using data for at most two variables in a tabular form, or in a single line graph."
+  },
+  {
+   "id": "MAT-G4-Q4-005",
+   "unit": "math-g4-q4-na",
+   "text": "Describe the rule used to generate a given simple pattern."
+  },
+  {
+   "id": "MAT-G4-Q4-006",
+   "unit": "math-g4-q4-na-2",
+   "text": "Complete a number sentence: a. to represent a property of operations (e.g., 4 + 3 = 3 + __) (commutative property of addition) b. to represent equivalent number facts (e.g., 4 + __ = 6 + 3)"
+  },
+  {
+   "id": "MAT-G4-Q4-007",
+   "unit": "math-g4-q4-na-3",
+   "text": "Represent decimal numbers using models and manipulatives to show the relationship to fractions."
+  },
+  {
+   "id": "MAT-G4-Q4-008",
+   "unit": "math-g4-q4-na-3",
+   "text": "Read and write decimal numbers with decimal parts to hundredths."
+  },
+  {
+   "id": "MAT-G4-Q4-009",
+   "unit": "math-g4-q4-na-3",
+   "text": "Determine a. the place value to hundredths of a digit in a given decimal number, b. the value of a digit, and c. the digit of number, given its place value."
+  },
+  {
+   "id": "MAT-G4-Q4-010",
+   "unit": "math-g4-q4-na-3",
+   "text": "Convert decimal numbers to fractions, and fractions with denominators 10 or 100 to decimals."
+  },
+  {
+   "id": "MAT-G4-Q4-011",
+   "unit": "math-g4-q4-na-3",
+   "text": "Plot decimal numbers with tenth decimal part on the number line."
+  },
+  {
+   "id": "MAT-G4-Q4-012",
+   "unit": "math-g4-q4-na-3",
+   "text": "Compare and order decimal numbers with decimal parts to hundredths."
+  },
+  {
+   "id": "MAT-G4-Q4-013",
+   "unit": "math-g4-q4-na-3",
+   "text": "Round decimal numbers to the nearest whole number and to the nearest tenth."
+  },
+  {
+   "id": "MAT-G5-Q1-001",
+   "unit": "math-g5-q1-mg",
+   "text": "Describe a 12- and 24-hour clock system."
+  },
+  {
+   "id": "MAT-G5-Q1-002",
+   "unit": "math-g5-q1-mg",
+   "text": "Convert 12-hour time to 24-hour time, and vice-versa."
+  },
+  {
+   "id": "MAT-G5-Q1-003",
+   "unit": "math-g5-q1-mg",
+   "text": "Solve problems involving 12- and 24-hour time."
+  },
+  {
+   "id": "MAT-G5-Q1-004",
+   "unit": "math-g5-q1-mg",
+   "text": "Compare the time in different world time zones to the time in the Philippines using a world time zone map."
+  },
+  {
+   "id": "MAT-G5-Q1-005",
+   "unit": "math-g5-q1-mg",
+   "text": "Solve problems on comparing the time in different world time zones to the time in the Philippines."
+  },
+  {
+   "id": "MAT-G5-Q1-006",
+   "unit": "math-g5-q1-na",
+   "text": "Perform three or more different operations by applying the GMDAS rules."
+  },
+  {
+   "id": "MAT-G5-Q1-007",
+   "unit": "math-g5-q1-na-2",
+   "text": "Multiply fractions using models."
+  },
+  {
+   "id": "MAT-G5-Q1-008",
+   "unit": "math-g5-q1-na-2",
+   "text": "Multiply a fraction by a fraction."
+  },
+  {
+   "id": "MAT-G5-Q1-009",
+   "unit": "math-g5-q1-na-2",
+   "text": "Solve multi-step problems involving multiplication of fractions that may or may not also involve addition or subtraction of fractions."
+  },
+  {
+   "id": "MAT-G5-Q1-010",
+   "unit": "math-g5-q1-mg-2",
+   "text": "Identify the height of a parallelogram, triangle, and trapezoid, in different orientations."
+  },
+  {
+   "id": "MAT-G5-Q1-011",
+   "unit": "math-g5-q1-mg-2",
+   "text": "Find the area of a parallelogram, triangle, and trapezoid, in sq. cm or sq. m, using formulas."
+  },
+  {
+   "id": "MAT-G5-Q1-012",
+   "unit": "math-g5-q1-mg-2",
+   "text": "Estimate the areas of triangles and quadrilaterals (parallelogram, rhombus, trapezoid) using grids."
+  },
+  {
+   "id": "MAT-G5-Q2-001",
+   "unit": "math-g5-q2-na",
+   "text": "Divide fractions using models."
+  },
+  {
+   "id": "MAT-G5-Q2-002",
+   "unit": "math-g5-q2-na",
+   "text": "Divide a fraction by a fraction."
+  },
+  {
+   "id": "MAT-G5-Q2-003",
+   "unit": "math-g5-q2-na",
+   "text": "Solve multi-step problems involving division of fractions that may or may not involve the other operations with fractions."
+  },
+  {
+   "id": "MAT-G5-Q2-004",
+   "unit": "math-g5-q2-na-2",
+   "text": "Determine a. the place value to thousandths of a digit in a given decimal number, b. the value of a digit, and c. the digit of a number, given its place value."
+  },
+  {
+   "id": "MAT-G5-Q2-005",
+   "unit": "math-g5-q2-na-2",
+   "text": "Read and write decimal numbers with decimal parts to thousandths."
+  },
+  {
+   "id": "MAT-G5-Q2-006",
+   "unit": "math-g5-q2-na-2",
+   "text": "Convert terminating decimals to fractions, and vice versa."
+  },
+  {
+   "id": "MAT-G5-Q2-007",
+   "unit": "math-g5-q2-na-2",
+   "text": "Compare and order decimal numbers with decimal parts to thousandths."
+  },
+  {
+   "id": "MAT-G5-Q2-008",
+   "unit": "math-g5-q2-na-2",
+   "text": "Round decimal numbers to the nearest thousandths."
+  },
+  {
+   "id": "MAT-G5-Q2-009",
+   "unit": "math-g5-q2-na-3",
+   "text": "Add and subtract decimal numbers with decimal parts of up to 3 decimal places."
+  },
+  {
+   "id": "MAT-G5-Q2-010",
+   "unit": "math-g5-q2-na-3",
+   "text": "Solve multi-step problems involving addition and/or subtraction of decimals, including problems involving money."
+  },
+  {
+   "id": "MAT-G5-Q2-011",
+   "unit": "math-g5-q2-na-4",
+   "text": "Use divisibility rules to find common factors of numbers: a. divisibility rules for 2, 5, and 10, b. divisibility rules for 3, 6, and 9, and c. divisibility rules for 4, 8, 11, and 12."
+  },
+  {
+   "id": "MAT-G5-Q2-012",
+   "unit": "math-g5-q2-na-5",
+   "text": "Distinguish prime numbers from composite numbers using the Sieve of Eratosthenes."
+  },
+  {
+   "id": "MAT-G5-Q3-001",
+   "unit": "math-g5-q3-dp",
+   "text": "Collects bivariate data from interview, questionnaire, and other appropriate sources."
+  },
+  {
+   "id": "MAT-G5-Q3-002",
+   "unit": "math-g5-q3-dp",
+   "text": "Identify the appropriate graph (bar graph or line graph) to represent a given set of data."
+  },
+  {
+   "id": "MAT-G5-Q3-003",
+   "unit": "math-g5-q3-dp",
+   "text": "Construct double bar graphs and double line graphs."
+  },
+  {
+   "id": "MAT-G5-Q3-004",
+   "unit": "math-g5-q3-dp",
+   "text": "Interpret data presented in a double bar graph or a double line graph."
+  },
+  {
+   "id": "MAT-G5-Q3-005",
+   "unit": "math-g5-q3-dp",
+   "text": "Draw conclusions or make inferences based on data presented in a double bar graph or a double line graph."
+  },
+  {
+   "id": "MAT-G5-Q3-006",
+   "unit": "math-g5-q3-dp",
+   "text": "Solve problems using data presented in a double bar graph or a double line graph."
+  },
+  {
+   "id": "MAT-G5-Q3-007",
+   "unit": "math-g5-q3-dp-2",
+   "text": "Describe probability as a measure of the chance of an event occurring."
+  },
+  {
+   "id": "MAT-G5-Q3-008",
+   "unit": "math-g5-q3-dp-2",
+   "text": "Calculate the theoretical probability of a simple event by listing all possible outcomes."
+  },
+  {
+   "id": "MAT-G5-Q3-009",
+   "unit": "math-g5-q3-na",
+   "text": "Estimate each of two decimal numbers to the nearest whole number to estimate their product."
+  },
+  {
+   "id": "MAT-G5-Q3-010",
+   "unit": "math-g5-q3-na",
+   "text": "Multiply decimal numbers with decimal parts of up to 2 decimal places."
+  },
+  {
+   "id": "MAT-G5-Q3-011",
+   "unit": "math-g5-q3-na",
+   "text": "Solve multi-step problems involving multiplication of decimals that may or may not also involve addition or subtraction of decimals, including problems involving money."
+  },
+  {
+   "id": "MAT-G5-Q3-012",
+   "unit": "math-g5-q3-na",
+   "text": "Estimate the quotient when dividing two decimal numbers by estimating the dividend and divisor to the nearest whole number."
+  },
+  {
+   "id": "MAT-G5-Q3-013",
+   "unit": "math-g5-q3-na",
+   "text": "Divide: a. 1- to 2-digit whole numbers resulting in a terminating decimal quotient (e.g., 4 ÷ 5 = 0.8), and b. a decimal of up to 2 decimal places by a 1- to 2-digit whole number, resulting in a terminating decimal quotient of up to 3 decimal places."
+  },
+  {
+   "id": "MAT-G5-Q4-001",
+   "unit": "math-g5-q4-na",
+   "text": "Solve multi-step problems involving division of decimals that may or may not also involve the other operations with decimals, including problems involving money."
+  },
+  {
+   "id": "MAT-G5-Q4-002",
+   "unit": "math-g5-q4-na",
+   "text": "Perform three or more different operations with fractions and decimals by applying the GMDAS rules."
+  },
+  {
+   "id": "MAT-G5-Q4-003",
+   "unit": "math-g5-q4-mg",
+   "text": "Illustrate different solid figures using concrete and pictorial models."
+  },
+  {
+   "id": "MAT-G5-Q4-004",
+   "unit": "math-g5-q4-mg",
+   "text": "Relate plane figures to solid figures using concrete and pictorial models."
+  },
+  {
+   "id": "MAT-G5-Q4-005",
+   "unit": "math-g5-q4-mg",
+   "text": "Describe and differentiate prisms and pyramids using their vertices, faces, and/or edges."
+  },
+  {
+   "id": "MAT-G5-Q4-006",
+   "unit": "math-g5-q4-mg",
+   "text": "Illustrate and describe solid figures and their nets."
+  },
+  {
+   "id": "MAT-G5-Q4-007",
+   "unit": "math-g5-q4-mg",
+   "text": "Make models of solid figures."
+  },
+  {
+   "id": "MAT-G5-Q4-008",
+   "unit": "math-g5-q4-mg-2",
+   "text": "Illustrate and find the surface area of solid figures."
+  },
+  {
+   "id": "MAT-G5-Q4-009",
+   "unit": "math-g5-q4-mg-2",
+   "text": "Solve problems involving the surface area of solid figures."
+  },
+  {
+   "id": "MAT-G5-Q4-010",
+   "unit": "math-g5-q4-mg-3",
+   "text": "Describe and distinguish cubes and rectangular prisms."
+  },
+  {
+   "id": "MAT-G5-Q4-011",
+   "unit": "math-g5-q4-mg-3",
+   "text": "Estimate the volume of a cube and of a rectangular prism using non-standard units of measurement."
+  },
+  {
+   "id": "MAT-G5-Q4-012",
+   "unit": "math-g5-q4-mg-4",
+   "text": "Draw the image of an object after applying rotation about a point given an angle of rotation, clockwise or counterclockwise."
+  },
+  {
+   "id": "MAT-G6-Q1-001",
+   "unit": "math-g6-q1-mg",
+   "text": "Explore whether or not a shape tessellates."
+  },
+  {
+   "id": "MAT-G6-Q1-002",
+   "unit": "math-g6-q1-mg",
+   "text": "Tessellate a surface using different shapes, including triangles, squares, and rectangles."
+  },
+  {
+   "id": "MAT-G6-Q1-003",
+   "unit": "math-g6-q1-mg-2",
+   "text": "Draw resulting images of shapes that undergo translation, reflection, rotation"
+  },
+  {
+   "id": "MAT-G6-Q1-004",
+   "unit": "math-g6-q1-na",
+   "text": "Add and subtract decimals with decimal parts of up to 4 decimal places."
+  },
+  {
+   "id": "MAT-G6-Q1-005",
+   "unit": "math-g6-q1-na",
+   "text": "Solve multi-step problems involving addition and/or subtraction of decimals, including problems involving money."
+  },
+  {
+   "id": "MAT-G6-Q1-006",
+   "unit": "math-g6-q1-na",
+   "text": "Mentally multiply decimals of up to 2 decimal places by 0.1, 0.01, 0.001, 10, 100, and 1000."
+  },
+  {
+   "id": "MAT-G6-Q1-007",
+   "unit": "math-g6-q1-na",
+   "text": "Solve multi-step problems involving multiplication of decimals that may or may not also involve addition or subtraction of decimals, including problems involving money."
+  },
+  {
+   "id": "MAT-G6-Q1-008",
+   "unit": "math-g6-q1-na",
+   "text": "Divide: a. 1- to 2-digit whole numbers resulting in a repeating (non-terminating) decimal quotient (e.g., 1/3 = 0.3333…), and b. a whole number by a decimal of 1 decimal place."
+  },
+  {
+   "id": "MAT-G6-Q1-009",
+   "unit": "math-g6-q1-na",
+   "text": "Mentally divide: a. decimals of up to 4 decimal places by 0.1, 0.01, and 0.001, and b. decimals of up to 2 decimal places by 10, 100, and 1000."
+  },
+  {
+   "id": "MAT-G6-Q1-010",
+   "unit": "math-g6-q1-na",
+   "text": "Solve problems involving division of decimals that may or may not involve the other operations with decimals and/or whole numbers."
+  },
+  {
+   "id": "MAT-G6-Q1-011",
+   "unit": "math-g6-q1-na-2",
+   "text": "Obtain products that result from multiplying different combinations of fractions, whole numbers, and mixed numbers."
+  },
+  {
+   "id": "MAT-G6-Q1-012",
+   "unit": "math-g6-q1-na-2",
+   "text": "Solve multi-step problems involving multiplication that may or may not involve addition or subtraction of different combinations of fractions, whole numbers, and mixed numbers."
+  },
+  {
+   "id": "MAT-G6-Q1-013",
+   "unit": "math-g6-q1-na-2",
+   "text": "Divide different combinations of fractions, whole numbers, and mixed numbers."
+  },
+  {
+   "id": "MAT-G6-Q1-014",
+   "unit": "math-g6-q1-na-2",
+   "text": "Solve multi-step problems involving division of different combinations of fractions, whole numbers, and mixed numbers that may or may not involve any of the other operations of fractions."
+  },
+  {
+   "id": "MAT-G6-Q2-001",
+   "unit": "math-g6-q2-na",
+   "text": "Describe the relationship between quantities using ratio for: a. part-whole relationships, and b. part-part relationships."
+  },
+  {
+   "id": "MAT-G6-Q2-002",
+   "unit": "math-g6-q2-na",
+   "text": "Express one number as a fraction of another given their ratio, and vice versa."
+  },
+  {
+   "id": "MAT-G6-Q2-003",
+   "unit": "math-g6-q2-na",
+   "text": "Identify and write equivalent ratios."
+  },
+  {
+   "id": "MAT-G6-Q2-004",
+   "unit": "math-g6-q2-na",
+   "text": "Solve problems involving ratio."
+  },
+  {
+   "id": "MAT-G6-Q2-005",
+   "unit": "math-g6-q2-na",
+   "text": "Illustrate ratio and proportion in given situations using tables and/or the double number line model."
+  },
+  {
+   "id": "MAT-G6-Q2-006",
+   "unit": "math-g6-q2-na",
+   "text": "Find how many times one value is larger than another given their ratio, and vice versa."
+  },
+  {
+   "id": "MAT-G6-Q2-007",
+   "unit": "math-g6-q2-na",
+   "text": "Solve problems involving ratio and proportion."
+  },
+  {
+   "id": "MAT-G6-Q2-008",
+   "unit": "math-g6-q2-na-2",
+   "text": "Illustrate and explain the relationships between percentages, fractions, and decimals."
+  },
+  {
+   "id": "MAT-G6-Q2-009",
+   "unit": "math-g6-q2-na-2",
+   "text": "Identify and explain the uses of percentages."
+  },
+  {
+   "id": "MAT-G6-Q2-010",
+   "unit": "math-g6-q2-na-3",
+   "text": "Write numbers in exponential form e. g., 2 × 2 × 2 = 2^3, and vice versa e.g., 2^3 = 2 × 2 × 2."
+  },
+  {
+   "id": "MAT-G6-Q2-011",
+   "unit": "math-g6-q2-na-3",
+   "text": "Give the value of numbers expressed in exponential form."
+  },
+  {
+   "id": "MAT-G6-Q2-012",
+   "unit": "math-g6-q2-na-3",
+   "text": "Perform calculations involving numbers in exponential form by applying the GEMDAS rules."
+  },
+  {
+   "id": "MAT-G6-Q3-001",
+   "unit": "math-g6-q3-mg",
+   "text": "Determine appropriate units for measuring volume and capacity."
+  },
+  {
+   "id": "MAT-G6-Q3-002",
+   "unit": "math-g6-q3-mg",
+   "text": "Convert cu. cm to L, and vice versa."
+  },
+  {
+   "id": "MAT-G6-Q3-003",
+   "unit": "math-g6-q3-mg-2",
+   "text": "Find the volume of a cube and of a rectangular prism using standard units of measurement."
+  },
+  {
+   "id": "MAT-G6-Q3-004",
+   "unit": "math-g6-q3-mg-2",
+   "text": "Solve problems involving volumes of cubes and rectangular prisms."
+  },
+  {
+   "id": "MAT-G6-Q3-005",
+   "unit": "math-g6-q3-mg",
+   "text": "Solve problems involving capacity."
+  },
+  {
+   "id": "MAT-G6-Q3-006",
+   "unit": "math-g6-q3-mg-3",
+   "text": "Convert sq. cm to sq. m, and vice versa."
+  },
+  {
+   "id": "MAT-G6-Q3-007",
+   "unit": "math-g6-q3-mg-3",
+   "text": "Find the area, in sq. m or sq. cm, of composite figures composed of triangles, squares, and rectangles."
+  },
+  {
+   "id": "MAT-G6-Q3-008",
+   "unit": "math-g6-q3-mg-3",
+   "text": "Solve problems involving the perimeter and area of triangles, parallelograms, trapezoids, and composite figures composed of triangles, squares, and rectangles."
+  },
+  {
+   "id": "MAT-G6-Q3-009",
+   "unit": "math-g6-q3-mg-4",
+   "text": "Draw circles with different radii using a pair of compasses."
+  },
+  {
+   "id": "MAT-G6-Q3-010",
+   "unit": "math-g6-q3-mg-4",
+   "text": "Identify and describes the parts of a circle."
+  },
+  {
+   "id": "MAT-G6-Q3-011",
+   "unit": "math-g6-q3-mg-4",
+   "text": "Measure the circumference of circles using appropriate tools."
+  },
+  {
+   "id": "MAT-G6-Q3-012",
+   "unit": "math-g6-q3-mg-4",
+   "text": "Approximate the value of pi (π) (the ratio of circumference to diameter)."
+  },
+  {
+   "id": "MAT-G6-Q3-013",
+   "unit": "math-g6-q3-mg-4",
+   "text": "Find the circumference of a circle using C = πd or C = 2πr."
+  },
+  {
+   "id": "MAT-G6-Q4-001",
+   "unit": "math-g6-q4-mg",
+   "text": "Explore inductively the area of a circle leading to the formula A = πr^2."
+  },
+  {
+   "id": "MAT-G6-Q4-002",
+   "unit": "math-g6-q4-mg",
+   "text": "Find the area of a circle using the formula."
+  },
+  {
+   "id": "MAT-G6-Q4-003",
+   "unit": "math-g6-q4-mg-2",
+   "text": "Find the area of composite figures composed of any two or more of the following: triangle, square, rectangle, circle, and semicircle."
+  },
+  {
+   "id": "MAT-G6-Q4-004",
+   "unit": "math-g6-q4-mg-2",
+   "text": "Solve problems involving circumference and area of circles, and composite figures."
+  },
+  {
+   "id": "MAT-G6-Q4-005",
+   "unit": "math-g6-q4-dp",
+   "text": "Find the angle measures and/or percentages based on the given data for a pie graph."
+  },
+  {
+   "id": "MAT-G6-Q4-006",
+   "unit": "math-g6-q4-dp",
+   "text": "Construct a pie graph using appropriate tools."
+  },
+  {
+   "id": "MAT-G6-Q4-007",
+   "unit": "math-g6-q4-dp",
+   "text": "Interpret data presented in a pie graph."
+  },
+  {
+   "id": "MAT-G6-Q4-008",
+   "unit": "math-g6-q4-dp",
+   "text": "Interpret data from digital media that are presented in tabular or graphical form."
+  },
+  {
+   "id": "MAT-G6-Q4-009",
+   "unit": "math-g6-q4-dp",
+   "text": "Draw conclusions or make inferences based on data presented in a pie graph."
+  },
+  {
+   "id": "MAT-G6-Q4-010",
+   "unit": "math-g6-q4-dp",
+   "text": "Solve problems using data presented in a pie graph."
+  },
+  {
+   "id": "MAT-G6-Q4-011",
+   "unit": "math-g6-q4-na",
+   "text": "Determine the common factors and the greatest common factor (GCF) of two numbers using the following methods: listing, prime factorization, and continuous division."
+  },
+  {
+   "id": "MAT-G6-Q4-012",
+   "unit": "math-g6-q4-na",
+   "text": "Find the common multiples and least common multiple (LCM) of two numbers using the following methods: listing, prime factorization, and continuous division."
+  },
+  {
+   "id": "MAT-G6-Q4-013",
+   "unit": "math-g6-q4-na",
+   "text": "Solve problems involving GCF and LCM."
+  },
+  {
+   "id": "MAT-G7-Q1-001",
+   "unit": "math-g7-q1-mg",
+   "text": "Draw and describe regular and irregular polygons with 5, 6, 8, or 10 sides, based on measurements of sides and angles, using a ruler and protractor."
+  },
+  {
+   "id": "MAT-G7-Q1-002",
+   "unit": "math-g7-q1-mg",
+   "text": "Draw triangles, quadrilaterals, and regular polygons (5, 6, 8, or 10 sides) with given angle measures."
+  },
+  {
+   "id": "MAT-G7-Q1-003",
+   "unit": "math-g7-q1-mg-2",
+   "text": "Describe and explain the relationships between angle pairs based on their measures."
+  },
+  {
+   "id": "MAT-G7-Q1-004",
+   "unit": "math-g7-q1-mg",
+   "text": "Classify polygons according to the number of sides, whether they are regular or irregular, and whether they are convex or non-convex."
+  },
+  {
+   "id": "MAT-G7-Q1-005",
+   "unit": "math-g7-q1-mg-2",
+   "text": "Deduce the relationship between the exterior angle and adjacent interior angle of a polygon."
+  },
+  {
+   "id": "MAT-G7-Q1-006",
+   "unit": "math-g7-q1-mg-2",
+   "text": "Determine the measures of angles and the number of sides of polygons."
+  },
+  {
+   "id": "MAT-G7-Q1-007",
+   "unit": "math-g7-q1-na",
+   "text": "Solve problems involving: a. percentage increase, and b. percentage decrease."
+  },
+  {
+   "id": "MAT-G7-Q1-008",
+   "unit": "math-g7-q1-na",
+   "text": "Solve money problems involving percentages (e. g., discount, commission, sales tax, simple interest)."
+  },
+  {
+   "id": "MAT-G7-Q1-009",
+   "unit": "math-g7-q1-na",
+   "text": "Create a financial plan."
+  },
+  {
+   "id": "MAT-G7-Q1-010",
+   "unit": "math-g7-q1-na-2",
+   "text": "Identify and explain the uses of rates."
+  },
+  {
+   "id": "MAT-G7-Q1-011",
+   "unit": "math-g7-q1-na-2",
+   "text": "Solve problems involving rates (e.g., speed)."
+  },
+  {
+   "id": "MAT-G7-Q1-012",
+   "unit": "math-g7-q1-na-3",
+   "text": "Describe given rational numbers as fractions, decimals, or percentages."
+  },
+  {
+   "id": "MAT-G7-Q1-013",
+   "unit": "math-g7-q1-na-3",
+   "text": "Order rational numbers on a number line."
+  },
+  {
+   "id": "MAT-G7-Q1-014",
+   "unit": "math-g7-q1-na-3",
+   "text": "Perform operations on rational numbers."
+  },
+  {
+   "id": "MAT-G7-Q2-001",
+   "unit": "math-g7-q2-na",
+   "text": "Determine the square roots of perfect squares and the cube roots of perfect cubes."
+  },
+  {
+   "id": "MAT-G7-Q2-002",
+   "unit": "math-g7-q2-na",
+   "text": "Identify irrational numbers involving square roots and cube roots, and their locations on the number line."
+  },
+  {
+   "id": "MAT-G7-Q2-003",
+   "unit": "math-g7-q2-mg",
+   "text": "Convert units of measure within the International System of Units (SI) and across different systems of measure."
+  },
+  {
+   "id": "MAT-G7-Q2-004",
+   "unit": "math-g7-q2-mg-2",
+   "text": "Explain inductively the volume of a cylinder using the area of a circle, leading to the identification of the formula."
+  },
+  {
+   "id": "MAT-G7-Q2-005",
+   "unit": "math-g7-q2-mg-2",
+   "text": "Find the volume of a cylinder."
+  },
+  {
+   "id": "MAT-G7-Q2-006",
+   "unit": "math-g7-q2-mg-2",
+   "text": "Solve problems involving the volumes of cylinders."
+  },
+  {
+   "id": "MAT-G7-Q2-007",
+   "unit": "math-g7-q2-mg-2",
+   "text": "Explore inductively the volume of square and rectangular pyramids using rectangular prisms, leading to the identification of the formula."
+  },
+  {
+   "id": "MAT-G7-Q2-008",
+   "unit": "math-g7-q2-mg-2",
+   "text": "Estimate volumes of square and rectangular pyramids."
+  },
+  {
+   "id": "MAT-G7-Q2-009",
+   "unit": "math-g7-q2-mg-2",
+   "text": "Solve problems involving volumes of square or rectangular pyramids."
+  },
+  {
+   "id": "MAT-G7-Q2-010",
+   "unit": "math-g7-q2-na-2",
+   "text": "Describe sets and their subsets, the union of sets, and the intersection of sets"
+  },
+  {
+   "id": "MAT-G7-Q2-011",
+   "unit": "math-g7-q2-na-2",
+   "text": "Illustrate sets and their subsets, the union of sets, and the intersection of sets, through the use of Venn diagrams."
+  },
+  {
+   "id": "MAT-G7-Q2-012",
+   "unit": "math-g7-q2-na-3",
+   "text": "Illustrate the different subsets of real numbers."
+  },
+  {
+   "id": "MAT-G7-Q3-001",
+   "unit": "math-g7-q3-dp",
+   "text": "Investigate different data collection and sampling techniques."
+  },
+  {
+   "id": "MAT-G7-Q3-002",
+   "unit": "math-g7-q3-dp",
+   "text": "Organize statistical data in a frequency distribution table."
+  },
+  {
+   "id": "MAT-G7-Q3-003",
+   "unit": "math-g7-q3-dp",
+   "text": "Use appropriate graphs to represent organized data: pie graph, bar graph, line graph, and stem-and-leaf plot."
+  },
+  {
+   "id": "MAT-G7-Q3-004",
+   "unit": "math-g7-q3-dp-2",
+   "text": "Interpret statistical graphs."
+  },
+  {
+   "id": "MAT-G7-Q3-005",
+   "unit": "math-g7-q3-na",
+   "text": "Describe the set of integers."
+  },
+  {
+   "id": "MAT-G7-Q3-006",
+   "unit": "math-g7-q3-na",
+   "text": "Use positive and negative numbers to describe directions or opposites in real-life situations."
+  },
+  {
+   "id": "MAT-G7-Q3-007",
+   "unit": "math-g7-q3-na",
+   "text": "Locate integers on the number line."
+  },
+  {
+   "id": "MAT-G7-Q3-008",
+   "unit": "math-g7-q3-na",
+   "text": "Compare and order integers."
+  },
+  {
+   "id": "MAT-G7-Q3-009",
+   "unit": "math-g7-q3-na-2",
+   "text": "Add and subtract integers; using concrete models (e.g., counters, integer chips), pictorial models (e.g., bar models, number lines), and with integers written as numerals."
+  },
+  {
+   "id": "MAT-G7-Q3-010",
+   "unit": "math-g7-q3-na-2",
+   "text": "Multiply and divide integers."
+  },
+  {
+   "id": "MAT-G7-Q3-011",
+   "unit": "math-g7-q3-na-3",
+   "text": "Simplify numerical expressions involving integers using number properties and the order of operations (GEMDAS)."
+  },
+  {
+   "id": "MAT-G7-Q3-012",
+   "unit": "math-g7-q3-na-4",
+   "text": "Identify the absolute value of an integer, and its meaning on the number line."
+  },
+  {
+   "id": "MAT-G7-Q4-001",
+   "unit": "math-g7-q4-na",
+   "text": "Solve simple equations represented by bar models to find unknowns."
+  },
+  {
+   "id": "MAT-G7-Q4-002",
+   "unit": "math-g7-q4-na-2",
+   "text": "Distinguish a variable from a constant in an algebraic expression."
+  },
+  {
+   "id": "MAT-G7-Q4-003",
+   "unit": "math-g7-q4-na-2",
+   "text": "Evaluate algebraic expressions given the value/s of the variable/s."
+  },
+  {
+   "id": "MAT-G7-Q4-004",
+   "unit": "math-g7-q4-na-2",
+   "text": "Translate verbal phrases into algebraic expressions."
+  },
+  {
+   "id": "MAT-G7-Q4-005",
+   "unit": "math-g7-q4-na",
+   "text": "Illustrate the properties of equality."
+  },
+  {
+   "id": "MAT-G7-Q4-006",
+   "unit": "math-g7-q4-na-3",
+   "text": "Solve one variable in terms of the other variables in a formula."
+  },
+  {
+   "id": "MAT-G7-Q4-007",
+   "unit": "math-g7-q4-na",
+   "text": "Write equations in algebraic form."
+  },
+  {
+   "id": "MAT-G7-Q4-008",
+   "unit": "math-g7-q4-na",
+   "text": "Find the value of an unknown in an equation where the unknown is non-negative."
+  },
+  {
+   "id": "MAT-G7-Q4-009",
+   "unit": "math-g7-q4-na-3",
+   "text": "Solve problems involving algebraic expressions and formulas"
+  },
+  {
+   "id": "MAT-G7-Q4-010",
+   "unit": "math-g7-q4-dp",
+   "text": "Collect data from experiments (e.g., number of heads obtained when tossing a coin, a number of times, number of prime numbers obtained when rolling a die a number of times)."
+  },
+  {
+   "id": "MAT-G7-Q4-011",
+   "unit": "math-g7-q4-dp",
+   "text": "Express outcomes in words and/or symbols, and represents outcomes in tables and/or graphs."
+  },
+  {
+   "id": "MAT-G7-Q4-012",
+   "unit": "math-g7-q4-dp",
+   "text": "Solve problems using the outcomes of experiments."
+  },
+  {
+   "id": "MAT-G7-Q4-013",
+   "unit": "math-g7-q4-na-4",
+   "text": "Write numbers in scientific notation to represent very large or very small numbers, and vice versa."
+  },
+  {
+   "id": "MAT-G7-Q4-014",
+   "unit": "math-g7-q4-na-4",
+   "text": "Perform operations on numbers expressed in scientific notation."
+  },
+  {
+   "id": "MAT-G8-Q1-001",
+   "unit": "math-g8-q1-dp",
+   "text": "Determine measures of central tendency of ungrouped data."
+  },
+  {
+   "id": "MAT-G8-Q1-002",
+   "unit": "math-g8-q1-dp",
+   "text": "Draw conclusions from statistical data using the measures of central tendency."
+  },
+  {
+   "id": "MAT-G8-Q1-003",
+   "unit": "math-g8-q1-na",
+   "text": "Model real-life situations using algebraic expressions."
+  },
+  {
+   "id": "MAT-G8-Q1-004",
+   "unit": "math-g8-q1-na",
+   "text": "Add and subtract simple monomials."
+  },
+  {
+   "id": "MAT-G8-Q1-005",
+   "unit": "math-g8-q1-na",
+   "text": "Multiply and divide simple monomials, leading to the derivation of the laws of exponents."
+  },
+  {
+   "id": "MAT-G8-Q1-006",
+   "unit": "math-g8-q1-na",
+   "text": "Multiply simple monomials and binomials with simple binomials and multinomials, using the distributive property with various techniques and models."
+  },
+  {
+   "id": "MAT-G8-Q1-007",
+   "unit": "math-g8-q1-na",
+   "text": "Use special product patterns to multiply binomials."
+  },
+  {
+   "id": "MAT-G8-Q1-008",
+   "unit": "math-g8-q1-na",
+   "text": "Completely factor different types of polynomials (polynomials with common monomial factor; difference of two squares; quadratic trinomials, including perfect square trinomials)."
+  },
+  {
+   "id": "MAT-G8-Q1-009",
+   "unit": "math-g8-q1-na",
+   "text": "Solve problems involving special products and factors of polynomials."
+  },
+  {
+   "id": "MAT-G8-Q1-010",
+   "unit": "math-g8-q1-na-2",
+   "text": "Simplify rational algebraic expressions."
+  },
+  {
+   "id": "MAT-G8-Q1-011",
+   "unit": "math-g8-q1-na-2",
+   "text": "Perform operations on rational algebraic expressions."
+  },
+  {
+   "id": "MAT-G8-Q1-012",
+   "unit": "math-g8-q1-na-2",
+   "text": "Solve problems involving simple rational algebraic equations (using cross-multiplication)."
+  },
+  {
+   "id": "MAT-G8-Q1-013",
+   "unit": "math-g8-q1-na-3",
+   "text": "Formulate the rule for finding the next term in a sequence by looking for patterns."
+  },
+  {
+   "id": "MAT-G8-Q2-001",
+   "unit": "math-g8-q2-na",
+   "text": "Illustrate and describe the Cartesian coordinate plane."
+  },
+  {
+   "id": "MAT-G8-Q2-002",
+   "unit": "math-g8-q2-na",
+   "text": "Plot points on the Cartesian coordinate plane and determine the coordinates of a point on the plane."
+  },
+  {
+   "id": "MAT-G8-Q2-003",
+   "unit": "math-g8-q2-na",
+   "text": "Solve problems involving distance between two points and midpoint of a line segment on the Cartesian coordinate plane."
+  },
+  {
+   "id": "MAT-G8-Q2-004",
+   "unit": "math-g8-q2-mg",
+   "text": "Explore inductively the volume of pyramids other than square and rectangular pyramids."
+  },
+  {
+   "id": "MAT-G8-Q2-005",
+   "unit": "math-g8-q2-mg",
+   "text": "Find the volume of pyramids other than square and rectangular pyramids."
+  },
+  {
+   "id": "MAT-G8-Q2-006",
+   "unit": "math-g8-q2-mg",
+   "text": "Solve problems involving volume of pyramids."
+  },
+  {
+   "id": "MAT-G8-Q2-007",
+   "unit": "math-g8-q2-mg",
+   "text": "Explore inductively the volumes of cones and spheres, leading to their formulas."
+  },
+  {
+   "id": "MAT-G8-Q2-008",
+   "unit": "math-g8-q2-mg",
+   "text": "Find the volumes of cones and spheres."
+  },
+  {
+   "id": "MAT-G8-Q2-009",
+   "unit": "math-g8-q2-mg",
+   "text": "Solve problems involving the volume of cones and spheres."
+  },
+  {
+   "id": "MAT-G8-Q2-010",
+   "unit": "math-g8-q2-mg-2",
+   "text": "Apply the Pythagorean Theorem in finding the missing side of a right triangle, and its converse in classifying triangles."
+  },
+  {
+   "id": "MAT-G8-Q2-011",
+   "unit": "math-g8-q2-mg-3",
+   "text": "Apply the triangle inequality theorems to establish results for angles and sides in triangles."
+  },
+  {
+   "id": "MAT-G8-Q2-012",
+   "unit": "math-g8-q2-na-2",
+   "text": "Solve financial problems involving: a. earning money, b. profit and loss, c. buying amounts of products that represent the best value (‘best buys’), and d. buying on terms (‘instalment plan’)."
+  },
+  {
+   "id": "MAT-G8-Q3-001",
+   "unit": "math-g8-q3-na",
+   "text": "Solve linear equations in one variable."
+  },
+  {
+   "id": "MAT-G8-Q3-002",
+   "unit": "math-g8-q3-na",
+   "text": "Solve problems (e.g., number problems, geometry problems, and money problems) involving linear equations in one variable."
+  },
+  {
+   "id": "MAT-G8-Q3-003",
+   "unit": "math-g8-q3-na-2",
+   "text": "Solve linear inequalities in one variable."
+  },
+  {
+   "id": "MAT-G8-Q3-004",
+   "unit": "math-g8-q3-na-2",
+   "text": "Graph on a number line the solution of linear inequalities in one variable."
+  },
+  {
+   "id": "MAT-G8-Q3-005",
+   "unit": "math-g8-q3-na-2",
+   "text": "Solve problems involving linear inequalities in one variable."
+  },
+  {
+   "id": "MAT-G8-Q3-006",
+   "unit": "math-g8-q3-na-3",
+   "text": "Describe a linear equation in two variables and express its solution using ordered pairs."
+  },
+  {
+   "id": "MAT-G8-Q3-007",
+   "unit": "math-g8-q3-na-3",
+   "text": "Define and determine the slope and intercepts of a line."
+  },
+  {
+   "id": "MAT-G8-Q3-008",
+   "unit": "math-g8-q3-na-3",
+   "text": "Find the equation of a line given: a. two points, b. the slope and a point, c. the slope and y-intercept, and d. the x– and y– intercepts."
+  },
+  {
+   "id": "MAT-G8-Q3-009",
+   "unit": "math-g8-q3-na-3",
+   "text": "Sketch the graph (straight line) of a linear equation given: a. any two points on the line, b. the x– and y– intercepts, and c. the slope and a point on the line."
+  },
+  {
+   "id": "MAT-G8-Q3-010",
+   "unit": "math-g8-q3-na-4",
+   "text": "Define and illustrate a system of linear equations in two variables."
+  },
+  {
+   "id": "MAT-G8-Q3-011",
+   "unit": "math-g8-q3-na-4",
+   "text": "Solve a system of linear equations (with integer solutions) by graphing."
+  },
+  {
+   "id": "MAT-G8-Q3-012",
+   "unit": "math-g8-q3-na-4",
+   "text": "Classify the types of systems of linear equations based on the number of solutions."
+  },
+  {
+   "id": "MAT-G8-Q3-013",
+   "unit": "math-g8-q3-na-4",
+   "text": "Solve algebraically a system of linear equations in two variables."
+  },
+  {
+   "id": "MAT-G8-Q3-014",
+   "unit": "math-g8-q3-na-4",
+   "text": "Solve problems involving systems of linear equations in two variables."
+  },
+  {
+   "id": "MAT-G8-Q3-015",
+   "unit": "math-g8-q3-na-5",
+   "text": "Recognize and solve problems involving linear inequalities in two variables."
+  },
+  {
+   "id": "MAT-G8-Q4-001",
+   "unit": "math-g8-q4-dp",
+   "text": "Calculate the measures of variability (range, mean deviation, and standard deviation) for ungrouped data."
+  },
+  {
+   "id": "MAT-G8-Q4-002",
+   "unit": "math-g8-q4-dp",
+   "text": "Draw conclusions from statistical data using the measures of variability."
+  },
+  {
+   "id": "MAT-G8-Q4-003",
+   "unit": "math-g8-q4-dp-2",
+   "text": "Investigate, interpret, and analyze graphs from primary data (e.g., examination scores)."
+  },
+  {
+   "id": "MAT-G8-Q4-004",
+   "unit": "math-g8-q4-dp-2",
+   "text": "Investigate, interpret, and analyze graphs from secondary data."
+  },
+  {
+   "id": "MAT-G8-Q4-005",
+   "unit": "math-g8-q4-dp-3",
+   "text": "Differentiate theoretical from experimental probability by conducting an experiment or an investigation."
+  },
+  {
+   "id": "MAT-G8-Q4-006",
+   "unit": "math-g8-q4-dp-3",
+   "text": "Describe the sample space of an experiment."
+  },
+  {
+   "id": "MAT-G8-Q4-007",
+   "unit": "math-g8-q4-dp-4",
+   "text": "Use the Fundamental Counting Principle to determine the number of possible outcomes of an experiment."
+  },
+  {
+   "id": "MAT-G8-Q4-008",
+   "unit": "math-g8-q4-dp-3",
+   "text": "Calculate the theoretical probability of a single event by listing all possible outcomes."
+  },
+  {
+   "id": "MAT-G8-Q4-009",
+   "unit": "math-g8-q4-dp-3",
+   "text": "Describe probability as a measure of the chance of an event occurring."
+  },
+  {
+   "id": "MAT-G8-Q4-010",
+   "unit": "math-g8-q4-dp-3",
+   "text": "Calculate the probability of simple combined events by listing, or by possibility diagrams or tree diagrams."
+  },
+  {
+   "id": "MAT-G8-Q4-011",
+   "unit": "math-g8-q4-dp-4",
+   "text": "Solve problems involving experimental probability and/or theoretical probability using the Fundamental Counting Principle."
+  },
+  {
+   "id": "MAT-G9-Q1-001",
+   "unit": "math-g9-q1-mg",
+   "text": "Illustrate and describe point, line, ray, line segment, angle, and plane using models and geometric notations."
+  },
+  {
+   "id": "MAT-G9-Q1-002",
+   "unit": "math-g9-q1-mg-2",
+   "text": "Construct perpendicular and parallel lines."
+  },
+  {
+   "id": "MAT-G9-Q1-003",
+   "unit": "math-g9-q1-mg-2",
+   "text": "Identify the relationships between angles formed by parallel lines cut by a transversal."
+  },
+  {
+   "id": "MAT-G9-Q1-004",
+   "unit": "math-g9-q1-mg-2",
+   "text": "Determine angle measures involving angle pairs, parallel and perpendicular lines, and parallel lines cut by a transversal."
+  },
+  {
+   "id": "MAT-G9-Q1-005",
+   "unit": "math-g9-q1-na",
+   "text": "Identify relations that are functions based on the definitions of relations and functions."
+  },
+  {
+   "id": "MAT-G9-Q1-006",
+   "unit": "math-g9-q1-na",
+   "text": "Determine the domain and the range of a function expressed in different representations."
+  },
+  {
+   "id": "MAT-G9-Q1-007",
+   "unit": "math-g9-q1-na",
+   "text": "Express the relationship between two variables as a function."
+  },
+  {
+   "id": "MAT-G9-Q1-008",
+   "unit": "math-g9-q1-na-2",
+   "text": "Determine the slopes (as rate of change) and the zeros of linear functions represented in: a. graphs, b. equations, and c. tables of values."
+  },
+  {
+   "id": "MAT-G9-Q1-009",
+   "unit": "math-g9-q1-na-2",
+   "text": "Graph a linear function and determine its: a. domain, b. range, c. intercepts, and d. slope."
+  },
+  {
+   "id": "MAT-G9-Q1-010",
+   "unit": "math-g9-q1-na-2",
+   "text": "Represent linear relationships found in real-life situations using different representations."
+  },
+  {
+   "id": "MAT-G9-Q1-011",
+   "unit": "math-g9-q1-na-2",
+   "text": "Solve problems involving linear functions."
+  },
+  {
+   "id": "MAT-G9-Q2-001",
+   "unit": "math-g9-q2-mg",
+   "text": "Determine conditions that guarantee parallelism and perpendicularity of lines."
+  },
+  {
+   "id": "MAT-G9-Q2-002",
+   "unit": "math-g9-q2-mg-2",
+   "text": "Classify quadrilaterals based on formal definitions."
+  },
+  {
+   "id": "MAT-G9-Q2-003",
+   "unit": "math-g9-q2-mg-2",
+   "text": "Use properties of parallelograms to find measures of angles, sides, perpendicular height, and diagonals."
+  },
+  {
+   "id": "MAT-G9-Q2-004",
+   "unit": "math-g9-q2-mg-2",
+   "text": "Solve problems involving parallelograms, rectangles, squares, or rhombuses by applying their different properties."
+  },
+  {
+   "id": "MAT-G9-Q2-005",
+   "unit": "math-g9-q2-mg-2",
+   "text": "Prove properties of parallelograms by applying the relevant theorems."
+  },
+  {
+   "id": "MAT-G9-Q2-006",
+   "unit": "math-g9-q2-mg-2",
+   "text": "Derive the properties of trapezoids and kites by exploring the relationship between their parts and secondary parts."
+  },
+  {
+   "id": "MAT-G9-Q2-007",
+   "unit": "math-g9-q2-mg-2",
+   "text": "Solve problems on trapezoids and kites by applying their properties."
+  },
+  {
+   "id": "MAT-G9-Q2-008",
+   "unit": "math-g9-q2-mg-4",
+   "text": "Distinguish inductive and deductive reasoning for establishing proofs."
+  },
+  {
+   "id": "MAT-G9-Q2-009",
+   "unit": "math-g9-q2-mg-4",
+   "text": "State postulates and theorems about defined and undefined terms in geometry, and formulates proofs involving them."
+  },
+  {
+   "id": "MAT-G9-Q2-010",
+   "unit": "math-g9-q2-mg-3",
+   "text": "Use the triangle congruence postulates and theorems to illustrate congruence of triangles, including CPCTC (definition of congruent triangles)."
+  },
+  {
+   "id": "MAT-G9-Q2-011",
+   "unit": "math-g9-q2-mg-3",
+   "text": "Solve problems involving right triangle congruence theorems, isosceles triangle theorem, perpendicular bisector theorem, and midline theorem"
+  },
+  {
+   "id": "MAT-G9-Q2-012",
+   "unit": "math-g9-q2-mg-3",
+   "text": "Construct and justify the construction of segments, angles and triangles, including, but not limited to, the triangle’s secondary parts and centers, using the triangle congruence postulates and theorems."
+  },
+  {
+   "id": "MAT-G9-Q2-013",
+   "unit": "math-g9-q2-mg-4",
+   "text": "Construct congruence proofs involving triangles or corresponding parts of triangles using a two-column proof."
+  },
+  {
+   "id": "MAT-G9-Q3-001",
+   "unit": "math-g9-q3-na",
+   "text": "Represent real-life situations that can be modelled using quadratic relationships."
+  },
+  {
+   "id": "MAT-G9-Q3-002",
+   "unit": "math-g9-q3-na",
+   "text": "Graph equations in two variables to represent quadratic relationships, such as y = ax^2, y = ax^2 + b, y = a(x - b)^2."
+  },
+  {
+   "id": "MAT-G9-Q3-003",
+   "unit": "math-g9-q3-na",
+   "text": "Interpret features of a parabola such as vertex, axis of symmetry, x–intercepts, opening direction, minimum or maximum value, zeros, and increasing and decreasing intervals."
+  },
+  {
+   "id": "MAT-G9-Q3-004",
+   "unit": "math-g9-q3-na",
+   "text": "Transform the quadratic functions y = ax^2, y = ax^2 + b, y = a(x - b)^2 and y = ax^2 + bx + c into the form y = a(x - h)^2 + k, and vice versa."
+  },
+  {
+   "id": "MAT-G9-Q3-005",
+   "unit": "math-g9-q3-na",
+   "text": "Sketch the graph of quadratic functions expressed in equation form."
+  },
+  {
+   "id": "MAT-G9-Q3-006",
+   "unit": "math-g9-q3-na",
+   "text": "Analyze the effect of changing the values of the parameters on the behavior of its graph and on the properties of the quadratic function y = a(x - h)^2 + k."
+  },
+  {
+   "id": "MAT-G9-Q3-007",
+   "unit": "math-g9-q3-na-2",
+   "text": "Find the zeros of quadratic functions in factored and standard form, graphically and algebraically."
+  },
+  {
+   "id": "MAT-G9-Q3-008",
+   "unit": "math-g9-q3-na-2",
+   "text": "Solve quadratic equations by: a. extracting square roots, b. factoring, and c. using the quadratic formula."
+  },
+  {
+   "id": "MAT-G9-Q3-009",
+   "unit": "math-g9-q3-na-2",
+   "text": "Solve problems involving quadratic functions and equations"
+  },
+  {
+   "id": "MAT-G9-Q3-010",
+   "unit": "math-g9-q3-mg",
+   "text": "Illustrate similarity of polygons."
+  },
+  {
+   "id": "MAT-G9-Q3-011",
+   "unit": "math-g9-q3-mg",
+   "text": "Illustrate and apply triangle similarity theorems in different situations."
+  },
+  {
+   "id": "MAT-G9-Q3-012",
+   "unit": "math-g9-q3-mg",
+   "text": "Solve problems involving triangle similarity."
+  },
+  {
+   "id": "MAT-G9-Q3-013",
+   "unit": "math-g9-q3-mg-2",
+   "text": "Solve problems involving measures of sides and angles of special triangles (30-60-90, 45-45-90)."
+  },
+  {
+   "id": "MAT-G9-Q3-014",
+   "unit": "math-g9-q3-na-3",
+   "text": "Illustrate real-life situations that involve direct variation and real-life situations that involve inverse variation."
+  },
+  {
+   "id": "MAT-G9-Q3-015",
+   "unit": "math-g9-q3-na-3",
+   "text": "Translate a relationship between two quantities into a variation statement and/or a mathematical equation, given a table of values or a graph."
+  },
+  {
+   "id": "MAT-G9-Q3-016",
+   "unit": "math-g9-q3-na-3",
+   "text": "Solve problems involving variation."
+  },
+  {
+   "id": "MAT-G9-Q4-001",
+   "unit": "math-g9-q4-mg",
+   "text": "Solve problems involving the perpendicular bisector theorem, isosceles triangle theorem, theorems on equilateral triangles, and the midline theorem."
+  },
+  {
+   "id": "MAT-G9-Q4-002",
+   "unit": "math-g9-q4-mg",
+   "text": "Explain theorems on triangle inequalities and apply these theorems in comparing measures in a triangle."
+  },
+  {
+   "id": "MAT-G9-Q4-003",
+   "unit": "math-g9-q4-mg-2",
+   "text": "Determine the values of the sine, cosine, and tangent trigonometric ratios corresponding to the angles of the special triangles."
+  },
+  {
+   "id": "MAT-G9-Q4-004",
+   "unit": "math-g9-q4-mg-2",
+   "text": "Find the values of the sine, cosine, and tangent ratios of any acute angle."
+  },
+  {
+   "id": "MAT-G9-Q4-005",
+   "unit": "math-g9-q4-mg-2",
+   "text": "Use the trigonometric ratios in solving right triangles."
+  },
+  {
+   "id": "MAT-G9-Q4-006",
+   "unit": "math-g9-q4-mg-2",
+   "text": "Illustrate angles of elevation and angles of depression."
+  },
+  {
+   "id": "MAT-G9-Q4-007",
+   "unit": "math-g9-q4-mg-2",
+   "text": "Solve real-life problems involving right triangles through the application of the trigonometric ratios."
+  },
+  {
+   "id": "MAT-G9-Q4-008",
+   "unit": "math-g9-q4-dp",
+   "text": "Interpret and analyze data from the digital media that are in tabular or graphical form to assess whether the data may be misleading."
+  },
+  {
+   "id": "MAT-G9-Q4-009",
+   "unit": "math-g9-q4-dp-2",
+   "text": "Illustrate simple and compound events."
+  },
+  {
+   "id": "MAT-G9-Q4-010",
+   "unit": "math-g9-q4-dp-2",
+   "text": "Determine the probabilities of simple and compound events."
+  },
+  {
+   "id": "MAT-G9-Q4-011",
+   "unit": "math-g9-q4-dp-2",
+   "text": "Solve problems involving probabilities of simple and compound events."
+  },
+  {
+   "id": "MAT-G10-Q1-001",
+   "unit": "math-g10-q1-mg",
+   "text": "Apply laws of sines in solving oblique triangles, including ambiguous cases."
+  },
+  {
+   "id": "MAT-G10-Q1-002",
+   "unit": "math-g10-q1-mg",
+   "text": "Apply laws of cosines in solving oblique triangles."
+  },
+  {
+   "id": "MAT-G10-Q1-003",
+   "unit": "math-g10-q1-mg-2",
+   "text": "Describe the position of points in the Cartesian plane."
+  },
+  {
+   "id": "MAT-G10-Q1-004",
+   "unit": "math-g10-q1-mg-2",
+   "text": "Describe translations, reflections, and rotations, in the Cartesian plane using coordinates."
+  },
+  {
+   "id": "MAT-G10-Q1-005",
+   "unit": "math-g10-q1-mg",
+   "text": "Solve problems involving laws of sines and cosines, including bearings."
+  },
+  {
+   "id": "MAT-G10-Q1-006",
+   "unit": "math-g10-q1-na",
+   "text": "Illustrate on the number line quadratic inequalities in one variable."
+  },
+  {
+   "id": "MAT-G10-Q1-007",
+   "unit": "math-g10-q1-na",
+   "text": "Solve quadratic inequalities in one variable and expresses solutions in various notations."
+  },
+  {
+   "id": "MAT-G10-Q1-008",
+   "unit": "math-g10-q1-na",
+   "text": "Solve problems involving quadratic inequalities in one variable."
+  },
+  {
+   "id": "MAT-G10-Q1-009",
+   "unit": "math-g10-q1-na",
+   "text": "Solve quadratic inequalities in two variables."
+  },
+  {
+   "id": "MAT-G10-Q1-010",
+   "unit": "math-g10-q1-na",
+   "text": "Determine the region of solutions of a linear or quadratic inequality in two variables."
+  },
+  {
+   "id": "MAT-G10-Q1-011",
+   "unit": "math-g10-q1-na-2",
+   "text": "Solve absolute value equations in one variable and express solutions in various notations)"
+  },
+  {
+   "id": "MAT-G10-Q1-012",
+   "unit": "math-g10-q1-na-2",
+   "text": "Solve absolute value inequalities in one variable and express solutions in various notations"
+  },
+  {
+   "id": "MAT-G10-Q2-001",
+   "unit": "math-g10-q2-dp-2",
+   "text": "Illustrate measures of position (quartiles, deciles, and percentiles)."
+  },
+  {
+   "id": "MAT-G10-Q2-002",
+   "unit": "math-g10-q2-dp",
+   "text": "Construct and interpret box-and-whisker plots and cumulative frequency histograms and polygons."
+  },
+  {
+   "id": "MAT-G10-Q2-003",
+   "unit": "math-g10-q2-dp-2",
+   "text": "Calculate a specified measure of position, interquartile range, and outliers, from ungrouped data."
+  },
+  {
+   "id": "MAT-G10-Q2-004",
+   "unit": "math-g10-q2-dp-2",
+   "text": "Calculate the percentile rank of a given score from ungrouped data."
+  },
+  {
+   "id": "MAT-G10-Q2-005",
+   "unit": "math-g10-q2-dp-2",
+   "text": "Draw conclusions from statistical data using the measures of position."
+  },
+  {
+   "id": "MAT-G10-Q2-006",
+   "unit": "math-g10-q2-na",
+   "text": "Illustrate the laws of rational non-integral exponents."
+  },
+  {
+   "id": "MAT-G10-Q2-007",
+   "unit": "math-g10-q2-na",
+   "text": "Simplify radical expressions."
+  },
+  {
+   "id": "MAT-G10-Q2-008",
+   "unit": "math-g10-q2-na",
+   "text": "Perform operations involving radical expressions, including rationalizing the denominator."
+  },
+  {
+   "id": "MAT-G10-Q2-009",
+   "unit": "math-g10-q2-na-2",
+   "text": "Determine the nature of roots of a quadratic equation using the discriminant."
+  },
+  {
+   "id": "MAT-G10-Q2-010",
+   "unit": "math-g10-q2-na-3",
+   "text": "Determine the equation of a quadratic function given: a. a table of values b. its graph, and c. its zeros."
+  },
+  {
+   "id": "MAT-G10-Q2-011",
+   "unit": "math-g10-q2-na-4",
+   "text": "Solve equations reducible to quadratic equations, e.g., x^4 - 5x^2 + 4 = 0"
+  },
+  {
+   "id": "MAT-G10-Q2-012",
+   "unit": "math-g10-q2-na-3",
+   "text": "Solve problems involving quadratic functions."
+  },
+  {
+   "id": "MAT-G10-Q2-013",
+   "unit": "math-g10-q2-na",
+   "text": "Solve radical equations, including equations reducible to linear or quadratic equations."
+  },
+  {
+   "id": "MAT-G10-Q3-001",
+   "unit": "math-g10-q3-na",
+   "text": "Transform the equation of a circle from center-radius form to general form, and vice versa."
+  },
+  {
+   "id": "MAT-G10-Q3-002",
+   "unit": "math-g10-q3-na",
+   "text": "Determine the center and the radius of a circle from a given equation."
+  },
+  {
+   "id": "MAT-G10-Q3-003",
+   "unit": "math-g10-q3-na",
+   "text": "Sketch the graph of a circle given its equation."
+  },
+  {
+   "id": "MAT-G10-Q3-004",
+   "unit": "math-g10-q3-na",
+   "text": "Find the equation of a circle from given conditions, e.g., given two points as the endpoints of a diameter."
+  },
+  {
+   "id": "MAT-G10-Q3-005",
+   "unit": "math-g10-q3-na",
+   "text": "Solve problems involving geometric figures on the Cartesian plane."
+  },
+  {
+   "id": "MAT-G10-Q3-006",
+   "unit": "math-g10-q3-dp",
+   "text": "Evaluate statistical reports by linking claims to displays, statistics, and representative data."
+  },
+  {
+   "id": "MAT-G10-Q3-007",
+   "unit": "math-g10-q3-dp-2",
+   "text": "Illustrate mutually exclusive events and non-mutually exclusive events."
+  },
+  {
+   "id": "MAT-G10-Q3-008",
+   "unit": "math-g10-q3-dp-2",
+   "text": "Identify complementary events."
+  },
+  {
+   "id": "MAT-G10-Q3-009",
+   "unit": "math-g10-q3-dp-2",
+   "text": "Solve probability problems involving: a. union and intersection of events, including mutually and non-mutually exclusive events; b. dependent and independent events, including conditional probability where the solution is limited to the use of contingency tables or Venn diagrams; and c. complementary events."
+  },
+  {
+   "id": "MAT-G10-Q4-001",
+   "unit": "math-g10-q4-na",
+   "text": "Explore inductively the relationship between simple interest and compound interest."
+  },
+  {
+   "id": "MAT-G10-Q4-002",
+   "unit": "math-g10-q4-na",
+   "text": "Calculate compound interest by repeated applications of simple interest."
+  },
+  {
+   "id": "MAT-G10-Q4-003",
+   "unit": "math-g10-q4-na",
+   "text": "Solve problems involving compound interest by repeated applications of simple interest."
+  },
+  {
+   "id": "MAT-G10-Q4-004",
+   "unit": "math-g10-q4-na",
+   "text": "Explain inductively the formulas for compound interest and depreciation."
+  },
+  {
+   "id": "MAT-G10-Q4-005",
+   "unit": "math-g10-q4-na",
+   "text": "Explore inductively the differences in the amount of compound interest obtained on amounts of money invested: a. annually, b. quarterly, and c. monthly."
+  },
+  {
+   "id": "MAT-G10-Q4-006",
+   "unit": "math-g10-q4-na",
+   "text": "Solve real-life problems involving: a. compound interest, and b. depreciation."
+  },
+  {
+   "id": "MAT-G10-Q4-007",
+   "unit": "math-g10-q4-mg",
+   "text": "Establish properties and relationships for central angles, inscribed angles, secants, and tangents, of a circle."
+  },
+  {
+   "id": "MAT-G10-Q4-008",
+   "unit": "math-g10-q4-mg",
+   "text": "Solve problems involving: a. central angles, b. inscribed angles, c. angles formed by two intersecting chords, d. angles formed by two secants intersecting outside the circle, e. angles formed by two intersecting tangents, and f. angles formed by intersecting secant and tangent."
+  },
+  {
+   "id": "MAT-G10-Q4-009",
+   "unit": "math-g10-q4-mg",
+   "text": "Establish properties and relationships for chords, secants, and tangents."
+  },
+  {
+   "id": "MAT-G10-Q4-010",
+   "unit": "math-g10-q4-mg",
+   "text": "Solve problems involving lengths of: a. intersecting chords, b. two secant segments intersecting outside a circle, and c. two intersecting tangent segments."
+  },
+  {
+   "id": "MAT-G10-Q4-011",
+   "unit": "math-g10-q4-mg-2",
+   "text": "Define sectors and segments of a circle and finds their areas."
+  },
+  {
+   "id": "MAT-G10-Q4-012",
+   "unit": "math-g10-q4-mg-2",
+   "text": "Solve problems involving area of a sector of a circle, segment of a circle, and shaded regions in other figures that involve sectors or segments."
+  },
+  {
+   "id": "SCI-G3-Q1-001",
+   "unit": "science-g3-q1-matter",
+   "text": "Identify objects, activities, or natural events observed in their local environment that can be explained by science"
+  },
+  {
+   "id": "SCI-G3-Q1-002",
+   "unit": "science-g3-q1-matter-2",
+   "text": "Participate in guided science activities by asking questions and tinkering with materials"
+  },
+  {
+   "id": "SCI-G3-Q1-003",
+   "unit": "science-g3-q1-matter-2",
+   "text": "Describe the uses of various science equipment and materials used in simple activities, such as a ruler, hand lens, scissors, balloons, modeling clay, and cardboard"
+  },
+  {
+   "id": "SCI-G3-Q1-004",
+   "unit": "science-g3-q1-matter-2",
+   "text": "Describe different science process skills used in performing simple science activities, such as observing, predicting, and measuring using units such as millimeter, centimeter, and meter"
+  },
+  {
+   "id": "SCI-G3-Q1-005",
+   "unit": "science-g3-q1-matter-3",
+   "text": "Describe the physical properties of solid materials, such as hard, shiny, or stretchable"
+  },
+  {
+   "id": "SCI-G3-Q1-006",
+   "unit": "science-g3-q1-matter-3",
+   "text": "Explain that changes in materials can be harmful to living and non-living things in the environment, such as trash disposal, and burning household materials"
+  },
+  {
+   "id": "SCI-G3-Q1-007",
+   "unit": "science-g3-q1-matter-3",
+   "text": "Demonstrate proper handling and disposal of materials according to their properties, such as reusing objects, disposing of excess oil into garbage, and recycling paper, plastic or glass"
+  },
+  {
+   "id": "SCI-G3-Q1-008",
+   "unit": "science-g3-q1-matter-3",
+   "text": "Describe how changes in solid materials make them useful, such as when they are shaped, pressed, hammered, joined, or cut"
+  },
+  {
+   "id": "SCI-G3-Q1-009",
+   "unit": "science-g3-q1-matter-3",
+   "text": "Identify the properties and uses of metals used by the local community such as iron, gold, silver, and copper."
+  },
+  {
+   "id": "SCI-G3-Q2-001",
+   "unit": "science-g3-q2-living",
+   "text": "Use the skills of observing, predicting, and measuring in performing simple guided science activities"
+  },
+  {
+   "id": "SCI-G3-Q2-002",
+   "unit": "science-g3-q2-living-2",
+   "text": "Observe and describe the difference between living and non-living things and give examples of each that can be found in the local environment"
+  },
+  {
+   "id": "SCI-G3-Q2-003",
+   "unit": "science-g3-q2-living-3",
+   "text": "Describe the characteristics of living things: they grow, respond, and reproduce"
+  },
+  {
+   "id": "SCI-G3-Q2-004",
+   "unit": "science-g3-q2-living-4",
+   "text": "Observe and describe the outer body parts of animals, such as head, legs or wings, and identify their role to move and to gather food"
+  },
+  {
+   "id": "SCI-G3-Q2-005",
+   "unit": "science-g3-q2-living-4",
+   "text": "Observe the outer parts of plants, such as leaves, roots, and stems and identify their role to get water and nutrients from the soil"
+  },
+  {
+   "id": "SCI-G3-Q2-006",
+   "unit": "science-g3-q2-living-4",
+   "text": "Identify the basic needs of all living things, such as air, food, water, and shelter"
+  },
+  {
+   "id": "SCI-G3-Q2-007",
+   "unit": "science-g3-q2-living-4",
+   "text": "Observe examples and explain how living things depend on one another and on the environment to meet their basic needs"
+  },
+  {
+   "id": "SCI-G3-Q2-008",
+   "unit": "science-g3-q2-living-4",
+   "text": "Recognize that there is a need to protect and conserve the environment for living things to survive."
+  },
+  {
+   "id": "SCI-G3-Q3-001",
+   "unit": "science-g3-q3-force-2",
+   "text": "Explore and demonstrate different ways to make objects move by natural causes, such as wind and water, or by people, such as pushing, pulling, rolling, and carrying"
+  },
+  {
+   "id": "SCI-G3-Q3-002",
+   "unit": "science-g3-q3-force-2",
+   "text": "Explore and describe things that affect the movement of objects, including size, shape, heaviness, material, and surface texture"
+  },
+  {
+   "id": "SCI-G3-Q3-003",
+   "unit": "science-g3-q3-force-2",
+   "text": "Measure and describe changes in the position of people or objects in relation to their original position, such as moving closer, farther, left, or right"
+  },
+  {
+   "id": "SCI-G3-Q3-004",
+   "unit": "science-g3-q3-force-3",
+   "text": "Explore and describe how sound is made and transferred in everyday situations, such as the ringing of a bell or the hearing of noises"
+  },
+  {
+   "id": "SCI-G3-Q3-005",
+   "unit": "science-g3-q3-force-3",
+   "text": "Describe sources of light and their use in everyday situations"
+  },
+  {
+   "id": "SCI-G3-Q3-006",
+   "unit": "science-g3-q3-force-3",
+   "text": "Participate in guided science activities to explore and describe sources of light, how it behaves or can be changed, and its uses in everyday situations"
+  },
+  {
+   "id": "SCI-G3-Q3-007",
+   "unit": "science-g3-q3-force-3",
+   "text": "Explain how light and sound can be harmful to people and make suggestions on how to protect oneself from them"
+  },
+  {
+   "id": "SCI-G3-Q3-008",
+   "unit": "science-g3-q3-force",
+   "text": "Participate in guided activities to explore and describe some ways to use movement, sound, and light to send information between two people."
+  },
+  {
+   "id": "SCI-G3-Q4-001",
+   "unit": "science-g3-q4-earth",
+   "text": "Participate in guided activities to locate and describe different types of non-living things found in and around their school, such as rocks, soil, water, air, metals, clouds, rain, and sunlight"
+  },
+  {
+   "id": "SCI-G3-Q4-002",
+   "unit": "science-g3-q4-earth",
+   "text": "Identify some useful things that people have made from non-living materials and describe what natural materials have been used to make the items"
+  },
+  {
+   "id": "SCI-G3-Q4-003",
+   "unit": "science-g3-q4-earth",
+   "text": "Recognize that the non-living materials that make up the environment are referred to as ‘earth materials’"
+  },
+  {
+   "id": "SCI-G3-Q4-004",
+   "unit": "science-g3-q4-earth-2",
+   "text": "Observe and record changes in the weather during a day or over some days and describe the different types and patterns of weather that occur in the local area"
+  },
+  {
+   "id": "SCI-G3-Q4-005",
+   "unit": "science-g3-q4-earth-2",
+   "text": "Describe how changes in the weather can affect daily activities and explain how some types of weather can be dangerous for people"
+  },
+  {
+   "id": "SCI-G3-Q4-006",
+   "unit": "science-g3-q4-earth-3",
+   "text": "Participate in guided activities to carefully observe and describe the natural objects commonly seen in the sky during daytime and nighttime, including the Sun, the Moon, planets, and stars"
+  },
+  {
+   "id": "SCI-G3-Q4-007",
+   "unit": "science-g3-q4-earth-3",
+   "text": "Participate in guided activities to explore and record how and when the Sun, the Moon, planets, and stars can be seen moving across the sky"
+  },
+  {
+   "id": "SCI-G3-Q4-008",
+   "unit": "science-g3-q4-earth-3",
+   "text": "Explain how natural objects in the sky affect activities of people"
+  },
+  {
+   "id": "SCI-G3-Q4-009",
+   "unit": "science-g3-q4-earth-3",
+   "text": "Describe safety measures that people can use to avoid the harmful effects of the Sun’s light."
+  },
+  {
+   "id": "SCI-G4-Q1-001",
+   "unit": "science-g4-q1-matter",
+   "text": "Use information from secondary sources to identify a famous Filipino and/or foreign scientist and their invention/s"
+  },
+  {
+   "id": "SCI-G4-Q1-002",
+   "unit": "science-g4-q1-matter",
+   "text": "Use information from the home or the local community to identify a science invention and explain its impact on their everyday life"
+  },
+  {
+   "id": "SCI-G4-Q1-003",
+   "unit": "science-g4-q1-matter-2",
+   "text": "Describe the chemical properties of materials, such as they can be burnt, react with other materials, or are degradable or biodegradable"
+  },
+  {
+   "id": "SCI-G4-Q1-004",
+   "unit": "science-g4-q1-matter-2",
+   "text": "Describe changes in properties of materials when exposed to certain changes in temperature, such as changes when wood or coal are burned"
+  },
+  {
+   "id": "SCI-G4-Q1-005",
+   "unit": "science-g4-q1-matter-2",
+   "text": "Demonstrate ways to minimize harmful changes in materials, such as restriction of burning of waste materials, and care in handling reactive materials"
+  },
+  {
+   "id": "SCI-G4-Q1-006",
+   "unit": "science-g4-q1-matter-3",
+   "text": "Identify issues and concerns in the local community and how they could be addressed by science, such as the treatment of waste"
+  },
+  {
+   "id": "SCI-G4-Q1-007",
+   "unit": "science-g4-q1-matter-3",
+   "text": "Apply science process skills and attitudes in conducting a guided survey about environmental issues and concerns including grouping and classifying, communicating, and open mindedness."
+  },
+  {
+   "id": "SCI-G4-Q2-001",
+   "unit": "science-g4-q2-living",
+   "text": "Describe in simple terms how the following human body systems work: muscular, skeletal, digestive, circulatory, and respiratory"
+  },
+  {
+   "id": "SCI-G4-Q2-002",
+   "unit": "science-g4-q2-living",
+   "text": "Observe the root and shoot system in plants and describe why they are important"
+  },
+  {
+   "id": "SCI-G4-Q2-003",
+   "unit": "science-g4-q2-living-2",
+   "text": "Use a drawing or diagram to classify some Philippine animals and plants, based on their habitat: some live on land (terrestrial), live in water (aquatic) or fly in the air (aerial)"
+  },
+  {
+   "id": "SCI-G4-Q2-004",
+   "unit": "science-g4-q2-living-2",
+   "text": "Make a list or draw up a table with examples of animals and plants in a particular habitat, such as a garden, rice field, seashore, and mangrove swamp"
+  },
+  {
+   "id": "SCI-G4-Q2-005",
+   "unit": "science-g4-q2-living-3",
+   "text": "Use flow charts to compare the different stages in the life cycle of animals, such as a butterfly, frog, chicken, and human"
+  },
+  {
+   "id": "SCI-G4-Q2-006",
+   "unit": "science-g4-q2-living-4",
+   "text": "Use information from secondary sources to group animals according to the food they eat. Some are: a. plant eaters (herbivores), b. meat eaters (carnivores), and c. plant and meat-eaters (omnivores)"
+  },
+  {
+   "id": "SCI-G4-Q2-007",
+   "unit": "science-g4-q2-living-5",
+   "text": "Draw a simple food chain using living things from the Philippines and label them as herbivores, carnivores, and omnivores."
+  },
+  {
+   "id": "SCI-G4-Q3-001",
+   "unit": "science-g4-q3-force",
+   "text": "Participate in guided activities to discover and predict how rigid and soft objects can be moved and/or changed in shape"
+  },
+  {
+   "id": "SCI-G4-Q3-002",
+   "unit": "science-g4-q3-force-2",
+   "text": "Measure accurately the distance and time when things move using simple equipment"
+  },
+  {
+   "id": "SCI-G4-Q3-003",
+   "unit": "science-g4-q3-force-2",
+   "text": "Identify that how far an object moves in a given time is called speed"
+  },
+  {
+   "id": "SCI-G4-Q3-004",
+   "unit": "science-g4-q3-force-2",
+   "text": "Construct and label simple graphs of different speeds including stationary and uniform speeds, both fast and slow"
+  },
+  {
+   "id": "SCI-G4-Q3-005",
+   "unit": "science-g4-q3-force",
+   "text": "Participate in guided activities to demonstrate that pushes and pulls can be used to change the speed and direction of an object including making it go faster, turn it to a different direction, slow it down, and stop it"
+  },
+  {
+   "id": "SCI-G4-Q3-006",
+   "unit": "science-g4-q3-force",
+   "text": "Determine how forces can change the shape of objects such as when they are pushed, pulled, stretched, bent, twisted, or squeezed"
+  },
+  {
+   "id": "SCI-G4-Q3-007",
+   "unit": "science-g4-q3-force-3",
+   "text": "Carry out guided investigations to identify the properties of magnets, including how they affect other magnets and objects made of different materials"
+  },
+  {
+   "id": "SCI-G4-Q3-008",
+   "unit": "science-g4-q3-force",
+   "text": "Identify examples of how objects can affect other objects even when they are not in contact with each other, such as magnets attracting other objects, light from the sun affecting our eyes, and skin, and loud noises hurting our ears"
+  },
+  {
+   "id": "SCI-G4-Q3-009",
+   "unit": "science-g4-q3-force-4",
+   "text": "Identify that energy is something that can cause change including light, sound, and heat energy"
+  },
+  {
+   "id": "SCI-G4-Q3-010",
+   "unit": "science-g4-q3-force-4",
+   "text": "Observe and identify sources and uses of light, sound, and heat energy at school, at home and in the local community."
+  },
+  {
+   "id": "SCI-G4-Q4-001",
+   "unit": "science-g4-q4-earth",
+   "text": "Participate in guided activities using simple equipment to compare different types of soil including sandy, clay, silt, and loam, including comparing the ability of the soils to hold water"
+  },
+  {
+   "id": "SCI-G4-Q4-002",
+   "unit": "science-g4-q4-earth",
+   "text": "Recognize that water is one of the basic needs of plants and animals"
+  },
+  {
+   "id": "SCI-G4-Q4-003",
+   "unit": "science-g4-q4-earth",
+   "text": "Participate in a guided investigation to identify the effect of different types of soil on the growth of plants"
+  },
+  {
+   "id": "SCI-G4-Q4-004",
+   "unit": "science-g4-q4-earth-2",
+   "text": "Identify some of the basic characteristics used to describe the weather, such as air temperature, air pressure, wind speed, wind direction, humidity, rain, and cloud cover"
+  },
+  {
+   "id": "SCI-G4-Q4-005",
+   "unit": "science-g4-q4-earth-2",
+   "text": "Use weather instruments to measure and record some of the characteristics of weather during a school day"
+  },
+  {
+   "id": "SCI-G4-Q4-006",
+   "unit": "science-g4-q4-earth-2",
+   "text": "Examine a local weather chart to make simple interpretations about the local weather and how it might change and describe and practice safety precautions to use during poor or extreme weather conditions"
+  },
+  {
+   "id": "SCI-G4-Q4-007",
+   "unit": "science-g4-q4-earth-3",
+   "text": "Describe some of the overall characteristics of the Sun, such as its composition, its size, and the main energy it radiates"
+  },
+  {
+   "id": "SCI-G4-Q4-008",
+   "unit": "science-g4-q4-earth-3",
+   "text": "Describe the changes in the direction and length of shadows from a shadow stick and use the information to infer why the Sun changes position during a day"
+  },
+  {
+   "id": "SCI-G4-Q4-009",
+   "unit": "science-g4-q4-earth-3",
+   "text": "Make suggestions about the importance of the Sun to living things for a group or class discussion and confirm and record ideas by referring to trustworthy secondary sources of information."
+  },
+  {
+   "id": "SCI-G5-Q1-001",
+   "unit": "science-g5-q1-matter",
+   "text": "Describe matter as anything that has mass and takes up space"
+  },
+  {
+   "id": "SCI-G5-Q1-002",
+   "unit": "science-g5-q1-matter-2",
+   "text": "Identify that matter has (exists in) three states called solids, liquids, and gases"
+  },
+  {
+   "id": "SCI-G5-Q1-003",
+   "unit": "science-g5-q1-matter-2",
+   "text": "Describe the properties of solids, liquids, and gases in terms of shape and volume: a. solids: definite shape and volume b. liquids: no definite shape; definite volume c. gases: no definite shape or volume"
+  },
+  {
+   "id": "SCI-G5-Q1-004",
+   "unit": "science-g5-q1-matter",
+   "text": "Identify objects at home and in the classroom as solid, liquid or gas"
+  },
+  {
+   "id": "SCI-G5-Q1-005",
+   "unit": "science-g5-q1-matter-3",
+   "text": "Use measuring cylinders or beakers to measure volume using units, such as milliliters (mL), and liters (L)"
+  },
+  {
+   "id": "SCI-G5-Q1-006",
+   "unit": "science-g5-q1-matter-2",
+   "text": "Describe how changes in temperature cause matter to change in state, such as solid to liquid to gas"
+  },
+  {
+   "id": "SCI-G5-Q1-007",
+   "unit": "science-g5-q1-matter-3",
+   "text": "Describe the steps of a simple science investigation: a. What is the problem? b. What materials do you need? c. What do you need to do? d. What have you found out/learned?"
+  },
+  {
+   "id": "SCI-G5-Q1-008",
+   "unit": "science-g5-q1-matter-3",
+   "text": "Identify and appropriately use units in simple science activities, such as milligrams (mg,) grams (g), kilograms (kg), and degrees centigrade (oC)"
+  },
+  {
+   "id": "SCI-G5-Q1-009",
+   "unit": "science-g5-q1-matter-3",
+   "text": "Plan simple scientific investigations in answering questions, such as “Do gases (like air) or liquids (like water) have mass?”, using appropriate simple science equipment, such as a balance, and a thermometer, with appropriate units."
+  },
+  {
+   "id": "SCI-G5-Q2-001",
+   "unit": "science-g5-q2-living",
+   "text": "Identify from pictures and labeled diagrams the parts of the digestive system as mouth, gullet, stomach, small intestine, and large intestine, and describe how they work"
+  },
+  {
+   "id": "SCI-G5-Q2-002",
+   "unit": "science-g5-q2-living",
+   "text": "Identify from pictures and diagrams the parts of the respiratory system as the nose, windpipe, and lungs, and describe how they work"
+  },
+  {
+   "id": "SCI-G5-Q2-003",
+   "unit": "science-g5-q2-living",
+   "text": "Identify from pictures and labeled diagrams the parts of the female reproductive system as ovaries, uterus, and vagina and those of the male reproductive system as the prostate, testis, and penis and describe how they work"
+  },
+  {
+   "id": "SCI-G5-Q2-004",
+   "unit": "science-g5-q2-living-2",
+   "text": "Use a table to show how living things can be classified into groups based on similar characteristics: a. plants including flowering and non-flowering; b. animals including mammals, reptiles, insects, birds, fish, amphibians, and reptiles; c. microorganisms including fungi and bacteria"
+  },
+  {
+   "id": "SCI-G5-Q2-005",
+   "unit": "science-g5-q2-living-3",
+   "text": "Identify which groups of animals reproduce by giving birth to live young, such as mammals, and which reproduce by laying eggs, such as birds and reptiles"
+  },
+  {
+   "id": "SCI-G5-Q2-006",
+   "unit": "science-g5-q2-living-3",
+   "text": "Compare the life cycles of mammals from birth to adulthood, birds from egg to a mature organism, and plants from seed to a young plant, and then to a mature plant"
+  },
+  {
+   "id": "SCI-G5-Q2-007",
+   "unit": "science-g5-q2-living-4",
+   "text": "Describe the purpose of specialized structures in plants, such as rhizomes, tubers, thorns, bulbs, and aerial roots"
+  },
+  {
+   "id": "SCI-G5-Q2-008",
+   "unit": "science-g5-q2-living-4",
+   "text": "Explain how some plants have adapted to unfavorable conditions in the environment, such as lack of rain or floods"
+  },
+  {
+   "id": "SCI-G5-Q2-009",
+   "unit": "science-g5-q2-living-2",
+   "text": "Use information from secondary sources to describe examples of how some animals have changed to better suit their environment, such as mimicry or camouflage."
+  },
+  {
+   "id": "SCI-G5-Q3-001",
+   "unit": "science-g5-q3-force",
+   "text": "Carry out simple investigations to demonstrate that contact forces cause objects to move in the same direction as the direction that the force is applied"
+  },
+  {
+   "id": "SCI-G5-Q3-002",
+   "unit": "science-g5-q3-force-2",
+   "text": "Plan and carry out a scientific investigation to determine the effect of different surfaces on the size of frictional forces"
+  },
+  {
+   "id": "SCI-G5-Q3-003",
+   "unit": "science-g5-q3-force-3",
+   "text": "Demonstrate how friction can produce heat and investigate ways of reducing and increasing friction"
+  },
+  {
+   "id": "SCI-G5-Q3-004",
+   "unit": "science-g5-q3-force-4",
+   "text": "Identify gravity as a non-contact force that affects the behaviors of materials and objects on Earth in predictable ways"
+  },
+  {
+   "id": "SCI-G5-Q3-005",
+   "unit": "science-g5-q3-force-4",
+   "text": "Predict and explain whether heavier objects will fall faster than lighter objects due to the force of gravity"
+  },
+  {
+   "id": "SCI-G5-Q3-006",
+   "unit": "science-g5-q3-force-4",
+   "text": "Observe and describe the effects of gravity to the motion of an object"
+  },
+  {
+   "id": "SCI-G5-Q3-007",
+   "unit": "science-g5-q3-force-5",
+   "text": "Investigate the effects of static electricity using common materials, such as a comb, plastic and glass rods, and balloons"
+  },
+  {
+   "id": "SCI-G5-Q3-008",
+   "unit": "science-g5-q3-force-6",
+   "text": "Assemble and draw a simple circuit using batteries, wires, switch, and bulb and/or toy motor or buzzer"
+  },
+  {
+   "id": "SCI-G5-Q3-009",
+   "unit": "science-g5-q3-force-6",
+   "text": "Design and construct a simple electrical circuit to identify what materials will conduct electricity and use it to identify materials from the environment that will and will not conduct electricity"
+  },
+  {
+   "id": "SCI-G5-Q3-010",
+   "unit": "science-g5-q3-force-6",
+   "text": "Make a simple electromagnet and observe and record its properties."
+  },
+  {
+   "id": "SCI-G5-Q4-001",
+   "unit": "science-g5-q4-earth",
+   "text": "Identify local examples of natural landforms and bodies of water such as mountains, valleys, rivers, and coastlines, and describe how they influence non-living and living components of the environment"
+  },
+  {
+   "id": "SCI-G5-Q4-002",
+   "unit": "science-g5-q4-earth",
+   "text": "Explore the school grounds or the local area to observe or collect different types of rocks, describing their similarities and differences in terms of their features, such as texture, color, and grain crystal size"
+  },
+  {
+   "id": "SCI-G5-Q4-003",
+   "unit": "science-g5-q4-earth",
+   "text": "Classify common rocks from provided samples using a simple rock classification system, such as a dichotomous key"
+  },
+  {
+   "id": "SCI-G5-Q4-004",
+   "unit": "science-g5-q4-earth-2",
+   "text": "Explain how soil is formed from rocks and minerals"
+  },
+  {
+   "id": "SCI-G5-Q4-005",
+   "unit": "science-g5-q4-earth-2",
+   "text": "Demonstrate how erosion transports Earth materials"
+  },
+  {
+   "id": "SCI-G5-Q4-006",
+   "unit": "science-g5-q4-earth-4",
+   "text": "Explain the role of the water cycle in the environment"
+  },
+  {
+   "id": "SCI-G5-Q4-007",
+   "unit": "science-g5-q4-earth-3",
+   "text": "Construct a model to communicate some of the key processes in the water cycle"
+  },
+  {
+   "id": "SCI-G5-Q4-008",
+   "unit": "science-g5-q4-earth-5",
+   "text": "Describe some effects of weather disturbances that occur in or near the Philippines"
+  },
+  {
+   "id": "SCI-G5-Q4-009",
+   "unit": "science-g5-q4-earth-5",
+   "text": "Describe the weather conditions according to a Public Storm Warning Signal issued by the Philippine Atmospheric, Geological and Astronomical Services Administration (PAGASA)"
+  },
+  {
+   "id": "SCI-G5-Q4-010",
+   "unit": "science-g5-q4-earth-5",
+   "text": "Describe typical weather conditions before, during and after a tropical cyclone"
+  },
+  {
+   "id": "SCI-G5-Q4-011",
+   "unit": "science-g5-q4-earth-6",
+   "text": "Describe the general structure of the solar system, identifying the names of the major celestial objects, their main features, and general composition"
+  },
+  {
+   "id": "SCI-G5-Q4-012",
+   "unit": "science-g5-q4-earth-3",
+   "text": "Make drawings or a simple model to show the motion of the Earth and Moon relative to the Sun to explain the phases of the moon that people see from Earth."
+  },
+  {
+   "id": "SCI-G6-Q1-001",
+   "unit": "science-g6-q1-matter-2",
+   "text": "Describe changes of state for solids, liquids, and gases as melting, evaporation, freezing, condensation using diagrams and flowcharts"
+  },
+  {
+   "id": "SCI-G6-Q1-002",
+   "unit": "science-g6-q1-matter-2",
+   "text": "Explain the role of heat energy in change of state processes"
+  },
+  {
+   "id": "SCI-G6-Q1-003",
+   "unit": "science-g6-q1-matter-3",
+   "text": "Explain why physical changes are reversible, and chemical changes are irreversible"
+  },
+  {
+   "id": "SCI-G6-Q1-004",
+   "unit": "science-g6-q1-matter-4",
+   "text": "Describe useful everyday examples of uniform and non-uniform mixtures, such as solutions and suspensions"
+  },
+  {
+   "id": "SCI-G6-Q1-005",
+   "unit": "science-g6-q1-matter-4",
+   "text": "Describe air as a mixture of oxygen, carbon dioxide, nitrogen, and water vapor"
+  },
+  {
+   "id": "SCI-G6-Q1-006",
+   "unit": "science-g6-q1-matter-4",
+   "text": "Demonstrate various techniques in separating mixtures, such as decantation, winnowing, scooping, picking, evaporation, filtering, sieving, and using magnets"
+  },
+  {
+   "id": "SCI-G6-Q1-007",
+   "unit": "science-g6-q1-matter-4",
+   "text": "Explain the benefits of each mixture separation technique in preparing useful products"
+  },
+  {
+   "id": "SCI-G6-Q1-008",
+   "unit": "science-g6-q1-matter",
+   "text": "Apply the features of a fair test: a. change one factor, b. measure one factor, and c. keep all other factors the same"
+  },
+  {
+   "id": "SCI-G6-Q1-009",
+   "unit": "science-g6-q1-matter",
+   "text": "Recognize the features of a fair test and that scientific investigations also involve a) doing at least three trials, or use replication, and b) observing, measuring, and recording accurately."
+  },
+  {
+   "id": "SCI-G6-Q2-001",
+   "unit": "science-g6-q2-living",
+   "text": "Identify from pictures and diagrams the parts of the circulatory system as heart, blood, and blood vessels, and describe how they work"
+  },
+  {
+   "id": "SCI-G6-Q2-002",
+   "unit": "science-g6-q2-living-2",
+   "text": "Describe the different ways that plants reproduce, such as pollination, seed production, and plant propagation"
+  },
+  {
+   "id": "SCI-G6-Q2-003",
+   "unit": "science-g6-q2-living-2",
+   "text": "Plan a simple scientific investigation that includes the features of a fair test, replication, and accurate measurement to determine which type of plant propagation, such as cutting, budding, layering, grafting, works best for garden plants"
+  },
+  {
+   "id": "SCI-G6-Q2-004",
+   "unit": "science-g6-q2-living-3",
+   "text": "Describe the differences between animals with a backbone (vertebrates) and animals without backbones (invertebrates) by using common local examples of each group"
+  },
+  {
+   "id": "SCI-G6-Q2-005",
+   "unit": "science-g6-q2-living-4",
+   "text": "Describe the roles of producers, consumers, scavengers, and decomposers in a food web"
+  },
+  {
+   "id": "SCI-G6-Q2-006",
+   "unit": "science-g6-q2-living-5",
+   "text": "Use information from secondary sources to describe that living things interact with each other in the natural environment, such as through competition, or predation"
+  },
+  {
+   "id": "SCI-G6-Q2-007",
+   "unit": "science-g6-q2-living-6",
+   "text": "Describe living things, such as animals and plants, as biotic factors and light, water, temperature, and soil type, as abiotic factors of an ecosystem"
+  },
+  {
+   "id": "SCI-G6-Q2-008",
+   "unit": "science-g6-q2-living-6",
+   "text": "Explain how interaction between living things and interactions between living and non-living things may bring good or harm to the living things involved."
+  },
+  {
+   "id": "SCI-G6-Q3-001",
+   "unit": "science-g6-q3-force",
+   "text": "Observe and describe examples and uses of simple machines found at home, at school, and in the community"
+  },
+  {
+   "id": "SCI-G6-Q3-002",
+   "unit": "science-g6-q3-force",
+   "text": "Demonstrate through guided investigation the advantages and limitations of simple machines such as inclined planes, wedges, levers, and pulleys"
+  },
+  {
+   "id": "SCI-G6-Q3-003",
+   "unit": "science-g6-q3-force",
+   "text": "Carry out fair tests to show how levers can be used to change the magnitude and direction of a force"
+  },
+  {
+   "id": "SCI-G6-Q3-004",
+   "unit": "science-g6-q3-force-2",
+   "text": "Identify that waves carry energy from a source to a receiver"
+  },
+  {
+   "id": "SCI-G6-Q3-005",
+   "unit": "science-g6-q3-force-2",
+   "text": "Carry out investigations with water waves in a ripple tank, a big tub of water or improvised ripple tank and observe and describe the features of the waves including their: a. shape, such as crests and troughs; b. size, such as width and height; and c. patterns of movement, such as how they bend, or reflect off walls"
+  },
+  {
+   "id": "SCI-G6-Q3-006",
+   "unit": "science-g6-q3-force-2",
+   "text": "Research using secondary sources to identify how the properties of waves are described using scientific terms such as amplitude, frequency, wavelength, and velocity"
+  },
+  {
+   "id": "SCI-G6-Q3-007",
+   "unit": "science-g6-q3-force-3",
+   "text": "Identify differences and similarities between longitudinal waves and transverse waves"
+  },
+  {
+   "id": "SCI-G6-Q3-008",
+   "unit": "science-g6-q3-force-3",
+   "text": "Demonstrate using simple models how longitudinal waves and transverse waves carry energy"
+  },
+  {
+   "id": "SCI-G6-Q3-009",
+   "unit": "science-g6-q3-force-3",
+   "text": "Identify some examples of longitudinal waves, and transverse waves"
+  },
+  {
+   "id": "SCI-G6-Q3-010",
+   "unit": "science-g6-q3-force-2",
+   "text": "Describe and explain how sound changes when the source or the receiver are moving."
+  },
+  {
+   "id": "SCI-G6-Q4-001",
+   "unit": "science-g6-q4-earth",
+   "text": "Explain what volcanoes are and how they are formed"
+  },
+  {
+   "id": "SCI-G6-Q4-002",
+   "unit": "science-g6-q4-earth",
+   "text": "Use local information or other reliable sources to identify where the nearest active and inactive volcanoes are located and assess the risk of impacts from eruptions to their local community"
+  },
+  {
+   "id": "SCI-G6-Q4-003",
+   "unit": "science-g6-q4-earth-5",
+   "text": "Discuss the patterns of volcanic eruptions in the Philippines over the last 100 years with family and community members to assess and describe how predictable patterns of eruptions are"
+  },
+  {
+   "id": "SCI-G6-Q4-004",
+   "unit": "science-g6-q4-earth",
+   "text": "Identify and describe some of the materials formed during volcanic eruptions in the Philippines"
+  },
+  {
+   "id": "SCI-G6-Q4-005",
+   "unit": "science-g6-q4-earth",
+   "text": "Interpret PHIVOLCS Volcano Monitoring (Alert Levels) to demonstrate what to do before, during, and after a volcanic eruption"
+  },
+  {
+   "id": "SCI-G6-Q4-006",
+   "unit": "science-g6-q4-earth-2",
+   "text": "Describe the different seasons in the Philippines and suggest activities that are appropriate for each season"
+  },
+  {
+   "id": "SCI-G6-Q4-007",
+   "unit": "science-g6-q4-earth-3",
+   "text": "Demonstrate the rotation of the Earth on its axis using a globe to explain day and night"
+  },
+  {
+   "id": "SCI-G6-Q4-008",
+   "unit": "science-g6-q4-earth-5",
+   "text": "Make a Sun-Earth-Moon system model to demonstrate and explain the observable effects of predictable patterns and events including: a. changes in seasons, b. changes observed in the patterns of visible star over a year, and c. solar and lunar eclipses"
+  },
+  {
+   "id": "SCI-G6-Q4-009",
+   "unit": "science-g6-q4-earth-4",
+   "text": "Explain why ancient human cultures relied on constellations to indicate directions and verify seasons"
+  },
+  {
+   "id": "SCI-G6-Q4-010",
+   "unit": "science-g6-q4-earth-4",
+   "text": "Gather information from local indigenous community members or from reliable secondary sources to investigate ways that indigenous people of the Philippines represented and communicated understandings of: a. the predictability of solar and lunar eclipses, and b. patterns /interpretations in the night sky and their use for tracking time."
+  },
+  {
+   "id": "SCI-G7-Q1-001",
+   "unit": "science-g7-q1-matter",
+   "text": "Recognize that scientists use models to explain phenomena that cannot be easily seen or detected"
+  },
+  {
+   "id": "SCI-G7-Q1-002",
+   "unit": "science-g7-q1-matter-2",
+   "text": "Describe the Particle Model of Matter as “All matter is made up of tiny particles with each pure substance having its own kind of particles.”"
+  },
+  {
+   "id": "SCI-G7-Q1-003",
+   "unit": "science-g7-q1-matter-2",
+   "text": "Describe that particles are constantly in motion, have spaces between them, attract each other, and move faster as the temperature increases (or with the addition of heat)"
+  },
+  {
+   "id": "SCI-G7-Q1-004",
+   "unit": "science-g7-q1-matter-2",
+   "text": "Use diagrams and illustrations to describe the arrangement, spacing, and relative motion of the particles in each of the three states (phases) of matter"
+  },
+  {
+   "id": "SCI-G7-Q1-005",
+   "unit": "science-g7-q1-matter-2",
+   "text": "Explain the changes of state in terms of particle arrangement and energy changes: a. solid → liquid → vapor, and b. vapor → liquid → solid"
+  },
+  {
+   "id": "SCI-G7-Q1-006",
+   "unit": "science-g7-q1-matter-3",
+   "text": "Follow appropriate steps of a scientific investigation which includes: a. Aim or problem, b. Materials and equipment, c. Method or procedures, d. Results including data, and e. Conclusion."
+  },
+  {
+   "id": "SCI-G7-Q1-007",
+   "unit": "science-g7-q1-matter-3",
+   "text": "Make accurate measurements using standard units for physical quantities and organize the collected data when carrying out a scientific investigation"
+  },
+  {
+   "id": "SCI-G7-Q1-008",
+   "unit": "science-g7-q1-matter-4",
+   "text": "Identify the role of the solute and solvent in a solution"
+  },
+  {
+   "id": "SCI-G7-Q1-009",
+   "unit": "science-g7-q1-matter-4",
+   "text": "Express quantitatively the amount of solute present in a given volume of solvent"
+  },
+  {
+   "id": "SCI-G7-Q1-010",
+   "unit": "science-g7-q1-matter-4",
+   "text": "Demonstrate how different factors affect the solubility of a solute in a given solvent, such as heat"
+  },
+  {
+   "id": "SCI-G7-Q1-011",
+   "unit": "science-g7-q1-matter-4",
+   "text": "Identify solutions, which can be found at home and in school and that react with litmus indicator, as acids, bases, and salts"
+  },
+  {
+   "id": "SCI-G7-Q1-012",
+   "unit": "science-g7-q1-matter-3",
+   "text": "Demonstrate proper use and handling of science equipment."
+  },
+  {
+   "id": "SCI-G7-Q2-001",
+   "unit": "science-g7-q2-living",
+   "text": "Identify the parts and functions, and demonstrate proper handling and storing of a compound microscope"
+  },
+  {
+   "id": "SCI-G7-Q2-002",
+   "unit": "science-g7-q2-living-2",
+   "text": "Use proper techniques in observing and identifying the parts of a cell with a microscope such as the cell membrane, nucleus, cytoplasm, mitochondria, and chloroplasts"
+  },
+  {
+   "id": "SCI-G7-Q2-003",
+   "unit": "science-g7-q2-living-2",
+   "text": "Recognize that some organisms consist of a single cell (unicellular) like in bacteria and some consist of many cells (multicellular) like in a human"
+  },
+  {
+   "id": "SCI-G7-Q2-004",
+   "unit": "science-g7-q2-living-2",
+   "text": "Differentiate plant and animal cells based on their organelles"
+  },
+  {
+   "id": "SCI-G7-Q2-005",
+   "unit": "science-g7-q2-living-3",
+   "text": "Recognize that cells reproduce through two types of cell division, mitosis and meiosis, and describe mitosis as cell division for growth and repair"
+  },
+  {
+   "id": "SCI-G7-Q2-006",
+   "unit": "science-g7-q2-living-3",
+   "text": "Explain that genetic information is passed on to offspring from both parents by the process of meiosis and fertilization"
+  },
+  {
+   "id": "SCI-G7-Q2-007",
+   "unit": "science-g7-q2-living-3",
+   "text": "Differentiate sexual from asexual reproduction in terms of: a) number of parents involved, and b) similarities of offspring to parents"
+  },
+  {
+   "id": "SCI-G7-Q2-008",
+   "unit": "science-g7-q2-living-4",
+   "text": "Use a labelled diagram to describe the connections between the levels of biological organization to one another from cells to the biosphere"
+  },
+  {
+   "id": "SCI-G7-Q2-009",
+   "unit": "science-g7-q2-living-5",
+   "text": "Describe the trophic levels of an organism as levels of energy in a food pyramid"
+  },
+  {
+   "id": "SCI-G7-Q2-010",
+   "unit": "science-g7-q2-living-5",
+   "text": "Use examples of food pyramids to describe the transfer of energy between organisms from one trophic level to another."
+  },
+  {
+   "id": "SCI-G7-Q3-001",
+   "unit": "science-g7-q3-force",
+   "text": "Identify that forces act between objects and can be measured."
+  },
+  {
+   "id": "SCI-G7-Q3-002",
+   "unit": "science-g7-q3-force",
+   "text": "Identify and describe everyday situations that demonstrate: a. balanced forces such as a box resting on an inclined plane, a man standing still, or an object moving with constant velocity; b. unbalanced forces, such as freely falling fruit or an accelerating car"
+  },
+  {
+   "id": "SCI-G7-Q3-003",
+   "unit": "science-g7-q3-force",
+   "text": "Draw a free-body diagram to represent the relative magnitude and direction of the forces involving balanced and unbalanced forces"
+  },
+  {
+   "id": "SCI-G7-Q3-004",
+   "unit": "science-g7-q3-force",
+   "text": "Identify that when forces are not balanced, they can cause changes in the object’s speed or direction of motion"
+  },
+  {
+   "id": "SCI-G7-Q3-005",
+   "unit": "science-g7-q3-force-2",
+   "text": "Explain the difference between distance and displacement in everyday situations in relation to a reference point"
+  },
+  {
+   "id": "SCI-G7-Q3-006",
+   "unit": "science-g7-q3-force-2",
+   "text": "Distinguish between speed and velocity using the concept of vectors"
+  },
+  {
+   "id": "SCI-G7-Q3-007",
+   "unit": "science-g7-q3-force-3",
+   "text": "Describe uniform velocity and represent it using distance-time graphs"
+  },
+  {
+   "id": "SCI-G7-Q3-008",
+   "unit": "science-g7-q3-force-5",
+   "text": "Explain the difference between heat and temperature"
+  },
+  {
+   "id": "SCI-G7-Q3-009",
+   "unit": "science-g7-q3-force-5",
+   "text": "Identify advantageous and disadvantageous examples of conduction, convection, and radiation"
+  },
+  {
+   "id": "SCI-G7-Q3-010",
+   "unit": "science-g7-q3-force-5",
+   "text": "Explain in terms of the particle model the processes underlying convection and conduction of heat energy"
+  },
+  {
+   "id": "SCI-G7-Q3-011",
+   "unit": "science-g7-q3-force-5",
+   "text": "Gather information from secondary sources to identify and describe examples of innovative devices that can be used to transform heat energy into electrical energy."
+  },
+  {
+   "id": "SCI-G7-Q4-001",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Classify geological faults according to the angle of the fault plane and direction of slip"
+  },
+  {
+   "id": "SCI-G7-Q4-002",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Use models or illustrations to explain how movements along faults generate earthquakes and identify and explain which types of faults are most likely to occur in the Philippines and explain why"
+  },
+  {
+   "id": "SCI-G7-Q4-003",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Describe how the effects of earthquakes on communities depend on their magnitude"
+  },
+  {
+   "id": "SCI-G7-Q4-004",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Use the PHIVOLCS FaultFinder or other reliable information source to identify where the nearest fault system is located from their community and assess the risk of earthquakes to their local community"
+  },
+  {
+   "id": "SCI-G7-Q4-005",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Make models of fault scenarios to illustrate: a. the epicenter of an earthquake from its focus, b. the intensity of an earthquake from its magnitude, and c. how underwater earthquakes may or may not generate tsunamis"
+  },
+  {
+   "id": "SCI-G7-Q4-006",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Refer to the local disaster readiness plans to demonstrate what to do during and after an earthquake"
+  },
+  {
+   "id": "SCI-G7-Q4-007",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Explain how earthquakes result in tsunamis that devastate shoreline communities"
+  },
+  {
+   "id": "SCI-G7-Q4-008",
+   "unit": "science-g7-q4-earth-2",
+   "text": "Describe procedures that the authorities have in place to alert communities of pending tsunamis and what procedures can be implemented should a tsunami impact a community"
+  },
+  {
+   "id": "SCI-G7-Q4-009",
+   "unit": "science-g7-q4-earth-3",
+   "text": "Explain how energy from the Sun interacts with the atmosphere"
+  },
+  {
+   "id": "SCI-G7-Q4-010",
+   "unit": "science-g7-q4-earth-3",
+   "text": "Make a physical model or use drawings to demonstrate how the tilt of the Earth relative to its orbit around the Sun affects the intensity of sunlight absorbed by different areas of Earth over a year"
+  },
+  {
+   "id": "SCI-G7-Q4-011",
+   "unit": "science-g7-q4-earth-3",
+   "text": "Explain, using models, how the tilt of the Earth affects the changes in the length of daytime at different times of the year"
+  },
+  {
+   "id": "SCI-G7-Q4-012",
+   "unit": "science-g7-q4-earth-3",
+   "text": "Explain how solar energy contributes to the occurrence of land and sea breezes, monsoons, and the Intertropical Convergence Zone (ITCZ)."
+  },
+  {
+   "id": "SCI-G8-Q1-001",
+   "unit": "science-g8-q1-living",
+   "text": "Using a labeled diagram, trace how food travels through the digestive tract and explain how different digestive processes work, including mechanical processing, secretion, digestion, absorption, and elimination"
+  },
+  {
+   "id": "SCI-G8-Q1-002",
+   "unit": "science-g8-q1-living",
+   "text": "Use models, flow charts, diagrams, and simulations to explain how body systems work together, such as digestion and excretion"
+  },
+  {
+   "id": "SCI-G8-Q1-003",
+   "unit": "science-g8-q1-living",
+   "text": "Describe how plant organs (leaf, stem, roots) work together as the transport system"
+  },
+  {
+   "id": "SCI-G8-Q1-004",
+   "unit": "science-g8-q1-living-2",
+   "text": "Represent patterns of inheritance of a simple dominant/ recessive characteristic through generations of a family"
+  },
+  {
+   "id": "SCI-G8-Q1-005",
+   "unit": "science-g8-q1-living-2",
+   "text": "Predict simple ratios of offspring genotypes and phenotypes in crosses involving dominant/recessive gene pairs"
+  },
+  {
+   "id": "SCI-G8-Q1-006",
+   "unit": "science-g8-q1-living-3",
+   "text": "Describe the importance of the six-kingdom system and the three-domain system of classification of living things"
+  },
+  {
+   "id": "SCI-G8-Q1-007",
+   "unit": "science-g8-q1-living-3",
+   "text": "Explain why humans are classified under Class Mammalia and the Order Primates"
+  },
+  {
+   "id": "SCI-G8-Q1-008",
+   "unit": "science-g8-q1-living-4",
+   "text": "Using flow charts and labeled diagrams explain the role of plants and animals in the cycles of nature, such as the carbon, oxygen, and water cycles"
+  },
+  {
+   "id": "SCI-G8-Q1-009",
+   "unit": "science-g8-q1-living-4",
+   "text": "Describe the process of photosynthesis and respiration, and identify its raw materials needed and products"
+  },
+  {
+   "id": "SCI-G8-Q1-010",
+   "unit": "science-g8-q1-living-4",
+   "text": "Using information from secondary sources identify the different parts of the cell where photosynthesis and respiration occur"
+  },
+  {
+   "id": "SCI-G8-Q1-011",
+   "unit": "science-g8-q1-living-4",
+   "text": "Plan a scientific investigation to verify the raw materials needed for photosynthesis."
+  },
+  {
+   "id": "SCI-G8-Q2-001",
+   "unit": "science-g8-q2-matter",
+   "text": "Develop a timeline for the historical background of the development of the current Atomic Model that identifies tiny particles as atoms"
+  },
+  {
+   "id": "SCI-G8-Q2-002",
+   "unit": "science-g8-q2-matter-2",
+   "text": "Draw the structure of an atom in terms of the nucleus and electron shells"
+  },
+  {
+   "id": "SCI-G8-Q2-003",
+   "unit": "science-g8-q2-matter-3",
+   "text": "Differentiate the subatomic particles protons, neutrons, and electrons in terms of their symbol, mass, charge, and location within an atom"
+  },
+  {
+   "id": "SCI-G8-Q2-004",
+   "unit": "science-g8-q2-matter-4",
+   "text": "Describe the properties of pure substances as: a. having fixed chemical composition, examples of which are elements and compounds, and b. that all the atoms of an element have a unique number of protons"
+  },
+  {
+   "id": "SCI-G8-Q2-005",
+   "unit": "science-g8-q2-matter-5",
+   "text": "Discuss the significant contributions of early scientists in the development of the periodic table"
+  },
+  {
+   "id": "SCI-G8-Q2-006",
+   "unit": "science-g8-q2-matter-5",
+   "text": "Identify the names and symbols of the first 20 or several common elements of the periodic table"
+  },
+  {
+   "id": "SCI-G8-Q2-007",
+   "unit": "science-g8-q2-matter-5",
+   "text": "Explain that the arrangement of elements in the periodic table as 7 periods and 18 groups is based on their atomic structure and chemical properties, such as reactivity"
+  },
+  {
+   "id": "SCI-G8-Q2-008",
+   "unit": "science-g8-q2-matter-5",
+   "text": "Explain that the electron structure of an atom determines its position on the periodic table"
+  },
+  {
+   "id": "SCI-G8-Q2-009",
+   "unit": "science-g8-q2-matter-3",
+   "text": "Calculate the number of protons, neutrons, and electrons in the atom of several elements, such as aluminum"
+  },
+  {
+   "id": "SCI-G8-Q2-010",
+   "unit": "science-g8-q2-matter-5",
+   "text": "Explain that the elements within a group in the periodic table have the same number of valence electrons."
+  },
+  {
+   "id": "SCI-G8-Q3-001",
+   "unit": "science-g8-q3-earth",
+   "text": "Identify what proportion of the Earth's surface is covered with water as opposed to land"
+  },
+  {
+   "id": "SCI-G8-Q3-002",
+   "unit": "science-g8-q3-earth-2",
+   "text": "Gather information from secondary sources to name and describe the upper crustal layers of the solid earth"
+  },
+  {
+   "id": "SCI-G8-Q3-003",
+   "unit": "science-g8-q3-earth-2",
+   "text": "Describe the different types of volcanoes found around the world according to their: a. activity b. type of eruption c. location in the crust"
+  },
+  {
+   "id": "SCI-G8-Q3-004",
+   "unit": "science-g8-q3-earth-2",
+   "text": "Relate the shape of a volcano’s cone to its composition"
+  },
+  {
+   "id": "SCI-G8-Q3-005",
+   "unit": "science-g8-q3-earth-2",
+   "text": "Relate the location and distribution of active volcanoes, earthquake epicenters, and major mountain belts to the distribution of oceanic crust and continental crust"
+  },
+  {
+   "id": "SCI-G8-Q3-006",
+   "unit": "science-g8-q3-earth-2",
+   "text": "Identify how oceanic crust and continental crust is associated with the Earth’s lithospheric plates"
+  },
+  {
+   "id": "SCI-G8-Q3-007",
+   "unit": "science-g8-q3-earth-3",
+   "text": "Gather information from secondary sources to explain: a. how typhoons develop, and b. why the Philippines is prone to typhoons"
+  },
+  {
+   "id": "SCI-G8-Q3-008",
+   "unit": "science-g8-q3-earth-3",
+   "text": "Use a map and a record of tracking data to trace the path of typhoons that enter the Philippine Area of Responsibility (PAR)"
+  },
+  {
+   "id": "SCI-G8-Q3-009",
+   "unit": "science-g8-q3-earth-3",
+   "text": "Discuss how bodies of water and landforms affect typhoons"
+  },
+  {
+   "id": "SCI-G8-Q3-010",
+   "unit": "science-g8-q3-earth-3",
+   "text": "Gather information from the Department of Science and Technology (DOST) and other reliable websites to identify how authorities support communities affected by typhoons"
+  },
+  {
+   "id": "SCI-G8-Q3-011",
+   "unit": "science-g8-q3-earth-4",
+   "text": "Relate the relative movements of the Earth, Moon, and Sun with the occurrence of tides"
+  },
+  {
+   "id": "SCI-G8-Q3-012",
+   "unit": "science-g8-q3-earth-4",
+   "text": "Draw on information from secondary sources to identify situations where tidal difference could be exploited to generate renewable energy."
+  },
+  {
+   "id": "SCI-G8-Q4-001",
+   "unit": "science-g8-q4-force",
+   "text": "Identify that forces cause objects to accelerate, and that acceleration of an object is its rate of change of velocity"
+  },
+  {
+   "id": "SCI-G8-Q4-002",
+   "unit": "science-g8-q4-force",
+   "text": "Observe and describe examples of accelerating objects at school and in the local community, including objects that show uniform circular motion"
+  },
+  {
+   "id": "SCI-G8-Q4-003",
+   "unit": "science-g8-q4-force-2",
+   "text": "Construct and annotate distance-time graphs and velocity-time graphs to represent uniform and non-uniform acceleration"
+  },
+  {
+   "id": "SCI-G8-Q4-004",
+   "unit": "science-g8-q4-force-3",
+   "text": "Describe kinetic energy as the movement of objects or particles, and potential energy as energy stored due to the position of objects or particles"
+  },
+  {
+   "id": "SCI-G8-Q4-005",
+   "unit": "science-g8-q4-force-3",
+   "text": "Identify examples of everyday situations that demonstrate: a. kinetic energy being transformed to potential energy, and b. potential energy being transformed to kinetic energy"
+  },
+  {
+   "id": "SCI-G8-Q4-006",
+   "unit": "science-g8-q4-force-4",
+   "text": "Recognize that work is done when a force causes the displacement of an object"
+  },
+  {
+   "id": "SCI-G8-Q4-007",
+   "unit": "science-g8-q4-force-4",
+   "text": "Recognize that power is the rate of doing work"
+  },
+  {
+   "id": "SCI-G8-Q4-008",
+   "unit": "science-g8-q4-force-4",
+   "text": "Explain that the mechanical energy of an object is the sum of the kinetic energy and the potential energy available to do work"
+  },
+  {
+   "id": "SCI-G8-Q4-009",
+   "unit": "science-g8-q4-force-4",
+   "text": "Describe conservation of energy in everyday situations involving gravity, such as when objects fall"
+  },
+  {
+   "id": "SCI-G8-Q4-010",
+   "unit": "science-g8-q4-force-5",
+   "text": "Gather information from secondary sources to explain how potential energy stored in lakes and dams in the Philippines is used to produce kinetic energy to generate electricity for use in homes, communities, and industry"
+  },
+  {
+   "id": "SCI-G8-Q4-011",
+   "unit": "science-g8-q4-force-6",
+   "text": "Carry out guided investigations to describe and illustrate the reflection of light using plane and curved mirrors and the refraction of light using transparent blocks, lenses, and prisms with examples from everyday applications."
+  },
+  {
+   "id": "SCI-G9-Q1-001",
+   "unit": "science-g9-q1-force",
+   "text": "Identify inertia as the tendency for an object to stay at rest or in motion unless acted on by an unbalanced net force"
+  },
+  {
+   "id": "SCI-G9-Q1-002",
+   "unit": "science-g9-q1-force",
+   "text": "Demonstrate in practical situations and describe that acceleration is a change in speed and/or direction as the result of a net force"
+  },
+  {
+   "id": "SCI-G9-Q1-003",
+   "unit": "science-g9-q1-force",
+   "text": "Investigate the relationship among force, acceleration, and mass"
+  },
+  {
+   "id": "SCI-G9-Q1-004",
+   "unit": "science-g9-q1-force",
+   "text": "Explain that when any two objects interact, there are equal but opposite forces exerted between them, which is evident in many practical situations and applications"
+  },
+  {
+   "id": "SCI-G9-Q1-005",
+   "unit": "science-g9-q1-force",
+   "text": "Observe and identify action-reaction pairs in everyday situations such as stepping off a boat, or a book on a table, and draw force diagrams to explain how the pairs affect the motion of objects"
+  },
+  {
+   "id": "SCI-G9-Q1-006",
+   "unit": "science-g9-q1-force-3",
+   "text": "Identify that electricity is a flow of electrons and show appreciation for the need to observe safe measures in handling electricity"
+  },
+  {
+   "id": "SCI-G9-Q1-007",
+   "unit": "science-g9-q1-force-4",
+   "text": "Participate in guided investigations to infer the relationship among current, voltage, and resistance in assembled series and parallel circuits with varying number of loads and battery"
+  },
+  {
+   "id": "SCI-G9-Q1-008",
+   "unit": "science-g9-q1-force-4",
+   "text": "Draw diagrams of and assemble series and parallel circuits, showing switch, battery, loads/resistors, ammeter, and voltmeter"
+  },
+  {
+   "id": "SCI-G9-Q1-009",
+   "unit": "science-g9-q1-force-4",
+   "text": "Collaborate in a class discussion to recognize the advantages and limitations of using series or parallel circuits"
+  },
+  {
+   "id": "SCI-G9-Q1-010",
+   "unit": "science-g9-q1-force-6",
+   "text": "Describe electromagnetic radiation (EMR) as energy that is created by the vibrations of electrically charged particles which allows it to travel through materials or space as transverse waves"
+  },
+  {
+   "id": "SCI-G9-Q1-011",
+   "unit": "science-g9-q1-force-6",
+   "text": "Compare the relative wavelengths and frequencies of different types of electromagnetic waves, including radio waves, microwaves, infrared, visible light, ultra-violet, x-rays, and gamma radiation"
+  },
+  {
+   "id": "SCI-G9-Q1-012",
+   "unit": "science-g9-q1-force-6",
+   "text": "Identify practical applications of electromagnetic radiation, such as radio waves used in telecommunications, and x-rays and gamma rays in medicine"
+  },
+  {
+   "id": "SCI-G9-Q1-013",
+   "unit": "science-g9-q1-force-6",
+   "text": "Gather information from secondary sources to explain the harmful effects that EMR can have on living things."
+  },
+  {
+   "id": "SCI-G9-Q2-001",
+   "unit": "science-g9-q2-earth-2",
+   "text": "Identify and explain evidence that current continents are separate parts of what was a single continent millions of years ago"
+  },
+  {
+   "id": "SCI-G9-Q2-002",
+   "unit": "science-g9-q2-earth-2",
+   "text": "Participate in a collaborative group or class task to examine and describe the topographical and geological evidence for plate boundaries occurring in the area where the Philippines is located"
+  },
+  {
+   "id": "SCI-G9-Q2-003",
+   "unit": "science-g9-q2-earth-2",
+   "text": "Describe the types of plate boundaries found around the Earth"
+  },
+  {
+   "id": "SCI-G9-Q2-004",
+   "unit": "science-g9-q2-earth-4",
+   "text": "Describe how fossils can be used for dating the age of rocks and sediments"
+  },
+  {
+   "id": "SCI-G9-Q2-005",
+   "unit": "science-g9-q2-earth-4",
+   "text": "Describe how relative and absolute dating techniques are used to determine the subdivisions of geologic time"
+  },
+  {
+   "id": "SCI-G9-Q2-006",
+   "unit": "science-g9-q2-earth-4",
+   "text": "Explain how the geologic time scale helps to recount the history of the Earth"
+  },
+  {
+   "id": "SCI-G9-Q2-007",
+   "unit": "science-g9-q2-earth-3",
+   "text": "Describe how seismic wave data has been used to develop a model for the internal structure and composition of the Earth"
+  },
+  {
+   "id": "SCI-G9-Q2-008",
+   "unit": "science-g9-q2-earth",
+   "text": "Create a scale drawing to represent relative thicknesses of the layers of Earth’s interior, including the crust, lithosphere, asthenosphere, mantle, outer core, and inner core"
+  },
+  {
+   "id": "SCI-G9-Q2-009",
+   "unit": "science-g9-q2-earth-5",
+   "text": "Distinguish among comets, meteoroids, asteroids, and dwarf planets, and describe how they help us to understand the nature and formation of the Earth and the Solar System"
+  },
+  {
+   "id": "SCI-G9-Q2-010",
+   "unit": "science-g9-q2-earth-5",
+   "text": "Gather information from secondary sources to discuss the regular occurrence of meteor showers"
+  },
+  {
+   "id": "SCI-G9-Q2-011",
+   "unit": "science-g9-q2-earth-6",
+   "text": "Explain how modern research about celestial objects uses new space technologies including telescopes and space probes."
+  },
+  {
+   "id": "SCI-G9-Q3-001",
+   "unit": "science-g9-q3-living",
+   "text": "Use models and labeled diagrams to represent the double helix structure of DNA (deoxyribonucleic acid)"
+  },
+  {
+   "id": "SCI-G9-Q3-002",
+   "unit": "science-g9-q3-living",
+   "text": "Explain the role of DNA, genes, and chromosomes in the transmission of traits"
+  },
+  {
+   "id": "SCI-G9-Q3-003",
+   "unit": "science-g9-q3-living",
+   "text": "Describe mutations as changes in DNA or chromosomes and discuss some of the factors that cause mutations, such as infectious agents, radiation, and chemicals"
+  },
+  {
+   "id": "SCI-G9-Q3-004",
+   "unit": "science-g9-q3-living",
+   "text": "Use information from secondary sources to explain the beneficial, harmful, and neutral effects of mutations"
+  },
+  {
+   "id": "SCI-G9-Q3-005",
+   "unit": "science-g9-q3-living-2",
+   "text": "Explain the advantage of high biodiversity in maintaining the stability of an ecosystem during difficult conditions, such as food shortages, disease, and climate change"
+  },
+  {
+   "id": "SCI-G9-Q3-006",
+   "unit": "science-g9-q3-living-2",
+   "text": "Use information from secondary resources to classify animals and plants of the Philippines as critically endangered, endangered, or vulnerable species"
+  },
+  {
+   "id": "SCI-G9-Q3-007",
+   "unit": "science-g9-q3-living-2",
+   "text": "Discuss as a class how threats to biodiversity can lead to species extinction"
+  },
+  {
+   "id": "SCI-G9-Q3-008",
+   "unit": "science-g9-q3-living-2",
+   "text": "Use information from secondary sources to research how to protect and conserve endangered and/or economically important species in the local community"
+  },
+  {
+   "id": "SCI-G9-Q3-009",
+   "unit": "science-g9-q3-living-3",
+   "text": "Describe using labeled diagrams the biotic and abiotic features of tropical rainforests, swamps, estuaries, mangrove forests, and coral reefs"
+  },
+  {
+   "id": "SCI-G9-Q3-010",
+   "unit": "science-g9-q3-living-3",
+   "text": "Use information from secondary sources to describe the possible effects of human activities, such as deforestation, pollution, and introduction of invasive species, on living things in an ecosystem"
+  },
+  {
+   "id": "SCI-G9-Q3-011",
+   "unit": "science-g9-q3-living-3",
+   "text": "Plan to conduct a survey to explore the possibilities for minimizing the negative impacts of human activities on an ecosystem."
+  },
+  {
+   "id": "SCI-G9-Q4-001",
+   "unit": "science-g9-q4-matter",
+   "text": "Carry out a valid and reliable scientific investigation to show the formation of a new substance, such as formation of a carbonate (carbon dioxide in limewater), or formation of a precipitate (from silver nitrate solution)"
+  },
+  {
+   "id": "SCI-G9-Q4-002",
+   "unit": "science-g9-q4-matter-2",
+   "text": "Explain that the formation of new bonds or the breaking of existing bonds constitutes a chemical change and the formation of a new substance"
+  },
+  {
+   "id": "SCI-G9-Q4-003",
+   "unit": "science-g9-q4-matter-2",
+   "text": "Describe a valence electron as an electron in the outer shell of an atom that can take part in formation of bonds"
+  },
+  {
+   "id": "SCI-G9-Q4-004",
+   "unit": "science-g9-q4-matter-2",
+   "text": "Identify the number of valence electrons of oxygen based on its position in the periodic table"
+  },
+  {
+   "id": "SCI-G9-Q4-005",
+   "unit": "science-g9-q4-matter-3",
+   "text": "Explain the formation of ions as either the loss or gain of electrons to produce ionic bonds, using examples, such as the formation of sodium chloride"
+  },
+  {
+   "id": "SCI-G9-Q4-006",
+   "unit": "science-g9-q4-matter-6",
+   "text": "Write the chemical formula and chemical names of some common ionic compounds, including sodium chloride (NaCl), magnesium oxide (MgO), potassium chloride (KCl) and magnesium chloride (MgCl2)"
+  },
+  {
+   "id": "SCI-G9-Q4-007",
+   "unit": "science-g9-q4-matter-4",
+   "text": "Explain the formation of covalent bonds using a molecule of water and a molecule of carbon dioxide"
+  },
+  {
+   "id": "SCI-G9-Q4-008",
+   "unit": "science-g9-q4-matter-6",
+   "text": "Write the chemical formula and chemical name of some common covalent compounds, including water (H2O), carbon dioxide (CO2), and ammonia (NH3)"
+  },
+  {
+   "id": "SCI-G9-Q4-009",
+   "unit": "science-g9-q4-matter-2",
+   "text": "Show by using models that ionic compounds form crystalline structures whereas covalent compounds form individual molecules"
+  },
+  {
+   "id": "SCI-G9-Q4-010",
+   "unit": "science-g9-q4-matter-5",
+   "text": "Explain properties of metals in terms of their structure and metallic bonding (sea of electrons model)"
+  },
+  {
+   "id": "SCI-G9-Q4-011",
+   "unit": "science-g9-q4-matter",
+   "text": "Investigate the properties of ionic, covalent, and metallic substances, such as melting point, hardness, electrical and thermal conductivity."
+  },
+  {
+   "id": "SCI-G10-Q1-001",
+   "unit": "science-g10-q1-earth",
+   "text": "Identify modern scientific processes used to detect and measure the displacement of tectonic plates"
+  },
+  {
+   "id": "SCI-G10-Q1-002",
+   "unit": "science-g10-q1-earth",
+   "text": "Describe the structures, movements and events that occur at each type of plate boundary"
+  },
+  {
+   "id": "SCI-G10-Q1-003",
+   "unit": "science-g10-q1-earth",
+   "text": "Identify the locations of major mountains, faults, volcanos, and ocean trenches using a map of the Philippine Archipelago, and interpret the features in relation to plate tectonics"
+  },
+  {
+   "id": "SCI-G10-Q1-004",
+   "unit": "science-g10-q1-earth",
+   "text": "Predict the position and shape of the Philippine Archipelago in 50 million years, based on the current velocity of the Philippine Plate"
+  },
+  {
+   "id": "SCI-G10-Q1-005",
+   "unit": "science-g10-q1-earth",
+   "text": "Gather information from secondary sources to describe and explain what mechanisms that drive the movement of tectonic plates including the role of the asthenosphere"
+  },
+  {
+   "id": "SCI-G10-Q1-006",
+   "unit": "science-g10-q1-earth",
+   "text": "Explain how the subduction of an oceanic plate impacts on the plate above it"
+  },
+  {
+   "id": "SCI-G10-Q1-007",
+   "unit": "science-g10-q1-earth",
+   "text": "Explain how plate tectonics can be used to explain the formation of the largest mountain ranges on Earth including the Himalayas and the Andes mountains"
+  },
+  {
+   "id": "SCI-G10-Q1-008",
+   "unit": "science-g10-q1-earth-2",
+   "text": "Identify evidence of global warming and climate change"
+  },
+  {
+   "id": "SCI-G10-Q1-009",
+   "unit": "science-g10-q1-earth-2",
+   "text": "Identify the role of greenhouse gases in enhanced global warming and climate change"
+  },
+  {
+   "id": "SCI-G10-Q1-010",
+   "unit": "science-g10-q1-earth-3",
+   "text": "Describe how global climatic phenomena, such as the El Niño Southern Oscillation, may impact weather systems"
+  },
+  {
+   "id": "SCI-G10-Q1-011",
+   "unit": "science-g10-q1-earth-4",
+   "text": "Identify local impacts of global climate change and suggest ways that individuals can do to reduce the impact of global warming"
+  },
+  {
+   "id": "SCI-G10-Q1-012",
+   "unit": "science-g10-q1-earth-4",
+   "text": "Explain how increased societal uses of renewable energies could mitigate the effects of global climate change, including how the Philippines could make better use of its plentiful natural resources."
+  },
+  {
+   "id": "SCI-G10-Q2-001",
+   "unit": "science-g10-q2-force",
+   "text": "Investigate and describe the relationship among the projectile variables including the angle and velocity of release, and projectile height and range, using everyday activities such as shooting basketballs or kicking footballs"
+  },
+  {
+   "id": "SCI-G10-Q2-002",
+   "unit": "science-g10-q2-force-2",
+   "text": "Describe different types of collisions as elastic or inelastic by providing some examples"
+  },
+  {
+   "id": "SCI-G10-Q2-003",
+   "unit": "science-g10-q2-force-2",
+   "text": "Use models to investigate elastic or inelastic collisions and describe the forces involved and their effects"
+  },
+  {
+   "id": "SCI-G10-Q2-004",
+   "unit": "science-g10-q2-force-2",
+   "text": "Explain that momentum depends on the mass and the velocity of a moving object that can be used to predict the impact the object will have if it hits another object"
+  },
+  {
+   "id": "SCI-G10-Q2-005",
+   "unit": "science-g10-q2-force-2",
+   "text": "Carry out guided investigations using different objects to describe momentum-related relationships, such as the more momentum an object has, the harder for it to stop"
+  },
+  {
+   "id": "SCI-G10-Q2-006",
+   "unit": "science-g10-q2-force-2",
+   "text": "Identify and explain that to change the momentum of an object, it is necessary to apply a force on the object over a period of time"
+  },
+  {
+   "id": "SCI-G10-Q2-007",
+   "unit": "science-g10-q2-force-2",
+   "text": "Gather information from secondary sources to identify ways to reduce the impact of collisions such as seatbelts, airbags, and crumple zones in vehicles"
+  },
+  {
+   "id": "SCI-G10-Q2-008",
+   "unit": "science-g10-q2-force-2",
+   "text": "Identify that momentum is conserved before and after the collision of objects"
+  },
+  {
+   "id": "SCI-G10-Q2-009",
+   "unit": "science-g10-q2-force-3",
+   "text": "Describe how high voltage electricity from power plants is generated and safely distributed to industries, businesses, and homes, including the role of substations (grid stations), and electric meters"
+  },
+  {
+   "id": "SCI-G10-Q2-010",
+   "unit": "science-g10-q2-force-3",
+   "text": "Describe and explain the need for safety precautions in handling household electrical devices"
+  },
+  {
+   "id": "SCI-G10-Q2-011",
+   "unit": "science-g10-q2-force-3",
+   "text": "Describe the similarities and differences between electric motors and electric generators"
+  },
+  {
+   "id": "SCI-G10-Q2-012",
+   "unit": "science-g10-q2-force-4",
+   "text": "Collaborate in a class discussion to identify ways to reduce the use of electrical energy in Filipino houses and communities and explain what local and global benefits can be achieved"
+  },
+  {
+   "id": "SCI-G10-Q2-013",
+   "unit": "science-g10-q2-force-4",
+   "text": "Gather information from secondary sources to evaluate how renewable and non-renewable generation of electricity in the Philippines impacts human activities and the environment."
+  },
+  {
+   "id": "SCI-G10-Q3-001",
+   "unit": "science-g10-q3-matter",
+   "text": "Describe the indicators for a chemical reaction as color change, the formation of a precipitate, the release of gas, and or odor, or a change in temperature"
+  },
+  {
+   "id": "SCI-G10-Q3-002",
+   "unit": "science-g10-q3-matter-2",
+   "text": "Identify common acids, bases, and salts (e.g., hydrochloric acid, sodium hydroxide, and saline solution) using different indicators"
+  },
+  {
+   "id": "SCI-G10-Q3-003",
+   "unit": "science-g10-q3-matter-3",
+   "text": "Describe important types of chemical reactions (combination, decomposition, single replacement, double replacement)"
+  },
+  {
+   "id": "SCI-G10-Q3-004",
+   "unit": "science-g10-q3-matter-4",
+   "text": "Explain how important types of chemical reactions, such as combustion, acids on metals, acids on carbonates, photosynthesis, and respiration, relate to or impact the natural and built environments using information from secondary sources"
+  },
+  {
+   "id": "SCI-G10-Q3-005",
+   "unit": "science-g10-q3-matter-5",
+   "text": "Recognize that scientists: a. use chemical equations to describe chemical reactions, and b. write equations in word form and using formula for common chemical reactions"
+  },
+  {
+   "id": "SCI-G10-Q3-006",
+   "unit": "science-g10-q3-matter-5",
+   "text": "Explain that chemical equations demonstrate a rearrangement of atoms but the total mass of the system remains the same during a chemical reaction"
+  },
+  {
+   "id": "SCI-G10-Q3-007",
+   "unit": "science-g10-q3-matter-5",
+   "text": "Apply the principles of conservation of mass to balance chemical equations"
+  },
+  {
+   "id": "SCI-G10-Q3-008",
+   "unit": "science-g10-q3-matter-6",
+   "text": "Explain the factors affecting the rates of chemical reactions as applied in food preservation and materials production, control of fire, pollution, and corrosion"
+  },
+  {
+   "id": "SCI-G10-Q3-009",
+   "unit": "science-g10-q3-matter",
+   "text": "Identify that chemical reactions may be exothermic or endothermic"
+  },
+  {
+   "id": "SCI-G10-Q4-001",
+   "unit": "science-g10-q4-living",
+   "text": "Describe homeostasis as a state of balance among all the body systems in humans that needs to be maintained for survival and proper functioning; its indicators include body temperature, glucose level, and blood pressure"
+  },
+  {
+   "id": "SCI-G10-Q4-002",
+   "unit": "science-g10-q4-living",
+   "text": "Explain how homeostasis is maintained through various feedback mechanisms, both positive and negative"
+  },
+  {
+   "id": "SCI-G10-Q4-003",
+   "unit": "science-g10-q4-living-2",
+   "text": "Use information from secondary sources to describe natural selection as the primary mechanism driving evolutionary change"
+  },
+  {
+   "id": "SCI-G10-Q4-004",
+   "unit": "science-g10-q4-living-2",
+   "text": "Discuss in small groups important concepts in the theories of evolution, such as variation, heredity, isolation, selection, and adaptation"
+  },
+  {
+   "id": "SCI-G10-Q4-005",
+   "unit": "science-g10-q4-living-2",
+   "text": "Use information from secondary sources to explain how lines of evidence, such as fossils, biogeography, and comparative morphology, support the occurrence of evolution"
+  },
+  {
+   "id": "SCI-G10-Q4-006",
+   "unit": "science-g10-q4-living-3",
+   "text": "Explain the term biotechnology and provide examples"
+  },
+  {
+   "id": "SCI-G10-Q4-007",
+   "unit": "science-g10-q4-living-3",
+   "text": "Use information from secondary sources to identify the products of traditional biotechnology through fermentation (e.g. cheese, soy sauce, vinegar, nata de coco)"
+  },
+  {
+   "id": "SCI-G10-Q4-008",
+   "unit": "science-g10-q4-living-3",
+   "text": "Use information from secondary sources to identify examples of modern biotechnology, such as genetically modified organisms and processes (e.g. in vitro fertilization)"
+  },
+  {
+   "id": "SCI-G10-Q4-009",
+   "unit": "science-g10-q4-living-3",
+   "text": "Participate in a class debate on the societal, environmental, and ethical implications of using biotechnological products and methods"
+  },
+  {
+   "id": "SCI-G10-Q4-010",
+   "unit": "science-g10-q4-living-4",
+   "text": "Discuss the factors that limit the ecosystem’s carrying capacity, such as adequate food, shelter, water, and mates"
+  },
+  {
+   "id": "SCI-G10-Q4-011",
+   "unit": "science-g10-q4-living-4",
+   "text": "Explain that the ecosystem’s population growth slows down as it gets closer to the carrying capacity."
+  }
+ ]
+}

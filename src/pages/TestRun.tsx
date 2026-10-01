@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Bilog } from "../components/Bilog";
 import { Icon } from "../components/Icon";
-import { Math, quickTex } from "../components/Math";
+import { Math, RichText, quickTex } from "../components/Math";
 import { MicButton } from "../components/MicButton";
 import { Question } from "../components/Practice";
 import { Shell } from "../components/Shell";
@@ -14,13 +14,15 @@ import { fetchMyTests, submitResult, type MyTest } from "../school";
 import { useStore } from "../store";
 import type { Lesson } from "../types";
 
-type Item = Lesson["practice"][number] & { unitId: string };
+/** A question as the student meets it: the test's own (with `q`, its index) or, on older tests, lesson practice. */
+type Item = Lesson["practice"][number] & { unitId: string; kind?: "typed" | "choice"; choices?: string[]; answer?: number; why?: string; q?: number };
 const QUIZ_MAX = 6;
 const EXAM_PER_TOPIC = 3;
 const EXAM_MAX = 12;
 
-/** The test's questions: a topic's verified practice items, a few per topic for an exam. */
+/** The test's questions: its own, written and checked when the teacher made it. Older tests use lesson practice. */
 async function questionsFor(t: MyTest["test"]): Promise<Item[]> {
+  if (t.questions?.length) return t.questions.map((x, q) => ({ ...x, q }));
   const per = t.kind === "quiz" ? QUIZ_MAX : EXAM_PER_TOPIC;
   const sets = await Promise.all(t.unitIds.map(async (id) => {
     const u = unitById(id);
@@ -63,13 +65,15 @@ export default function TestRun() {
     const score = all.filter(Boolean).length;
     saveResume(key, null);
     addXp(score * 5);
-    setSent(await submitResult(testId, score, all.length, all.map((r, i) => ({ unitId: items![i].unitId, right: r }))));
+    setSent(await submitResult(testId, score, all.length, all.map((r, i) => ({ unitId: items![i].unitId, right: r, ...(items![i].q !== undefined ? { q: items![i].q } : {}) }))));
   }
 
-  async function next() {
-    if (!items || busy || !answer.trim()) return;
+  async function next(pick?: number) {
+    if (!items || busy) return;
+    const item = items[qi];
+    if (item.kind === "choice" ? pick === undefined : !answer.trim()) return;
     setBusy(true);
-    const ok = await checkPractice(items[qi], answer).catch(() => false);
+    const ok = item.kind === "choice" ? pick === item.answer : await checkPractice(item, answer).catch(() => false);
     const all = [...right, ok];
     setRight(all);
     setAnswer("");
@@ -108,8 +112,12 @@ export default function TestRun() {
                     <Icon name={right[i] ? "check" : "close"} size={14} />
                   </span>
                   <span className="min-w-0 flex-1 text-[15px]">
-                    <span className="prose-lesson block !text-[16px] !leading-snug">{p.prompt}</span>
-                    {!right[i] && p.expected && <span className="mt-1 block text-[14px] text-muted">{t("practice.answerIs")}: <Math tex={quickTex(p.expected)} /></span>}
+                    <span className="prose-lesson block !text-[16px] !leading-snug"><RichText text={p.prompt} /></span>
+                    {!right[i] && p.kind === "choice" && p.choices && p.answer !== undefined && (
+                      <span className="mt-1 block text-[14px] text-muted">{t("practice.answerIs")}: <RichText text={p.choices[p.answer]} /></span>
+                    )}
+                    {!right[i] && p.kind !== "choice" && p.expected && <span className="mt-1 block text-[14px] text-muted">{t("practice.answerIs")}: <Math tex={quickTex(p.expected)} /></span>}
+                    {!right[i] && p.why && <span className="mt-1 block text-[14px] text-muted"><RichText text={p.why} /></span>}
                   </span>
                 </li>
               ))}
@@ -127,6 +135,20 @@ export default function TestRun() {
           <AnimatePresence mode="wait">
             <motion.section key={qi} initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} className="mt-5">
               <div className="kicker text-muted">{t("check.questionOf", { n: qi + 1, total: items!.length })}</div>
+              {items![qi].kind === "choice" ? (
+                <>
+                  <p className="prose-lesson mt-3 !text-[19px] !leading-snug"><RichText text={items![qi].prompt} /></p>
+                  <div className="mt-4 space-y-2" role="radiogroup">
+                    {items![qi].choices!.map((c, k) => (
+                      <button key={k} role="radio" aria-checked={false} disabled={busy} onClick={() => void next(k)} data-testid={`test-choice-${k}`}
+                        className="flex w-full items-center gap-4 rounded-2xl border border-white/60 bg-white/45 px-3 py-3.5 text-left text-[17px]">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/55 font-display text-[14px] text-muted">{"ABCD"[k]}</span>
+                        <span className="flex-1"><RichText text={c} /></span>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (<>
               <Question p={items![qi]} />
               <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); void next(); }}>
                 <input className="input" value={answer} onChange={(e) => setAnswer(e.target.value)} data-math inputMode="text" enterKeyHint="done"
@@ -136,6 +158,7 @@ export default function TestRun() {
                 </button>
               </form>
               <div className="mt-2"><MicButton onText={setAnswer} testId="answer-mic" /></div>
+              </>)}
               <p className="mt-4 text-[13px] text-muted">{t("classes.oneTry")}</p>
             </motion.section>
           </AnimatePresence>

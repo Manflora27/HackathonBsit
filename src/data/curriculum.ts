@@ -80,10 +80,30 @@ export function subjectsFor(grade: number | null): SubjectId[] {
   return subjectGroupsFor(grade).flatMap((g) => g.subjects);
 }
 
-/** The grade a subject's plan is built at: the learner's own, or the self-learner default. */
+/**
+ * The school year a date falls in, by the year it opened. Classes open in June, so May 2027 is still SY 2026-27.
+ * Learners move up when a new one opens: the grade is what they're learning toward, never a pass/fail status.
+ */
+export function schoolYear(d = new Date()): number {
+  return d.getMonth() >= 5 ? d.getFullYear() : d.getFullYear() - 1;
+}
+
+/** Subjects after moving up to `grade`: keep what it still offers, add what it requires (Grade 10 Science gives way to the Grade 11 core). */
+export function promoteSubjects(subjects: SubjectId[], grade: number): SubjectId[] {
+  const offered = subjectsForGrade(grade);
+  return [...new Set([...subjects.filter((s) => offered.includes(s)), ...requiredSubjectsForGrade(grade)])];
+}
+
+/** School years a self-learner has chosen to move up since starting (opt-in; kept in sync by store.ts). */
+let selfYears = 0;
+export function setSelfYears(n: number) {
+  selfYears = n;
+}
+
+/** The grade a subject's plan is built at: the learner's own, or the self-learner default plus any years moved up. */
 export function startGrade(subject: SubjectId, grade: number | null): number {
   if (grade !== null) return grade;
-  return subject === "math" || subject === "science" ? 7 : 11;
+  return subject === "math" || subject === "science" ? Math.min(10, 7 + selfYears) : Math.min(12, 11 + selfYears);
 }
 
 export const goalMeta: Record<Goal, { en: string }> = {
@@ -299,6 +319,26 @@ export function buildPlan(subject: SubjectId, grade: number): PlanUnit[] {
   if (subject === "math" && MATATAG_MATH[grade]) return matatagMathPlan(grade);
   if (subject === "science" && MATATAG_SCIENCE[grade]) return matatagSciencePlan(grade);
   return domainPlan(subject, grade);
+}
+
+/**
+ * Every unit in the curriculum once, in one global order: grade, then quarter, then the guide's own order.
+ * Prerequisite links (data/graph.ts) may only point backwards in this order, which keeps the graph acyclic.
+ */
+let all: PlanUnit[] | null = null;
+export function allUnits(): PlanUnit[] {
+  if (all) return all;
+  const seen = new Map<string, PlanUnit>();
+  for (let g = 1; g <= 12; g++) for (const s of subjectsForGrade(g)) for (const u of buildPlan(s, g)) if (!seen.has(u.id)) seen.set(u.id, u);
+  all = [...seen.values()].sort((a, b) => a.grade - b.grade || a.quarter - b.quarter);
+  return all;
+}
+
+let order: Map<string, number> | null = null;
+/** A unit's position in the global order (-1 if unknown). */
+export function unitOrder(id: string): number {
+  order ??= new Map(allUnits().map((u, i) => [u.id, i]));
+  return order.get(id) ?? -1;
 }
 
 export const verifierMeta: Record<VerifierId, { en: string; verified: boolean }> = {

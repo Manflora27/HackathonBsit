@@ -5,9 +5,9 @@ import { useAuth } from "../auth";
 import { Icon } from "../components/Icon";
 import { Shell } from "../components/Shell";
 import { SubjectIcon } from "../components/SubjectIcon";
-import { subjectsForGrade, type SubjectId } from "../data/curriculum";
+import { subjectMeta, subjectsForGrade, type SubjectId } from "../data/curriculum";
 import { useT } from "../i18n";
-import { fetchRoster } from "../school";
+import { countRoster } from "../school";
 
 /** A teacher's classes, and making a new one. */
 export default function TeacherClasses() {
@@ -20,15 +20,20 @@ export default function TeacherClasses() {
 
   useEffect(() => {
     let live = true;
-    Promise.all(classes.map(async (c) => [c.id, (await fetchRoster(c.id)).length] as const)).then((r) => live && setCounts(Object.fromEntries(r)));
+    // Counts only: a head request per class, no roster rows. A failed count just leaves that class's number out.
+    Promise.all(classes.map(async (c) => [c.id, await countRoster(c.id)] as const))
+      .then((r) => live && setCounts(Object.fromEntries(r.filter((x): x is readonly [string, number] => x[1] !== null))));
     return () => { live = false; };
   }, [classes]);
 
   return (
-    <Shell>
+    // Teachers mostly work at a desk: wide on a computer (classes beside the new-class form), one column on a phone.
+    <Shell wide>
       <div className="kicker mt-2 text-muted">{t(hour < 12 ? "home.goodMorning" : hour < 18 ? "home.goodAfternoon" : "home.goodEvening")}</div>
       <h1 className="mt-1 text-[36px] leading-none">{profile?.display_name || t("teacher.teacherFallback")}.</h1>
 
+      <div className="md:grid md:grid-cols-[minmax(0,1fr)_400px] md:items-start md:gap-10">
+      <div>
       {classes.length > 0 && (
         <>
           <h2 className="kicker mt-8 text-muted">{t("classes.yourClasses")}</h2>
@@ -52,6 +57,8 @@ export default function TeacherClasses() {
         </>
       )}
 
+      </div>
+      <div className="md:sticky md:top-24">
       <AnimatePresence initial={false}>
         {adding ? (
           <motion.div key="form" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
@@ -63,6 +70,8 @@ export default function TeacherClasses() {
           </motion.button>
         )}
       </AnimatePresence>
+      </div>
+      </div>
     </Shell>
   );
 }
@@ -75,7 +84,10 @@ function NewClass({ first, onCancel, onMade }: { first: boolean; onCancel?: () =
   const [name, setName] = useState("");
   const [section, setSection] = useState("");
   const [grade, setGrade] = useState(9);
-  const options = subjectsForGrade(grade);
+  // Every Math and Science subject Hopper teaches, at any grade: this grade's own first, then the rest.
+  const own = subjectsForGrade(grade);
+  const others = (Object.keys(subjectMeta) as SubjectId[]).filter((s) => !own.includes(s));
+  const options = [...own, ...others];
   const [subject, setSubject] = useState<SubjectId>("math");
   const [busy, setBusy] = useState(false);
   const subj = options.includes(subject) ? subject : options[0];
@@ -107,7 +119,16 @@ function NewClass({ first, onCancel, onMade }: { first: boolean; onCancel?: () =
 
       <div className="kicker mt-4 text-muted">{t("classes.subject")}</div>
       <div className="mt-2 flex flex-wrap gap-2" role="radiogroup">
-        {options.map((s) => (
+        {own.map((s) => (
+          <button key={s} type="button" role="radio" aria-checked={s === subj} onClick={() => setSubject(s)} data-testid={`class-subject-${s}`}
+            className={`flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5 text-[14px] font-semibold transition ${s === subj ? "bg-ink text-paper" : "bg-white/55"}`}>
+            <SubjectIcon id={s} size={26} onColor={s === subj} /> {t.subject(s)}
+          </button>
+        ))}
+      </div>
+      <div className="mt-3 text-[12.5px] text-muted">{t("classes.alsoAvailable")}</div>
+      <div className="mt-1.5 flex flex-wrap gap-2" role="radiogroup">
+        {others.map((s) => (
           <button key={s} type="button" role="radio" aria-checked={s === subj} onClick={() => setSubject(s)} data-testid={`class-subject-${s}`}
             className={`flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3.5 text-[14px] font-semibold transition ${s === subj ? "bg-ink text-paper" : "bg-white/55"}`}>
             <SubjectIcon id={s} size={26} onColor={s === subj} /> {t.subject(s)}

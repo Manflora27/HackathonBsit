@@ -25,7 +25,7 @@ export default function Solve() {
   const [params] = useSearchParams();
   const retry = params.get("mode") === "retry";
   const assignmentId = params.get("assignment");
-  const { lang, addAttempt, set, setSkill, log, trace, role } = useStore();
+  const { lang, addAttempt, set, setSkill, trace, role } = useStore();
 
   const known = problemById[problemId];
   const [customGiven, setCustomGiven] = useState(params.get("given") ?? "");
@@ -33,7 +33,8 @@ export default function Solve() {
     known ??
     ({ id: "custom", prompt: t("solve.problem"), given: customGiven, kind: customGiven.includes("=") ? "solve" : "simplify", skill: "lin_eq" } as Problem);
 
-  const [steps, setSteps] = useState<string[]>([""]);
+  // Steps handed over from Help (?steps=line\nline) start filled in.
+  const [steps, setSteps] = useState<string[]>(() => params.get("steps")?.split("\n").filter(Boolean) ?? [""]);
   const [focus, setFocus] = useState<number | null>(known ? 0 : -1);
   const [confirm, setConfirm] = useState<{ latex: (string | null)[] } | null>(null);
   const [result, setResult] = useState<Analysis | null>(null);
@@ -150,7 +151,6 @@ export default function Solve() {
         wrongTerms: a.wrongTerms,
       });
       setAiMc(ai);
-      if (ai) log({ action: "classify", suggestion: `${ai.id ?? "unknown"} (${globalThis.Math.round(ai.confidence * 100)}%)`, decision: "shown to student", actor: "student" });
     }
     set({
       trace: { attemptId, problemId: problem.id, misconceptionId: a.misconception?.id ?? null, startSkill: problem.skill, path: [problem.skill], rootSkill: null },
@@ -170,7 +170,7 @@ export default function Solve() {
   }
 
   return (
-    <Shell tabs={false} back={role === "guest" ? "/" : "/student"} title={retry ? (t("solve.retry")) : problem.prompt}>
+    <Shell tabs={false} back={!known ? "/help" : role === "guest" ? "/" : "/student"} title={retry ? (t("solve.retry")) : problem.prompt}>
       {retry && (
         <div className="card-flat mb-3 flex items-center gap-2 !bg-gap-soft/70 !p-3 text-[15px] text-gap-dark">
           {t("solve.nowProblemStopped")}
@@ -291,7 +291,7 @@ export default function Solve() {
       </button>
 
       <div ref={resultRef} className="scroll-mt-16">
-        {result && <ResultPanel result={result} mc={mc} mcId={mcId} aiMc={aiMc} retry={retry} onTrace={startTrace} problem={problem} />}
+        {result && <ResultPanel result={result} mc={mc} aiMc={aiMc} retry={retry} onTrace={startTrace} problem={problem} />}
       </div>
 
       <AnimatePresence>
@@ -325,7 +325,6 @@ export default function Solve() {
 function ResultPanel({
   result,
   mc,
-  mcId,
   aiMc,
   retry,
   onTrace,
@@ -333,7 +332,6 @@ function ResultPanel({
 }: {
   result: Analysis;
   mc: { title: string; what: string } | null;
-  mcId: string | null;
   aiMc: { id: string | null; confidence: number } | null;
   retry: boolean;
   onTrace: () => void;
@@ -341,8 +339,7 @@ function ResultPanel({
 }) {
   const t = useT();
   const nav = useNavigate();
-  const { lang, log, role } = useStore();
-  const [flagged, setFlagged] = useState(false);
+  const { lang, role } = useStore();
   const markRef = useRef<HTMLDivElement | null>(null);
 
   if (result.error) return <div className="card mt-5">{t("solve.couldntReadProblemCan")}</div>;
@@ -431,16 +428,6 @@ function ResultPanel({
 
         <button className="btn-gap mt-5 w-full !text-lg" onClick={onTrace} data-testid="find-root">
           <Icon name="search" size={18} /> {t("common.findRoot")}
-        </button>
-        <button
-          className="mt-3 w-full py-2 text-sm text-muted underline decoration-dotted underline-offset-4"
-          disabled={flagged}
-          onClick={() => {
-            setFlagged(true);
-            log({ action: "diagnosis", suggestion: mcId ?? "none", decision: "student flagged as wrong", actor: "student" });
-          }}
-        >
-          {flagged ? (t("solve.thanksTeacherWillSee")) : t("solve.diagnosisDoesntSeemRight")}
         </button>
         {skillById[problem.skill] && (
           <p className="mt-1 text-center text-xs text-muted">

@@ -6,21 +6,25 @@ import { Icon } from "../components/Icon";
 import { Math, quickTex } from "../components/Math";
 import { OfflinePack } from "../components/OfflinePack";
 import { EngineBadge, Shell } from "../components/Shell";
-import { buildPlan, startGrade, unitById, type SubjectId } from "../data/curriculum";
+import { startGrade, type SubjectId } from "../data/curriculum";
 import { demoAssignment, problemById, skillById, skillTitle } from "../data";
 import { KYLA_ID } from "../data/seedClass";
 import { useStore } from "../store";
 import { useT } from "../i18n";
 import { SubjectIcon } from "../components/SubjectIcon";
-import { usePlanContext } from "../plan";
+import { currentUnit, usePlanContext } from "../plan";
 import { fetchMyTests, type MyTest } from "../school";
+import { syncClassProgress } from "../classroom";
+import { JoinClassSheet } from "../components/JoinClassSheet";
+import { AnimatePresence } from "motion/react";
 
 export default function StudentHome() {
   const nav = useNavigate();
-  const { onboarding, attempts, lang, practiceAssignments, trace, gapsFixed, progress, demo, placement } = useStore();
+  const { onboarding, attempts, lang, practiceAssignments, trace, gapsFixed, progress, demo, placement, movedUp, set } = useStore();
   const { profile, classes, joinClass, error } = useAuth();
   const t = useT();
   const [code, setCode] = useState("");
+  /** The code typed in is being confirmed: the sheet shows the class and what its teacher will see. */
   const [joining, setJoining] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
   const rootRef = useRef<HTMLButtonElement | null>(null);
@@ -32,6 +36,10 @@ export default function StudentHome() {
     let live = true;
     fetchMyTests().then((x) => live && setTests(x));
     return () => { live = false; };
+  }, [signedIn, classes.length]);
+  // Catch the teacher's view up with progress made offline (upserts, so repeats are harmless).
+  useEffect(() => {
+    if (signedIn && classes.length) void syncClassProgress(useStore.getState().progress);
   }, [signedIn, classes.length]);
   const toTake = tests.filter((x) => !x.result);
   const recent = tests.filter((x) => x.result).slice(0, 3);
@@ -50,12 +58,15 @@ export default function StudentHome() {
   const greet = t(hour < 12 ? "home.goodMorning" : hour < 18 ? "home.goodAfternoon" : "home.goodEvening");
 
   // Each subject starts where its starting-point check put the learner. Unchecked subjects have no "next" yet.
+  // Each subject's next unit: from where the check placed the learner, moving forward as units are mastered.
   const startOf = (sub: SubjectId) => {
     const p = placement[sub];
     if (!p) return null;
-    if (p.skillId) return { route: `/learn/${p.skillId}`, title: skillTitle(p.skillId, lang), gap: p.gap, done: progress[p.skillId] === "mastered" };
-    const u = (p.unitId && unitById(p.unitId)) || buildPlan(sub, startGrade(sub, planGrade))[0];
-    return { route: `/unit/${u.id}`, title: t.unit(u), gap: p.gap, done: progress[u.id] === "mastered" };
+    // Offline placements point at a built-in skill until it's fixed.
+    if (p.skillId && progress[p.skillId] !== "mastered") return { route: `/learn/${p.skillId}`, title: skillTitle(p.skillId, lang), gap: p.gap, done: false, grade: skillById[p.skillId]?.grade ?? startGrade(sub, planGrade) };
+    const now = currentUnit(sub, planGrade, p, progress);
+    if (!now) return null;
+    return { route: `/unit/${now.unit.id}`, title: t.unit(now.unit), gap: now.behind, done: false, grade: now.unit.grade };
   };
   const unchecked = planSubjects.find((s) => !placement[s]);
   const firstSub = planSubjects.find((s) => placement[s]);
@@ -75,6 +86,19 @@ export default function StudentHome() {
         <Bilog size={60} lookAt={rootRef} sprout={gapsFixed.length > 0}
           mood={trace && !trace.rootSkill ? "dig" : rootOpen ? "found" : "idle"} />
       </section>
+
+      {movedUp && (
+        <div className="card mt-6 flex items-start gap-3" data-testid="moved-up">
+          <Icon name="sprout" size={22} className="mt-0.5 shrink-0 text-ok" />
+          <div className="min-w-0 flex-1">
+            <div className="font-display text-[18px] leading-tight">
+              {planGrade === null ? t("home.movedUpSelf") : t("home.movedUpGrade", { n: planGrade })}
+            </div>
+            <p className="mt-1 text-sm text-muted">{t("home.movedUpNote")}</p>
+          </div>
+          <button className="btn-ghost btn-sm shrink-0" onClick={() => set({ movedUp: false })}>{t("teacher.close")}</button>
+        </div>
+      )}
 
       {/* Up next: one strong block */}
       {trace && !trace.rootSkill ? (
@@ -112,7 +136,7 @@ export default function StudentHome() {
           <span className="min-w-0 flex-1">
             <span className="kicker block text-paper/70">{first.gap ? t("home.yourGap") : t("home.upNext")}</span>
             <span className="mt-0.5 block font-display text-[22px] leading-tight">{first.title}</span>
-            <span className="mt-1 block text-[13px] text-paper/65">{t.subject(firstSub)} · {t("common.gradeN", { n: startGrade(firstSub, planGrade) })}</span>
+            <span className="mt-1 block text-[13px] text-paper/65">{t.subject(firstSub)} · {t("common.gradeN", { n: first.grade })}</span>
           </span>
           <Icon name="arrow" />
         </button>
@@ -211,7 +235,7 @@ export default function StudentHome() {
         <div className="kicker text-muted">{t("home.more")}</div>
         <ul className={list}>
           <li>
-            <button className={row} onClick={() => nav("/solve/custom")}>
+            <button className={row} onClick={() => nav("/help")}>
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/55 text-gap-dark"><Icon name="pencil" size={19} /></span>
               <span className="flex-1"><span className="block font-display text-[18px] leading-tight">{t("home.stuck")}</span><span className="text-[13.5px] text-muted">{t("home.checkAnyProblem")}</span></span>
               <Icon name="chevron" size={18} className="text-muted" />
@@ -241,10 +265,23 @@ export default function StudentHome() {
                 </button>
               ) : (
                 <>
-                  <form className="flex gap-2" onSubmit={async (e) => { e.preventDefault(); setJoining(true); if (await joinClass(code)) { setShowJoin(false); setCode(""); } setJoining(false); }}>
+                  <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); setJoining(true); }}>
                     <input className="input" autoFocus value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
                     <button className="btn-primary shrink-0" disabled={!code.trim() || joining} data-testid="join-btn">{t("home.join")}</button>
                   </form>
+                  <AnimatePresence>
+                    {joining && (
+                      <JoinClassSheet code={code} onClose={() => setJoining(false)} onConfirm={async () => {
+                        if (!(await joinClass(code))) return setJoining(false), false;
+                        // What's already done in the class subject shows up for the teacher right away.
+                        void syncClassProgress(useStore.getState().progress);
+                        setJoining(false);
+                        setShowJoin(false);
+                        setCode("");
+                        return true;
+                      }} />
+                    )}
+                  </AnimatePresence>
                   {error === "invalid" && <p className="mt-2 text-[13px] text-gap-dark">{t("home.couldntFindCodeCheck")}</p>}
                   {error === "removed" && <p className="mt-2 text-[13px] text-gap-dark">{t("home.removedFromClass")}</p>}
                 </>

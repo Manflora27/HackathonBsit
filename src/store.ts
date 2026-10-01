@@ -1,9 +1,10 @@
 import { normalizeLang } from "./locales";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { pushAttempt } from "./classroom";
-import type { Goal, SubjectId } from "./data/curriculum";
+import { pushAttempt, pushProgress } from "./classroom";
+import { setSelfYears, type Goal, type SubjectId } from "./data/curriculum";
 import type { Attempt, Lang, SkillStatus } from "./types";
+import type { PlacementQuestion } from "./ai/client";
 
 export interface Trace {
   attemptId: string;
@@ -21,13 +22,6 @@ export interface PracticeAssignment {
   createdAt: number;
 }
 
-export interface AiLogEntry {
-  at: number;
-  action: string;
-  suggestion: string;
-  decision: string;
-  actor: "student" | "teacher";
-}
 
 /** Where a starting-point check put the learner in one subject. `unitId` is a plan unit, `skillId` one of the built-in math skills (offline check). */
 export interface Placement {
@@ -45,12 +39,28 @@ export interface PracticeResume {
   results: (boolean | null)[];
 }
 
+/**
+ * A starting-point check in progress, saved after every answer so a reload, a closed tab or a lost
+ * connection picks up at the same question. Cleared when the check places the learner.
+ */
+export interface CheckResume {
+  at: number;
+  /** The round being asked (it moves to an earlier grade when every question at the lowest one was missed). */
+  round: { subject: SubjectId; grade: number | null };
+  /** Score from earlier rounds. */
+  past: { score: number; total: number };
+  questions: (PlacementQuestion & { skillId?: string; grade: number })[];
+  answers: boolean[];
+}
+
 export interface Onboarding {
   name: string;
   subjects: SubjectId[];
   grade: number | null; // self-reported baseline, not a verified level
   goal: Goal | null;
   done: boolean;
+  /** The school year `grade` belongs to (schoolYear()). Unset in saved state from older builds. */
+  gradeYear?: number;
 }
 
 interface State {
@@ -64,7 +74,6 @@ interface State {
   textScale: number;
   readableFont: boolean;
   reduceMotion: boolean;
-  shareSkillMap: boolean;
   /** Exam-prep switch: lessons generate with six practice items and an exam tip until it's turned off. */
   examMode: boolean;
   /** Voice input runs on the device's speech recognition and is 18+ only. null = age not attested yet. */
@@ -76,24 +85,30 @@ interface State {
   attempts: Attempt[];
   trace: Trace | null;
   practiceAssignments: PracticeAssignment[];
-  aiLog: AiLogEntry[];
   gapsFixed: string[];
   activeDays: string[];
   /** Points for right answers and finished skills. Earning any also marks today as practiced. */
   xp: number;
   /** Unfinished practice per lesson id, so leaving and coming back picks up at the same question. */
   practiceResume: Record<string, PracticeResume>;
+  /** The account this device's data belongs to (account.ts). Null for a guest or the demo. */
+  owner: string | null;
+  /** Unfinished starting-point checks, per subject. */
+  checkResume: Partial<Record<SubjectId, CheckResume>>;
+  /** Self-learners only: move their plans up a level each new school year. Students in school always move up. */
+  selfAdvance: boolean;
+  /** School years a self-learner has moved up so far. */
+  selfYears: number;
+  /** A new school year just moved the learner up: Home says so once. */
+  movedUp: boolean;
 
-  set: (patch: Partial<State>) => void;
+  set:(patch: Partial<State>) => void;
   setSkill: (id: string, status: SkillStatus) => void;
   addXp: (n: number) => void;
   /** Save (or with null, clear) a lesson's unfinished practice. */
   saveResume: (id: string, r: PracticeResume | null) => void;
   addAttempt: (a: Attempt) => void;
   updateAttempt: (id: string, patch: Partial<Attempt>) => void;
-  /** The learner's "share with my teacher" switch. Also syncs the flag and progress to the server. */
-  setShareSkillMap: (on: boolean) => void;
-  log: (e: Omit<AiLogEntry, "at">) => void;
   resetDemo: () => void;
 }
 
@@ -107,7 +122,6 @@ const initial = {
   textScale: 1,
   readableFont: false,
   reduceMotion: false,
-  shareSkillMap: false,
   examMode: false,
   voiceAdult: null as boolean | null,
   voiceAi: null as boolean | null,
@@ -116,11 +130,15 @@ const initial = {
   attempts: [],
   trace: null,
   practiceAssignments: [],
-  aiLog: [],
   gapsFixed: [] as string[],
   activeDays: [] as string[],
   xp: 0,
   practiceResume: {} as Record<string, PracticeResume>,
+  checkResume: {} as Partial<Record<SubjectId, CheckResume>>,
+  owner: null as string | null,
+  selfAdvance: false,
+  selfYears: 0,
+  movedUp: false,
 };
 
 export const useStore = create<State>()(
@@ -130,6 +148,8 @@ export const useStore = create<State>()(
       set: (patch) => set(patch),
       setSkill: (id, status) => {
         set((s) => ({ progress: { ...s.progress, [id]: status } }));
+        // Only units of a joined class's subject leave the device (classroom.ts); everything else stays here.
+        void pushProgress([[id, status]]);
       },
       addXp: (n) => set((s) => {
         const day = new Date().toDateString();
@@ -148,10 +168,6 @@ export const useStore = create<State>()(
       },
       updateAttempt: (id, patch) =>
         set((s) => ({ attempts: s.attempts.map((a) => (a.id === id ? { ...a, ...patch } : a)) })),
-      setShareSkillMap: (on) => {
-        set({ shareSkillMap: on });
-      },
-      log: (e) => set((s) => ({ aiLog: [...s.aiLog, { ...e, at: Date.now() }] })),
       resetDemo: () => set({ ...initial }),
     }),
     {
@@ -165,6 +181,10 @@ export const useStore = create<State>()(
   ),
 );
 
+// Plans read a self-learner's level through startGrade(), which lives with the curriculum data.
+setSelfYears(useStore.getState().selfYears);
+useStore.subscribe((s) => setSelfYears(s.selfYears));
+
 // Keep tabs in sync: a student tab and a teacher tab on the same device update live.
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (e) => {
@@ -172,4 +192,14 @@ if (typeof window !== "undefined") {
   });
 }
 
-export const uid = () => Math.random().toString(36).slice(2, 10);
+/** Days in a row with practice, ending today, or yesterday while today's is still to come. */
+export function streak(days: string[], now = new Date()): number {
+  const seen = new Set(days);
+  const d = new Date(now);
+  if (!seen.has(d.toDateString())) d.setDate(d.getDate() - 1);
+  let n = 0;
+  for (; seen.has(d.toDateString()); d.setDate(d.getDate() - 1)) n++;
+  return n;
+}
+
+export const uid =() => Math.random().toString(36).slice(2, 10);

@@ -6,9 +6,9 @@ import { Icon } from "../components/Icon";
 import { Shell } from "../components/Shell";
 import { SubjectIcon } from "../components/SubjectIcon";
 import { skillById, skillTitle } from "../data";
-import { type PlanUnit, type SubjectId } from "../data/curriculum";
+import { startGrade, type PlanUnit, type SubjectId } from "../data/curriculum";
 import { useT } from "../i18n";
-import { timeline, usePlanContext } from "../plan";
+import { currentUnit, timeline, usePlanContext } from "../plan";
 import { useStore } from "../store";
 
 type Status = "mastered" | "gap" | "doing" | "here" | "todo";
@@ -26,17 +26,28 @@ export default function MapPage() {
   const here = useRef<HTMLLIElement | null>(null);
 
   const p = placement[subject];
-  const units = timeline(subject, grade, p);
-  const startAt = p?.unitId ? units.findIndex((u) => u.id === p.unitId) : p?.skillId ? units.findIndex((u) => u.grade === skillById[p.skillId!]?.grade) : 0;
-  const start = startAt < 0 ? 0 : startAt;
+  const now = currentUnit(subject, grade, p, progress);
+  const units = now?.units ?? timeline(subject, grade, p);
+  const start = now?.start ?? 0;
   // "You are here": the first unit from the starting point that isn't mastered yet. Only once the check has run.
-  const hereAt = p ? units.findIndex((u, i) => i >= start && progress[u.id] !== "mastered") : -1;
+  const hereAt = now?.index ?? -1;
   const statusOf = (u: PlanUnit, i: number): Status =>
     progress[u.id] === "mastered" ? "mastered"
       : progress[u.id] === "gap" || (p?.gap && p.unitId === u.id) ? "gap"
         : practiceResume[u.id] ? "doing"
           : i === hereAt ? "here" : "todo";
   const done = units.filter((u) => progress[u.id] === "mastered").length;
+  // Progress by grade along the path: foundations below the learner's grade, then their own.
+  const top = startGrade(subject, grade);
+  const grades = [...new Set(units.map((u) => u.grade))].map((g) => {
+    const us = units.filter((u) => u.grade === g);
+    return { g, n: us.length, done: us.filter((u) => progress[u.id] === "mastered").length };
+  });
+  const below = grades.filter((x) => x.g < top);
+  const foundations = { done: below.reduce((a, x) => a + x.done, 0), n: below.reduce((a, x) => a + x.n, 0) };
+  const own = grades.find((x) => x.g === top) ?? { g: top, n: 0, done: 0 };
+  const gaps = units.filter((u, i) => statusOf(u, i) === "gap").length;
+  const pctDone = Math.round((done / Math.max(1, units.length)) * 100);
   const rootOpen = trace?.rootSkill && progress[trace.rootSkill] !== "mastered" ? trace.rootSkill : null;
 
   useEffect(() => {
@@ -82,15 +93,42 @@ export default function MapPage() {
           <Icon name="arrow" />
         </button>
       ) : (
-        <div className="mt-5">
-          <div className="flex items-baseline justify-between text-[13px] text-muted">
-            <span className="kicker">{t.subject(subject)}</span>
-            <span>{t("map.doneOf", { done, total: units.length })}</span>
+        <section className="mt-5 rounded-[24px] bg-white/50 px-4 py-4 shadow-[0_12px_28px_-22px_rgb(30_43_39/.6)]" data-testid="roots-progress">
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-[40px] leading-none">{pctDone}%</span>
+            <span className="text-[14px] text-muted">{t("map.pathPct", { grade: top })}</span>
           </div>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink/10">
-            <motion.div className="h-full rounded-full bg-ok" initial={{ width: 0 }} animate={{ width: `${(done / globalThis.Math.max(1, units.length)) * 100}%` }} transition={{ duration: 0.8 }} />
+          {/* One segment per grade on the path, sized by its topics, filled by what's mastered. */}
+          <div className="mt-3 flex gap-1" aria-hidden>
+            {grades.map((x) => (
+              <div key={x.g} className="min-w-0" style={{ flex: x.n }}>
+                <div className="h-2 overflow-hidden rounded-full bg-ink/10">
+                  <motion.div className={`h-full rounded-full ${x.g < top ? "bg-ochre" : "bg-ok"}`} initial={{ width: 0 }}
+                    animate={{ width: `${(x.done / Math.max(1, x.n)) * 100}%` }} transition={{ duration: 0.8 }} />
+                </div>
+                <div className="mt-1 truncate text-center text-[11px] text-muted">G{x.g}</div>
+              </div>
+            ))}
           </div>
-        </div>
+          <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
+            {foundations.n > 0 && (
+              <div><dt className="text-[12px] text-muted">{t("map.foundations")}</dt><dd className="font-display text-[20px]">{foundations.done}/{foundations.n}</dd></div>
+            )}
+            <div><dt className="text-[12px] text-muted">{t("common.gradeN", { n: top })}</dt><dd className="font-display text-[20px]">{own.done}/{own.n}</dd></div>
+            <div><dt className="text-[12px] text-muted">{t("map.gapsOpen")}</dt><dd className={`font-display text-[20px] ${gaps ? "text-gap-dark" : ""}`}>{gaps}</dd></div>
+          </dl>
+          {now ? (
+            <button className="mt-3 flex w-full items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-left text-paper" onClick={() => nav(`/unit/${now.unit.id}`)} data-testid="roots-next">
+              <span className="min-w-0 flex-1">
+                <span className="kicker block text-paper/65">{t("map.upNext")} · {t("common.gradeN", { n: now.unit.grade })}</span>
+                <span className="block truncate font-display text-[17px]">{t.unit(now.unit)}</span>
+              </span>
+              <Icon name="arrow" />
+            </button>
+          ) : (
+            <p className="mt-3 text-center text-[14px] text-ok-dark">{t("map.pathDone", { grade: top })}</p>
+          )}
+        </section>
       )}
 
       <ol className="relative mt-5" data-testid="roots-timeline">
@@ -105,7 +143,8 @@ export default function MapPage() {
               {newGrade && (
                 <div className={`relative mb-1 flex items-center gap-3 ${i ? "mt-5" : ""}`}>
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-paper font-display text-[13px] ring-2 ring-ink/12">{u.grade}</span>
-                  <span className="kicker text-muted">{t("common.gradeN", { n: u.grade })}</span>
+                  <span className="kicker flex-1 text-muted">{t("common.gradeN", { n: u.grade })}</span>
+                  <span className="text-[12px] text-muted">{(() => { const x = grades.find((y) => y.g === u.grade); return x ? `${x.done}/${x.n}` : ""; })()}</span>
                 </div>
               )}
               <button onClick={() => nav(`/unit/${u.id}`)} data-testid={`roots-unit-${u.id}`} data-status={s}

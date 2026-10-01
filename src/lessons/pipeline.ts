@@ -4,7 +4,9 @@ import type { Skill } from "../types";
 import { deviceGet, deviceSet } from "./store";
 import { engine } from "../engine/client";
 import { supabase } from "../lib/supabase";
-import type { Form, Lesson } from "../types";
+import type { Form, Lang, Lesson } from "../types";
+import { cleanPartial, readStream } from "../ai/stream";
+import { wrongClaims } from "./checks";
 
 export const LESSON_FORMAT = 3;
 const current = (l: Lesson | null | undefined) => (l?.format ?? 1) >= LESSON_FORMAT;
@@ -25,6 +27,10 @@ type Draft = {
   /** Server signature over the generated lesson; lets /api/publish accept it into the shared cache. */
   sig?: string; en: Lesson["en"]; fil: Lesson["fil"]; ceb?: Lesson["ceb"]; example?: Lesson["example"]; figure?: Lesson["figure"]; checkAnswer?: number; practice: { prompt: string; given: string; form: Form; expected: string }[] };
 
+/** The learner's own text of a lesson still being written: what's arrived so far, safe to render. */
+export interface LessonPreview { hook: string; body: string[] }
+export interface Streaming { lang: Lang; onPreview: (p: LessonPreview) => void }
+
 /** What a lesson is about. Plan units and the original 14 skills both reduce to this. */
 export interface LessonTarget {
   id: string;
@@ -38,6 +44,12 @@ export interface LessonTarget {
 
 export const unitTarget = (u: PlanUnit): LessonTarget => ({ id: u.id, subject: u.subject, grade: u.grade, quarter: u.quarter, domain: u.domain, title: u.title, verifier: u.verifier });
 export const skillTarget = (k: Skill): LessonTarget => ({ id: `skill:${k.id}`, subject: "math", grade: k.grade, quarter: 1, domain: k.id, title: k.title, verifier: "sympy" });
+
+/** Why a draft was turned away: in the console (and the audit report), so a "not ready" lesson is never a mystery. */
+function reject(unit: LessonTarget, why: string): null {
+  console.warn(`[lesson] ${unit.id} rejected: ${why}`);
+  return null;
+}
 
 /**
  * The gate. Items whose key the engine confirms are kept as verified; items it proves wrong are dropped;
@@ -67,14 +79,17 @@ async function gate(unit: LessonTarget, d: Draft): Promise<{ lesson: Lesson; ver
     } catch { /* unparsed */ }
     if (reason === "unparsed" || reason === "unverifiable") kept.push({ ...item, expected: p.expected, ai: true });
   }
-  if (kept.length < 2) return null; // too many provably wrong keys: discard (the caller retries once)
+  if (kept.length < 2) return reject(unit, `${kept.length} of ${d.practice.length} answer keys survived`); // the caller retries once
+  // Arithmetic written in the explanation must be right too: one provably wrong line discards the draft.
+  const wrong = wrongClaims(d);
+  if (wrong.length) return reject(unit, `wrong arithmetic in the text: ${wrong.map(([a, b]) => `${a} = ${b}`).join("; ")}`);
   const example = engineChecked ? await checkExample(d.example) : d.example;
   const lesson: Lesson = {
     en: d.en, fil: d.fil, ...(d.ceb ? { ceb: d.ceb } : {}),
     practice: kept,
     ...(example ? { example } : {}),
     ...(d.figure ? { figure: d.figure } : {}),
-    ...(typeof d.checkAnswer === "number" ? { checkAnswer: d.checkAnswer } : {}),
+    ...(typeof d.checkAnswer === "number" && d.checkAnswer >= 0 ? { checkAnswer: d.checkAnswer } : {}),
     format: LESSON_FORMAT,
   };
   return { lesson, verified: engineChecked && kept.every((p) => !p.ai) };
@@ -103,20 +118,38 @@ async function checkExample(ex: Lesson["example"]): Promise<Lesson["example"] | 
   }
 }
 
-async function generate(unit: LessonTarget, goal: Goal | null): Promise<Draft | null> {
+async function generate(unit: LessonTarget, goal: Goal | null, streaming?: Streaming): Promise<Draft | null> {
   if (!navigator.onLine) return null;
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  let timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const res = await fetch("/api/lesson", {
       method: "POST",
       headers: { "content-type": "application/json" },
       // goal is the learner's intent enum from onboarding; it only frames the writing.
-      body: JSON.stringify({ id: unit.id, ...(goal ? { goal } : {}) }), // the server knows what the id means
+      body: JSON.stringify({ id: unit.id, ...(goal ? { goal } : {}), ...(streaming ? { stream: true, lang: streaming.lang } : {}) }), // the server knows what the id means
       signal: ctrl.signal,
     });
-    return res.ok ? ((await res.json()) as Draft) : null;
-  } catch {
+    if (!res.ok) {
+      console.warn(`[lesson] ${unit.id} not generated: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+      return null;
+    }
+    if (!streaming) return (await res.json()) as Draft;
+    const key = streaming.lang === "tl" ? "fil" : streaming.lang;
+    const draft = await readStream<Draft>(res, (soFar) => {
+      const text = (soFar as Record<string, { hook?: string; body?: string[] } | undefined>)?.[key];
+      if (!text?.hook) return;
+      const body = (text.body ?? []).map(cleanPartial).filter(Boolean);
+      streaming.onPreview({ hook: body.length ? text.hook : cleanPartial(text.hook), body });
+    }, () => {
+      // While the model reasons or writes, the clock restarts: only a stalled stream times out.
+      clearTimeout(timer);
+      timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+    });
+    if (!draft) console.warn(`[lesson] ${unit.id} not generated: stream failed`);
+    return draft;
+  } catch (e) {
+    console.warn(`[lesson] ${unit.id} not generated: ${ctrl.signal.aborted ? `timed out after ${TIMEOUT_MS / 1000}s` : String(e)}`);
     return null;
   } finally {
     clearTimeout(timer);
@@ -131,9 +164,9 @@ async function publish(id: string, draft: Draft) {
   }
 }
 
-/** device cache → shared cache → generate, verify, publish. Returns null when nothing is available (offline, timeout, failed gate).
+/** device cache → shared cache → generate, verify, publish. With `streaming`, a fresh lesson's text is previewed as it's written. Returns null when nothing is available (offline, timeout, failed gate).
  * `goal` frames a freshly generated lesson (see api/lesson.ts); cached lessons are served as-is, whatever the goal. */
-export async function getLesson(unit: LessonTarget, goal: Goal | null = null): Promise<CachedLesson | null> {
+export async function getLesson(unit: LessonTarget, goal: Goal | null = null, streaming?: Streaming): Promise<CachedLesson | null> {
   const local = await deviceGet<{ lesson: Lesson; verified: boolean }>(unit.id);
   // An old-format lesson still works offline; online, it's replaced by the richer one.
   if (local && (current(local.lesson) || !navigator.onLine)) return { ...local, source: "device" };
@@ -153,10 +186,10 @@ export async function getLesson(unit: LessonTarget, goal: Goal | null = null): P
   }
 
   // One retry: generation varies, and a second draft usually passes where the first didn't.
-  let draft = await generate(unit, goal);
+  let draft = await generate(unit, goal, streaming);
   let checked = draft && (await gate(unit, draft));
   if (draft && !checked) {
-    draft = await generate(unit, goal);
+    draft = await generate(unit, goal, streaming);
     checked = draft && (await gate(unit, draft));
   }
   if (!draft || !checked) return local ? { ...local, source: "device" } : null;

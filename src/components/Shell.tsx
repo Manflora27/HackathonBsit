@@ -6,7 +6,7 @@ import { LANGS, useT, type StringKey } from "../i18n";
 import type { Lang } from "../types";
 import { Ambient } from "./Ambient";
 import { Icon, type IconName } from "./Icon";
-import { useStore } from "../store";
+import { streak, useStore } from "../store";
 import { VoiceConsentSheet } from "./VoiceConsent";
 import { MathStrip } from "./MathStrip";
 
@@ -34,6 +34,7 @@ export function Stats() {
   const t = useT();
   const shown = useRef(xp);
   const bump = xp !== shown.current;
+  const days = streak(activeDays);
   return (
     <div className="flex items-center gap-2">
       <span className="chip !bg-transparent !px-1 text-[13px]" title={t("shell.xp")} aria-label={t("shell.xpCount", { count: xp })}>
@@ -42,8 +43,9 @@ export function Stats() {
         <motion.span key={xp} initial={bump ? { scale: 1.6, color: "#d9532b" } : false} animate={{ scale: 1, color: "#1e2b27" }}
           transition={{ type: "spring", stiffness: 420, damping: 14 }}>{xp}</motion.span>
       </span>
-      <span className="chip !bg-transparent !px-1 text-[13px]" title={t("shell.daysPracticed")} aria-label={t("shell.daysPracticedCount", { count: activeDays.length })}>
-        <Icon name="flame" size={16} className="text-ochre" /> {activeDays.length}
+      {/* Unlit until today's practice: yesterday's streak is still alive, just waiting. */}
+      <span className="chip !bg-transparent !px-1 text-[13px]" title={t("shell.daysPracticed")} aria-label={t("shell.daysPracticedCount", { count: days })} data-testid="streak">
+        <Icon name="flame" size={16} className={activeDays.includes(new Date().toDateString()) ? "text-ochre" : "text-muted"} /> {days}
       </span>
       <span className="chip !bg-transparent !px-1 text-[13px]" title={t("shell.gapsFixed")} aria-label={t("shell.gapsFixedCount", { count: gapsFixed.length })}>
         <Icon name="sprout" size={16} className="text-ok" /> {gapsFixed.length}
@@ -65,7 +67,7 @@ function useApplyPrefs() {
 const TABS: { to: string; icon: IconName; label: StringKey }[] = [
   { to: "/student", icon: "home", label: "nav.home" },
   { to: "/map", icon: "roots", label: "nav.roots" },
-  { to: "/solve/custom", icon: "pencil", label: "nav.check" },
+  { to: "/help", icon: "pencil", label: "nav.help" },
   { to: "/settings", icon: "user", label: "nav.me" },
 ];
 

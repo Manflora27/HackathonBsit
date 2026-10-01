@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type { Goal, SubjectId } from "./data/curriculum";
 import { localAccounts, supabase } from "./lib/supabase";
 import * as local from "./lib/localSchool";
+import { report } from "./lib/remote";
 import type { Lang } from "./types";
 
 export type AccountType = "student" | "teacher";
@@ -13,6 +14,8 @@ export interface Profile {
   language: Lang;
   subjects: SubjectId[];
   current_grade: number | null;
+  /** The school year current_grade belongs to (migration 0009). Absent until that migration runs. */
+  grade_year?: number | null;
   goal: Goal | null;
   onboarded_at: string | null;
 }
@@ -55,6 +58,8 @@ interface AuthState {
     grade: number | null;
     goal: Goal | null;
   }) => Promise<boolean>;
+  /** Change fields of my own profile. */
+  updateProfile: (patch: Partial<Profile>) => Promise<boolean>;
   joinClass: (code: string) => Promise<boolean>;
   /** Resolves the new class's id, or null. */
   createClass: (c: { name: string; section: string; subject: SubjectId; grade: number }) => Promise<string | null>;
@@ -63,10 +68,10 @@ interface AuthState {
 let started = false;
 
 /**
- * Local test accounts. On the dev server, Google can't redirect back to localhost until Supabase allow-lists it,
- * so sign-in creates a pseudo account kept on this device instead: same flow, no network. Never in a deployed build.
- * Every local account shares one on-device classroom (lib/localSchool), so a teacher and a student can take turns.
- * Set VITE_REAL_AUTH=1 to use real Supabase sign-in locally.
+ * Local test accounts, for the e2e tests (VITE_LOCAL_ACCOUNTS=1 on the dev server): sign-in creates a pseudo account
+ * kept on this device, same flow, no network. Never in a deployed build. Every local account shares one on-device
+ * classroom (lib/localSchool), so a teacher and a student can take turns. Without the flag, sign-in is real Supabase;
+ * for Google to come back to localhost, add http://localhost:5175/** to the project's Auth redirect URLs.
  */
 export const MOCK_AUTH = localAccounts;
 const MOCK_KEY = "hopper-test-account";
@@ -119,7 +124,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     if (MOCK_AUTH) return set(mockState(get().user));
     const { user } = get();
     if (!supabase || !user) return;
-    const { data: profile } = await supabase.from("profiles").select("id, display_name, account_type, language, subjects, current_grade, goal, onboarded_at").eq("id", user.id).maybeSingle();
+    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
     set({ profile: (profile as Profile | null) ?? null });
     if (!profile) return set({ classes: [], roster: [] });
 
@@ -176,7 +181,15 @@ export const useAuth = create<AuthState>((set, get) => ({
 
   async signOut() {
     if (MOCK_AUTH) mockUserSave(null);
-    else await supabase?.auth.signOut();
+    else if (supabase) {
+      // Offline or an expired session makes the server call fail; this device must still forget the session,
+      // or the start page would sign the learner straight back in.
+      const { error } = await supabase.auth.signOut().catch((e) => ({ error: e }));
+      if (error) {
+        report("signOut", error);
+        await supabase.auth.signOut({ scope: "local" }).catch(() => {});
+      }
+    }
     set({ user: null, profile: null, classes: [], roster: [] });
   },
 
@@ -223,6 +236,15 @@ export const useAuth = create<AuthState>((set, get) => ({
     if (error) return set({ error: error.message }), false;
     await supabase.from("consents").insert({ user_id: user.id, type: "data_processing", version: "2026-10-01", given_by: consentBy });
     await get().refresh();
+    return true;
+  },
+
+  async updateProfile(patch) {
+    const { user, profile } = get();
+    if (!user || !profile) return false;
+    if (MOCK_AUTH) local.edit((sc) => { sc.profiles[user.id] = { ...sc.profiles[user.id], ...patch }; });
+    else if (!supabase || (await supabase.from("profiles").update(patch).eq("id", user.id)).error) return false;
+    set({ profile: { ...profile, ...patch } });
     return true;
   },
 
