@@ -479,7 +479,7 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 ## Update (Oct 1): Onboarding, STEM, generated lessons
 Decisions from the design review. Where they conflict with earlier sections, this section wins.
 
-**Scope.** Math and Science (Physics and Chemistry), Grades 1–12. The claim becomes: *verified where we can, AI-checked where we can't, and the UI says which.*
+**Scope.** Math Grades 1–12; Science from Grade 3. Subjects follow the Philippine system: Science is one integrated subject in Grades 3–10 (Matter; Living Things and Their Environment; Force, Motion and Energy; Earth and Space), and Senior High (Grades 11–12) has separate Physics, Chemistry and Biology, each with its own plan. Math domains use the K-12 strands (Number Sense, Measurement, Geometry, Patterns and Algebra, Statistics and Probability). Onboarding asks for the grade first, then offers the subjects that exist at that grade. The claim becomes: *verified where we can, AI-checked where we can't, and the UI says which.*
 
 **Onboarding (first run).** Three screens with a progress bar: (1) name, role, optional class code; (2) subjects (multi-select), current grade as a self-reported baseline (not a verified level), language; (3) goal, then the enrollment plan assembles from skeleton rows. Home holds no problems: it shows the next unit per subject, class, and assigned practice. Stored in `profiles` (`0003_onboarding.sql`); guests keep it in the local store. The demo runs through a fresh onboarding.
 

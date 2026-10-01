@@ -1,11 +1,11 @@
 // Server-side truth about what a lesson id means, so a client can't ask for content under someone else's id.
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { unitById, type VerifierId } from "../src/data/curriculum.js";
+import { unitById, type SubjectId, type VerifierId } from "../src/data/curriculum.js";
 import skillsJson from "../src/data/skills.json" with { type: "json" };
 
 export interface Target {
   id: string;
-  subject: "math" | "science";
+  subject: SubjectId;
   grade: number;
   quarter: number;
   domain: string;

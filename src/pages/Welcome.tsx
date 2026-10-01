@@ -5,7 +5,7 @@ import { Bilog, type BilogMood } from "../components/Bilog";
 import { Icon, InkCircle } from "../components/Icon";
 import { PlanReveal } from "../components/PlanReveal";
 import { Shell } from "../components/Shell";
-import { GRADES, goalMeta, subjectMeta, type Goal, type SubjectId } from "../data/curriculum";
+import { GRADES, goalMeta, subjectMeta, subjectsForGrade, type Goal, type SubjectId } from "../data/curriculum";
 import { useStore } from "../store";
 
 const STEPS = 3;
@@ -40,6 +40,11 @@ export default function Welcome() {
   const student = type === "student";
   const canNext1 = name.trim().length > 0;
   const canNext2 = !student || (subjects.length > 0 && grade !== null);
+  // Subjects depend on the grade (Science is one subject in Grades 3-10, then Physics, Chemistry and Biology), so changing grade drops any that no longer apply.
+  const pickGrade = (g: number) => {
+    setGrade(g);
+    setSubjects((cur) => cur.filter((s) => subjectsForGrade(g).includes(s)));
+  };
   const toggle = (s: SubjectId) => setSubjects((cur) => (cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]));
 
   async function finish() {
@@ -137,35 +142,47 @@ export default function Welcome() {
         <>
           <div className="kicker mt-5 text-gap-dark">{fil ? "Ikaw at ang pag-aaral mo" : "You and your studies"}</div>
           <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{fil ? "Ano ang aaralin mo?" : "What are you studying?"}</h1>
-          <div className="card mt-6">
-            <div className="kicker text-muted">{fil ? "Mga subject (pumili ng isa o higit pa)" : "Subjects (pick one or more)"}</div>
-            <div className="mt-2 grid grid-cols-2 gap-3">
-              {(Object.keys(subjectMeta) as SubjectId[]).map((s) => (
-                <button key={s} onClick={() => toggle(s)} aria-pressed={subjects.includes(s)} data-testid={`subject-${s}`}
-                  className={`rounded-2xl border p-4 text-left transition ${subjects.includes(s) ? "border-ink/60 bg-white/70" : "border-white/60 bg-white/30"}`}>
-                  <div className="font-display text-[20px]">{subjectMeta[s][lang]}</div>
-                  <div className="text-[13px] text-muted">{subjectMeta[s].blurb[lang]}</div>
-                </button>
-              ))}
+          <div className="mt-7 space-y-8">
+            <div>
+              <div className="kicker text-muted">{fil ? "Anong grade ka ngayon?" : "What grade are you in now?"}</div>
+              <div className="mt-3 grid grid-cols-6 gap-2" role="radiogroup">
+                {GRADES.map((g) => (
+                  <button key={g} role="radio" aria-checked={grade === g} onClick={() => pickGrade(g)} data-testid={`grade-${g}`}
+                    className={`rounded-xl border py-2 font-display text-[18px] transition ${grade === g ? "border-ink/60 bg-white/85 shadow-[0_6px_14px_-10px_rgb(30_43_39/.6)]" : "border-white/60 bg-white/30"}`}>{g}</button>
+                ))}
+              </div>
+              <p className="mt-2 text-[13px] text-muted">
+                {fil ? "Panimulang punto lang ito, hindi ito sukat ng level mo. Susubukan ng Gap Finder kung nasaan ka talaga." : "This is just a starting point, not a measure of your level. Gap Finder checks where you really are."}
+              </p>
             </div>
 
-            <div className="kicker mt-6 text-muted">{fil ? "Anong grade ka ngayon?" : "What grade are you in now?"}</div>
-            <div className="mt-2 grid grid-cols-6 gap-2" role="radiogroup">
-              {GRADES.map((g) => (
-                <button key={g} role="radio" aria-checked={grade === g} onClick={() => setGrade(g)} data-testid={`grade-${g}`}
-                  className={`rounded-xl border py-2 font-display text-[18px] transition ${grade === g ? "border-ink/60 bg-white/80" : "border-white/60 bg-white/30"}`}>{g}</button>
-              ))}
+            <div>
+              <div className="kicker text-muted">
+                {grade !== null && grade >= 11 ? (fil ? "Mga subject sa Senior High (pumili ng isa o higit pa)" : "Senior High subjects (pick one or more)") : fil ? "Mga subject (pumili ng isa o higit pa)" : "Subjects (pick one or more)"}
+              </div>
+              {grade === null ? (
+                <p className="mt-3 text-[15px] text-muted">{fil ? "Pumili muna ng grade para makita ang mga subject mo." : "Pick your grade to see your subjects."}</p>
+              ) : (
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  {subjectsForGrade(grade).map((s) => (
+                    <button key={s} onClick={() => toggle(s)} aria-pressed={subjects.includes(s)} data-testid={`subject-${s}`}
+                      className={`rounded-2xl border p-4 text-left transition ${subjects.includes(s) ? "border-ink/60 bg-white/85 shadow-[0_6px_14px_-10px_rgb(30_43_39/.6)]" : "border-white/60 bg-white/30"}`}>
+                      <div className="font-display text-[20px]">{subjectMeta[s][lang]}</div>
+                      <div className="mt-1 text-[13px] leading-snug text-muted">{subjectMeta[s].blurb[lang]}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <p className="mt-2 text-[13px] text-muted">
-              {fil ? "Panimulang punto lang ito, hindi ito sukat ng level mo. Susubukan ng Gap Finder kung nasaan ka talaga." : "This is just a starting point, not a measure of your level. Gap Finder checks where you really are."}
-            </p>
 
-            <div className="kicker mt-6 text-muted">{fil ? "Wika" : "Language"}</div>
-            <div className="mt-2 grid grid-cols-2 gap-3">
-              {([["en", "English"], ["fil", "Filipino"]] as const).map(([v, label]) => (
-                <button key={v} onClick={() => set({ lang: v })} aria-pressed={lang === v} data-testid={`lang-${v}`}
-                  className={`rounded-2xl border p-3 transition ${lang === v ? "border-ink/60 bg-white/70" : "border-white/60 bg-white/30"}`}>{label}</button>
-              ))}
+            <div>
+              <div className="kicker text-muted">{fil ? "Wika" : "Language"}</div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {([["en", "English"], ["fil", "Filipino"]] as const).map(([v, label]) => (
+                  <button key={v} onClick={() => set({ lang: v })} aria-pressed={lang === v} data-testid={`lang-${v}`}
+                    className={`rounded-2xl border p-3 transition ${lang === v ? "border-ink/60 bg-white/85" : "border-white/60 bg-white/30"}`}>{label}</button>
+                ))}
+              </div>
             </div>
           </div>
         </>

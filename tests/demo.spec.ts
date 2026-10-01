@@ -91,8 +91,8 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
   await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
-  await page.getByTestId("subject-math").click();
   await page.getByTestId("grade-8").click();
+  await page.getByTestId("subject-math").click();
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
   await page.goto("/solve/p-try-1"); // the checker itself is reachable once onboarded
@@ -124,9 +124,9 @@ test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with n
 
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
+  await page.getByTestId("grade-8").click();
   await page.getByTestId("subject-math").click();
   await page.getByTestId("subject-science").click();
-  await page.getByTestId("grade-8").click();
   await page.getByTestId("next-step").click();
   await page.getByTestId("goal-catch_up").click();
   await expect(page.getByTestId("plan")).toBeVisible();
@@ -167,8 +167,8 @@ async function startPlan(page: import("@playwright/test").Page) {
   await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
-  await page.getByTestId("subject-math").click();
   await page.getByTestId("grade-8").click();
+  await page.getByTestId("subject-math").click();
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
 }
@@ -216,11 +216,11 @@ test("verifiers: unit keys are checked in the browser, wrong ones dropped", asyn
   await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
-  await page.getByTestId("subject-science").click();
   await page.getByTestId("grade-11").click();
+  await page.getByTestId("subject-physics").click();
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
-  await page.getByTestId("unit-science").click();
+  await page.getByTestId("unit-physics").click();
   await expect(page.getByTestId("lesson-body")).toBeVisible({ timeout: 90_000 });
   const stored = await storedLesson(page);
   expect(stored.lesson.practice).toHaveLength(2);
@@ -239,8 +239,8 @@ test("demo from a fresh onboarding lands in the seeded assignment", async ({ pag
   await page.getByTestId("demo-fresh").click();
   await page.getByTestId("name").fill("Kyla");
   await page.getByTestId("next-step").click();
-  await page.getByTestId("subject-math").click();
   await page.getByTestId("grade-9").click();
+  await page.getByTestId("subject-math").click();
   await page.getByTestId("next-step").click();
   await page.getByTestId("finish-profile").click();
   await expect(page.getByTestId("assignment-card")).toBeVisible();
@@ -285,4 +285,33 @@ test("Bilog still blinks and follows the pointer when the OS asks for reduced mo
   expect(await eyes()).not.toBe(a);
   await expect(page.locator(".bilog-blink").first()).toBeAttached();
   await ctx.close();
+});
+
+test("subjects follow the Philippine system: Science is one subject in Grades 3-10, separate subjects in Senior High", async ({ page }) => {
+  await enterGuest(page);
+  await page.getByTestId("name").fill("Mika");
+  await page.getByTestId("next-step").click();
+  await expect(page.getByText("Pick your grade to see your subjects.")).toBeVisible();
+
+  await page.getByTestId("grade-2").click();
+  await expect(page.getByTestId("subject-math")).toBeVisible();
+  await expect(page.getByTestId("subject-science")).toHaveCount(0); // Science starts at Grade 3
+
+  await page.getByTestId("grade-5").click();
+  await page.getByTestId("subject-science").click();
+  await expect(page.getByTestId("subject-physics")).toHaveCount(0);
+
+  await page.getByTestId("grade-11").click(); // Science (integrated) no longer exists: it is dropped
+  for (const s of ["physics", "chemistry", "biology"]) await expect(page.getByTestId(`subject-${s}`)).toBeVisible();
+  await expect(page.getByTestId("subject-science")).toHaveCount(0);
+  await expect(page.getByTestId("next-step")).toBeDisabled(); // nothing selected any more
+
+  await page.getByTestId("subject-physics").click();
+  await page.getByTestId("subject-chemistry").click();
+  await page.screenshot({ path: "test-results/shots/13-shs-subjects.png", fullPage: true });
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("finish-profile").click();
+  await expect(page.getByTestId("unit-physics")).toBeVisible();
+  await expect(page.getByTestId("unit-chemistry")).toBeVisible(); // separate plans, not one merged "science"
+  await expect(page.getByTestId("unit-biology")).toHaveCount(0);
 });

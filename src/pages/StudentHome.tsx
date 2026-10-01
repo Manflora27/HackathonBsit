@@ -6,7 +6,7 @@ import { Icon } from "../components/Icon";
 import { Math, quickTex } from "../components/Math";
 import { OfflinePack } from "../components/OfflinePack";
 import { EngineBadge, Shell } from "../components/Shell";
-import { buildPlan, subjectLabel, verifierMeta } from "../data/curriculum";
+import { buildPlan, subjectLabel, subjectsForGrade, verifierMeta } from "../data/curriculum";
 import { demoAssignment, problemById, skillById, skillTitle } from "../data";
 import { KYLA_ID } from "../data/seedClass";
 import { useStore } from "../store";
@@ -34,8 +34,9 @@ export default function StudentHome() {
     return last.analysis.errorIndex === null && last.analysis.complete ? "done" : "gap";
   };
   const doneCount = demoAssignment.problemIds.filter((p) => statusOf(p) === "done").length;
-  const planSubjects = signedIn && profile?.subjects.length ? profile.subjects : onboarding.subjects;
   const planGrade = signedIn && profile?.current_grade ? profile.current_grade : onboarding.grade;
+  // Saved subjects from older builds (e.g. one combined "science" at Grade 11) are dropped if they no longer exist at that grade.
+  const planSubjects = (signedIn && profile?.subjects.length ? profile.subjects : onboarding.subjects).filter((s) => planGrade !== null && subjectsForGrade(planGrade).includes(s));
   const hour = new Date().getHours();
   const greet = fil ? (hour < 12 ? "Magandang umaga" : hour < 18 ? "Magandang hapon" : "Magandang gabi") : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
