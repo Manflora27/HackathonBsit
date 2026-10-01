@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type RefObject } from "react";
 import { motion, type TargetAndTransition } from "motion/react";
 import { useCalm } from "../lib/calm";
+import { useStore } from "../store";
 import { watch, type Looker } from "../lib/look";
 
 /**
@@ -95,6 +96,9 @@ export function Bilog({
   className?: string;
 }) {
   const calm = useCalm();
+  // The OS "reduce motion" setting removes big motion (spin, bounce, drawing). Blinking and eyes that follow you are
+  // tiny and are what make Bilog feel alive, so only the in-app "Reduce motion" switch turns those off.
+  const lively = !useStore((s) => s.reduceMotion);
   const svg = useRef<SVGSVGElement>(null);
   const eyes = useRef<SVGGElement>(null);
   const looker = useRef<Looker | null>(null);
@@ -113,22 +117,22 @@ export function Bilog({
   const rest = look !== undefined ? look : (FIXED[mood] ?? null);
 
   useEffect(() => {
-    if (calm || !svg.current || !eyes.current) return;
+    if (!lively || !svg.current || !eyes.current) return;
     looker.current = watch(svg.current, eyes.current, svg.current, RANGE);
     return () => {
       looker.current?.dispose();
       looker.current = null;
     };
-  }, [calm]);
+  }, [lively]);
 
   useEffect(() => {
-    if (calm) {
+    if (!lively) {
       const r = rest ?? { x: 0, y: 0 };
       eyes.current?.setAttribute("transform", `translate(${r.x * RANGE.x} ${r.y * RANGE.y})`);
       return;
     }
     looker.current?.setFixed(rest);
-  }, [calm, rest?.x, rest?.y]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [lively, rest?.x, rest?.y]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     looker.current?.setTarget(lookAt?.current ?? null);
@@ -194,7 +198,7 @@ export function Bilog({
                 <path d="M56 51.5 Q61 45.5 66 51.5" />
               </g>
             ) : (
-              <g className={calm ? undefined : "bilog-blink"} style={{ animationDelay: blinkDelay }}>
+              <g className={lively ? "bilog-blink" : undefined} style={{ animationDelay: blinkDelay }}>
                 {[40, 61].map((cx) => (
                   <g key={cx}>
                     <motion.ellipse cx={cx} cy={50} fill="var(--color-ink)" initial={false}

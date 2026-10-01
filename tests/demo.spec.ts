@@ -270,3 +270,20 @@ test("old saved state without newer fields still opens onboarding", async ({ pag
   await expect(page.getByTestId("name")).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test("Bilog still blinks and follows the pointer when the OS asks for reduced motion", async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 800 }, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /let.s go/i }).click();
+  const eyes = () => page.evaluate(() => document.querySelector(".bilog g[transform]")?.getAttribute("transform") ?? "");
+  await page.mouse.move(40, 700, { steps: 5 });
+  await page.waitForTimeout(300);
+  const a = await eyes();
+  await page.mouse.move(340, 120, { steps: 8 });
+  await page.waitForTimeout(300);
+  expect(await eyes()).not.toBe(a);
+  await expect(page.locator(".bilog-blink").first()).toBeAttached();
+  await ctx.close();
+});

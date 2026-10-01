@@ -24,7 +24,7 @@ function HeroDrawing() {
       <RootDrawing />
       {/* invisible anchor over the G7 root, for Bilog's eyes */}
       <span ref={rootRef} className="absolute bottom-[8%] left-1/2 h-2 w-2" aria-hidden />
-      <div className="pointer-events-none absolute -left-[68px] top-[34%]">
+      <div className="pointer-events-none absolute -left-[22%] top-[34%]">
         <Bilog size={52} mood={found ? "found" : "watch"} lookAt={rootRef} />
       </div>
     </div>
@@ -100,7 +100,7 @@ export default function Landing() {
   return (
     <Shell tabs={false} bare>
       <section>
-        <div className="mx-auto w-[40%] max-w-[150px]"><HeroDrawing /></div>
+        <div className="mx-auto w-[clamp(130px,23dvh,250px)]"><HeroDrawing /></div>
         <div className="kicker mt-3 text-gap-dark">{fil ? "Para sa math na nakakalito" : "A diagnostic for math"}</div>
         <h1 className="mt-1.5 text-[28px] leading-[1.06]">
           {fil ? "Hindi ka mahina sa math." : "You're not bad at math."}
