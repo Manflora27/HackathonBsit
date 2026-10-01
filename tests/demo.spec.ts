@@ -82,6 +82,13 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
   await page.getByTestId("try-it").click();
+  await page.getByTestId("name").fill("Mika");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("subject-math").click();
+  await page.getByTestId("grade-8").click();
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("finish-profile").click();
+  await page.goto("/solve/p-try-1"); // the checker itself is reachable once onboarded
   await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
 
   await context.setOffline(true);
@@ -108,7 +115,7 @@ test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with n
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("start-onboarding").click();
+  await page.getByTestId("try-it").click();
 
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
@@ -122,6 +129,7 @@ test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with n
   await page.getByTestId("finish-profile").click();
 
   await expect(page.getByTestId("plan-home")).toBeVisible();
+  await expect(page.getByTestId("greeting")).toHaveText("Mika.");
   await expect(page.getByTestId("assignment-card")).toHaveCount(0);
 });
 
@@ -154,7 +162,7 @@ async function startPlan(page: import("@playwright/test").Page) {
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("start-onboarding").click();
+  await page.getByTestId("try-it").click();
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("subject-math").click();
@@ -206,7 +214,7 @@ test("verifiers: unit keys are checked in the browser, wrong ones dropped", asyn
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("start-onboarding").click();
+  await page.getByTestId("try-it").click();
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("subject-science").click();

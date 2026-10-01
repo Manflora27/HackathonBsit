@@ -70,7 +70,7 @@ export default function Landing() {
 
   const guest = () => {
     set({ role: "guest", demo: false });
-    nav("/solve/p-try-1");
+    nav("/welcome");
   };
 
   return (
@@ -159,9 +159,6 @@ export default function Landing() {
             {fil ? "Subukan nang walang account" : "Try without an account"}
           </button>
           <p className="mt-2 text-center text-[13px] text-muted">{fil ? "Ikaw lang ang makakakita. Hindi ise-save." : "Only you can see it. Nothing is saved to an account."}</p>
-          <button className="btn-ghost mt-3 w-full" onClick={() => { set({ role: "guest", demo: false }); nav("/welcome"); }} data-testid="start-onboarding">
-            {fil ? "Gumawa ng plano nang walang account" : "Set up my plan without an account"}
-          </button>
         </section>
       )}
       {consent && (

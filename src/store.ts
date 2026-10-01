@@ -28,6 +28,7 @@ export interface AiLogEntry {
 }
 
 export interface Onboarding {
+  name: string;
   subjects: SubjectId[];
   grade: number | null; // self-reported baseline, not a verified level
   goal: Goal | null;
@@ -67,7 +68,7 @@ const initial = {
   role: null,
   demo: false,
   demoFlow: false,
-  onboarding: { subjects: [], grade: null, goal: null, done: false } as Onboarding,
+  onboarding: { name: "", subjects: [], grade: null, goal: null, done: false } as Onboarding,
   lang: "en" as Lang,
   textScale: 1,
   readableFont: false,

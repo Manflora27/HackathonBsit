@@ -18,7 +18,7 @@ export default function Welcome() {
   const guest = !user && role === "guest";
 
   const [step, setStep] = useState(1);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(onboarding.name);
   const [type, setType] = useState<AccountType>("student");
   const [code, setCode] = useState("");
   const [subjects, setSubjects] = useState<SubjectId[]>(onboarding.subjects);
@@ -47,7 +47,7 @@ export default function Welcome() {
       if (!ok) return setBusy(false);
       if (student && code.trim()) setCodeError(!(await joinClass(code)));
     }
-    set({ role: demoFlow ? "student" : guest ? "guest" : type, demo: demoFlow, demoFlow: false, onboarding: { subjects: picked, grade, goal, done: true } });
+    set({ role: demoFlow ? "student" : guest ? "guest" : type, demo: demoFlow, demoFlow: false, onboarding: { name: name.trim(), subjects: picked, grade, goal, done: true } });
     setBusy(false);
     nav(type === "teacher" ? "/teacher" : "/student", { replace: true });
   }

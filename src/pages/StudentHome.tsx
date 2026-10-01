@@ -18,7 +18,7 @@ export default function StudentHome() {
   const { profile, classes, joinClass, error } = useAuth();
   const [code, setCode] = useState("");
   const [joining, setJoining] = useState(false);
-  const name = demo ? "Kyla" : profile?.display_name ?? (fil0(lang) ? "kaibigan" : "friend");
+  const name = demo && !onboarding.name ? "Kyla" : profile?.display_name || onboarding.name || (fil0(lang) ? "kaibigan" : "friend");
   const signedIn = !demo && !!profile;
   const myClass = classes[0];
   const fil = lang === "fil";
