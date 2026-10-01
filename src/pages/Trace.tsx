@@ -5,6 +5,7 @@ import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, quickTex } from "../components/Math";
 import { PathMap } from "../components/PathMap";
 import { Shell } from "../components/Shell";
+import { Icon } from "../components/Icon";
 import { skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { useStore } from "../store";
@@ -79,7 +80,7 @@ export default function Trace() {
   return (
     <Shell tabs={false} back="/student" title={root ? (fil ? "Nahanap!" : "Found it!") : fil ? "Hinahanap ang gap…" : "Digging for the gap…"}>
       <div className="flex justify-center">
-        <span className="chip bg-white text-[13px]">{trace.path.map((s) => `G${skillById[s].grade}`).join(" → ")}{!root && " → ?"}</span>
+        <span className="chip bg-card text-[13px]">{trace.path.map((s) => `G${skillById[s].grade}`).join(" → ")}{!root && " → ?"}</span>
       </div>
       <div className="mt-3">
         <PathMap statuses={progress} path={trace.path} root={root} animate only={trace.path} />
@@ -111,10 +112,10 @@ export default function Trace() {
             </form>
             {feedback && (
               <motion.p initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                className={`mt-3 rounded-2xl border-[2.5px] border-ink px-3 py-2 font-display text-[17px] ${feedback === "pass" ? "bg-ok text-white" : "bg-gap"}`}>
+                className={`mt-3 rounded-2xl border border-line px-3 py-2 font-display text-[17px] ${feedback === "pass" ? "bg-ok text-white" : "bg-gap"}`}>
                 {feedback === "pass"
-                  ? fil ? "✓ Kaya mo ito. Hindi ito ang gap." : "✓ You've got this one. Not the gap."
-                  : fil ? "⛏️ Dito pa tayo bababa." : "⛏️ Let's look one level deeper."}
+                  ? fil ? "Kaya mo ito. Hindi ito ang gap." : "You've got this one. Not the gap."
+                  : fil ? "Dito pa tayo bababa." : "Let's look one level deeper."}
               </motion.p>
             )}
             {keypad && (
@@ -130,16 +131,16 @@ export default function Trace() {
         <motion.div initial={{ opacity: 0, y: 40, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: revealDelay, type: "spring", stiffness: 240, damping: 18 }}
           className="card mt-2 !p-0" data-testid="root-gap">
-          <div className="rounded-t-[21px] border-b-[2.5px] border-ink bg-gap px-5 py-3 font-display text-xl font-bold">
-            🎯 {fil ? "Nahanap na ang gap!" : "Found the gap!"}
+          <div className="px-5 pt-5">
+            <div className="kicker text-gap-dark">{fil ? "Nahanap na ang ugat" : "Found the root"}</div>
           </div>
-          <div className="p-5">
-            <div className="font-display text-[28px] font-bold leading-tight">{skillTitle(rootSkill.id, lang)}</div>
+          <div className="px-5 pb-5 pt-1">
+            <div className="font-display text-[30px] leading-tight">{skillTitle(rootSkill.id, lang)}</div>
             {top.grade !== rootSkill.grade ? (
               <div className="mt-3 flex items-center gap-3 rounded-2xl bg-soft p-3">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-brand font-display text-white">G{top.grade}</span>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-line bg-brand font-display text-white">G{top.grade}</span>
                 <span className="font-display text-xl">←</span>
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-gap font-display">G{rootSkill.grade}</span>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-line bg-gap font-display">G{rootSkill.grade}</span>
                 <span className="text-[15px] leading-snug">
                   {fil ? (
                     <>Ang pagkakamali mo sa <b>Grade {top.grade}</b> ay galing sa skill sa <b>Grade {rootSkill.grade}</b>.</>
@@ -156,7 +157,7 @@ export default function Trace() {
               {rootSkill.matatag ? ` · MATATAG ${rootSkill.matatag}` : ""}
             </p>
             <button className="btn-primary mt-4 w-full !text-lg" onClick={() => nav(`/learn/${rootSkill.id}`)} data-testid="start-roadmap">
-              🚀 {fil ? "Ayusin ang gap ko" : "Fix my gap"}
+              {fil ? "Ayusin ang gap ko" : "Fix my gap"} <Icon name="arrow" size={18} />
             </button>
           </div>
         </motion.div>

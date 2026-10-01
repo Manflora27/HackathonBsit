@@ -39,11 +39,11 @@ export default function Settings() {
         </label>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Mas madaling basahing font" : "Easier-to-read font"}
-          <input type="checkbox" className="h-5 w-5 accent-[#6c3ce9]" checked={s.readableFont} onChange={(e) => s.set({ readableFont: e.target.checked })} />
+          <input type="checkbox" className="h-5 w-5 accent-[#1e2b27]" checked={s.readableFont} onChange={(e) => s.set({ readableFont: e.target.checked })} />
         </label>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Bawasan ang animation" : "Reduce motion"}
-          <input type="checkbox" className="h-5 w-5 accent-[#6c3ce9]" checked={s.reduceMotion} onChange={(e) => s.set({ reduceMotion: e.target.checked })} />
+          <input type="checkbox" className="h-5 w-5 accent-[#1e2b27]" checked={s.reduceMotion} onChange={(e) => s.set({ reduceMotion: e.target.checked })} />
         </label>
       </section>
 
@@ -51,7 +51,7 @@ export default function Settings() {
         <h2 className="font-display text-xl font-semibold">{fil ? "Privacy (RA 10173)" : "Privacy (RA 10173)"}</h2>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Ibahagi ang skill map ko sa teacher" : "Share my skill map with my teacher"}
-          <input type="checkbox" className="h-5 w-5 accent-[#6c3ce9]" checked={s.shareSkillMap} onChange={(e) => s.set({ shareSkillMap: e.target.checked })} />
+          <input type="checkbox" className="h-5 w-5 accent-[#1e2b27]" checked={s.shareSkillMap} onChange={(e) => s.set({ shareSkillMap: e.target.checked })} />
         </label>
         <p className="text-sm text-muted">
           {fil
@@ -69,7 +69,7 @@ export default function Settings() {
               }
             }}
           >
-            🗑 {fil ? "Burahin ang data ko" : "Delete my data"}
+            {fil ? "Burahin ang data ko" : "Delete my data"}
           </button>
         </div>
       </section>

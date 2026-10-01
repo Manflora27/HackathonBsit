@@ -6,6 +6,7 @@ import { AreaModel } from "../components/AreaModel";
 import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, RichText, quickTex } from "../components/Math";
 import { Shell } from "../components/Shell";
+import { Icon, InkCircle } from "../components/Icon";
 import { lessons, skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { useT } from "../i18n";
@@ -64,7 +65,7 @@ export default function Learn() {
       <h1 className="font-display text-[30px] font-bold leading-tight">{skillTitle(skillId, lang)}</h1>
       <div className="mt-2 flex gap-1.5" aria-label="progress">
         {["learn", "practice", "retry"].map((s, i) => (
-          <span key={s} className={`h-3 flex-1 rounded-full border-2 border-ink ${i === 0 || (i === 1 && stage === "practice") || (i === 2 && mastered) ? "bg-ok" : "bg-white"}`} />
+          <span key={s} className={`h-3 flex-1 rounded-full border border-line ${i === 0 || (i === 1 && stage === "practice") || (i === 2 && mastered) ? "bg-ok" : "bg-card"}`} />
         ))}
       </div>
 
@@ -81,7 +82,7 @@ export default function Learn() {
               await readAloud(text.spoken, lang);
               setSpeaking(false);
             }} data-testid="read-aloud">
-              {speaking ? "🔊 …" : `🔊 ${t("readAloud")}`}
+              <Icon name="speaker" size={18} /> {speaking ? "…" : t("readAloud")}
             </button>
           </section>
           {lesson.visual === "area-model" && (
@@ -103,7 +104,7 @@ export default function Learn() {
               <span className="kicker text-muted">{t("practice")} {qi + 1}/{lesson.practice.length}</span>
               <span className="flex gap-1">
                 {results.map((r, i) => (
-                  <span key={i} className={`h-4 w-4 rounded-full border-2 border-ink ${r ? "bg-ok" : r === false ? "bg-gap" : "bg-white"}`} />
+                  <span key={i} className={`h-4 w-4 rounded-full border border-line ${r ? "bg-ok" : r === false ? "bg-gap" : "bg-card"}`} />
                 ))}
               </span>
             </div>
@@ -119,8 +120,8 @@ export default function Learn() {
             </form>
             {feedback !== null && (
               <motion.p initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                className={`mt-3 rounded-2xl border-[2.5px] border-ink px-3 py-2 font-display text-[17px] ${feedback ? "bg-ok text-white" : "bg-gap"}`}>
-                {feedback ? (fil ? "✓ Tama!" : "✓ Nice!") : p.form === "expanded" ? (fil ? "Hindi pa — siguraduhing naka-expand." : "Not yet — make sure it's fully expanded.") : fil ? "Hindi pa — subukan ulit." : "Not yet — try again."}
+                className={`mt-3 rounded-2xl border border-line px-3 py-2 font-display text-[17px] ${feedback ? "bg-ok text-white" : "bg-gap"}`}>
+                {feedback ? (fil ? "Tama!" : "Nice!") : p.form === "expanded" ? (fil ? "Hindi pa — siguraduhing naka-expand." : "Not yet — make sure it's fully expanded.") : fil ? "Hindi pa — subukan ulit." : "Not yet — try again."}
               </motion.p>
             )}
             {keypad && (
@@ -135,12 +136,12 @@ export default function Learn() {
       {mastered && (
         <motion.div initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
           className="card mt-5 !bg-ok-soft text-center" data-testid="mastered">
-          <div className="text-5xl">💪</div>
+          <InkCircle color="var(--color-ok)" className="mx-auto mt-2 h-14 w-14 rounded-full bg-ok text-white"><Icon name="sprout" size={26} /></InkCircle>
           <div className="mt-1 font-display text-2xl font-bold">{fil ? "Naayos ang gap!" : "Gap fixed!"}</div>
           <p className="mt-1 text-[15px]">{fil ? "Ngayon, balikan ang problem na nagpahinto sa iyo." : "Now go back to the problem that stopped you."}</p>
           {trace ? (
             <button className="btn-primary mt-4 w-full !text-lg" onClick={() => nav(`/solve/${trace.problemId}?mode=retry`)} data-testid="retry">
-              🎯 {t("retry")}
+              {t("retry")} <Icon name="arrow" size={18} />
             </button>
           ) : (
             <button className="btn-primary mt-4 w-full" onClick={() => nav("/student")}>{fil ? "Bumalik" : "Back home"}</button>

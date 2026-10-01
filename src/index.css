@@ -1,31 +1,33 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
-@import "@fontsource/fredoka/500.css";
-@import "@fontsource/fredoka/600.css";
-@import "@fontsource/fredoka/700.css";
-@import "@fontsource/nunito/600.css";
-@import "@fontsource/nunito/700.css";
-@import "@fontsource/nunito/800.css";
+@import "@fontsource/young-serif/400.css";
+@import "@fontsource-variable/atkinson-hyperlegible-next/wght.css";
 
+/*
+ * Gap Finder — "find the root".
+ * Warm ivory paper, pine ink, persimmon for gaps, moss for mastered.
+ * Signature motif: a hand-drawn ink circle, the way a teacher circles a mistake.
+ */
 @theme {
-  --color-ink: #1e1b3a;
-  --color-muted: #6b6789;
-  --color-paper: #fff7ea;
-  --color-card: #ffffff;
-  --color-line: #1e1b3a;
-  --color-soft: #f1ebff;
-  --color-brand: #6c3ce9;
-  --color-brand-dark: #4b22b8;
-  --color-brand-soft: #e9e0ff;
-  --color-gap: #ff8a1f;
-  --color-gap-dark: #d0650a;
-  --color-gap-soft: #ffe7cc;
-  --color-ok: #12a67a;
-  --color-ok-dark: #0b7a59;
-  --color-ok-soft: #cff7e7;
-  --color-sky: #3ab4f2;
-  --font-sans: "Nunito", ui-rounded, system-ui, sans-serif;
-  --font-display: "Fredoka", "Nunito", ui-rounded, sans-serif;
+  --color-ink: #1e2b27;
+  --color-muted: #69716b;
+  --color-paper: #f4efe4;
+  --color-card: #fbf8f1;
+  --color-line: rgb(30 43 39 / 0.13);
+  --color-soft: #ece5d6;
+  --color-brand: #1e2b27;
+  --color-brand-dark: #0f1915;
+  --color-brand-soft: #e2e7de;
+  --color-gap: #d9532b;
+  --color-gap-dark: #a63a1b;
+  --color-gap-soft: #f7ddcf;
+  --color-ok: #5b7f4f;
+  --color-ok-dark: #3e5c36;
+  --color-ok-soft: #dfe7d2;
+  --color-sky: #3d5a80;
+  --color-ochre: #c8912b;
+  --font-sans: "Atkinson Hyperlegible Next Variable", "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
 }
 
 html {
@@ -33,14 +35,16 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 body {
-  @apply bg-paper font-sans font-semibold text-ink antialiased;
-  background-image: radial-gradient(circle, rgb(30 27 58 / 0.07) 1.2px, transparent 1.3px);
-  background-size: 22px 22px;
+  @apply bg-paper font-sans text-ink antialiased;
+  font-weight: 450;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .17 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   overscroll-behavior-y: none;
 }
 h1, h2, h3, .font-display {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  font-weight: 400 !important;
+  font-synthesis: none;
+  letter-spacing: -0.015em;
 }
 .readable-font,
 .readable-font body,
@@ -48,40 +52,43 @@ h1, h2, h3, .font-display {
 .readable-font h2,
 .readable-font h3,
 .readable-font .font-display {
-  font-family: Verdana, "Atkinson Hyperlegible", Tahoma, sans-serif !important;
+  font-family: Verdana, Tahoma, sans-serif !important;
   letter-spacing: 0.02em;
   word-spacing: 0.08em;
 }
+::selection { background: var(--color-gap-soft); }
 
-/* "Circle the wrong term", the way a teacher marks it */
+/* The signature: a hand-drawn ink circle around the wrong term. */
 .gf-mark {
+  position: relative;
   display: inline-block;
-  padding: 0.05em 0.32em;
-  margin: -0.05em -0.05em;
-  border: 3px solid var(--color-gap);
-  border-radius: 999px;
-  background: var(--color-gap-soft);
-  animation: gf-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  padding: 0.12em 0.4em;
+  margin: -0.12em -0.1em;
+  color: var(--color-gap-dark);
 }
-@keyframes gf-pop {
-  from { transform: scale(1.8) rotate(-8deg); opacity: 0; }
-  to { transform: scale(1) rotate(0); opacity: 1; }
+.gf-mark::after {
+  content: "";
+  position: absolute;
+  inset: -0.18em -0.22em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'%3E%3Cpath d='M14 38 C 6 18, 40 5, 70 7 C 100 9, 116 20, 111 36 C 106 52, 62 57, 34 52 C 12 48, 3 34, 20 17 C 26 12, 34 9, 44 8' fill='none' stroke='%23d9532b' stroke-width='3.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
+  pointer-events: none;
+  clip-path: inset(0 100% 0 0);
+  animation: gf-draw 0.7s 0.15s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
+@keyframes gf-draw { to { clip-path: inset(0 0 0 0); } }
+
 @keyframes gf-shake {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px) rotate(-1deg); }
-  40% { transform: translateX(6px) rotate(1deg); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
 }
-.shake { animation: gf-shake 0.5s ease-in-out; }
+.shake { animation: gf-shake 0.4s ease-in-out; }
 @keyframes gf-bob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-4px); }
 }
-.bob { animation: gf-bob 1.4s ease-in-out infinite; }
-
-.react-flow__attribution { display: none; }
+.bob { animation: gf-bob 2.2s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
@@ -91,38 +98,42 @@ h1, h2, h3, .font-display {
 }
 
 @layer components {
-  /* Chunky "sticker" buttons that physically press down */
   .btn, .btn-primary, .btn-gap, .btn-ok, .btn-ghost {
-    @apply relative inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-2xl border-[2.5px] border-ink px-5 py-3 font-display text-[17px] font-semibold tracking-wide transition-[transform,box-shadow] duration-100 disabled:opacity-40;
-    box-shadow: 0 4px 0 var(--color-ink);
+    @apply relative inline-flex min-h-[52px] select-none items-center justify-center gap-2 rounded-full px-6 py-3 text-[16px] font-semibold tracking-[0.005em] transition duration-150 disabled:opacity-35;
   }
-  :is(.btn, .btn-primary, .btn-gap, .btn-ok, .btn-ghost):active:not(:disabled) {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 var(--color-ink);
+  :is(.btn, .btn-primary, .btn-gap, .btn-ok, .btn-ghost):active:not(:disabled) { transform: scale(0.975); }
+  .btn-primary {
+    @apply bg-ink text-paper;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 10px 22px -12px rgb(30 43 39 / 0.7);
   }
-  .btn-primary { @apply bg-brand text-white; }
-  .btn-gap { @apply bg-gap text-ink; }
-  .btn-ok { @apply bg-ok text-white; }
-  .btn-ghost { @apply bg-white text-ink; }
-  .btn-sm { @apply min-h-10 rounded-xl px-3 py-1.5 text-[15px]; box-shadow: 0 3px 0 var(--color-ink); }
+  .btn-gap {
+    @apply bg-gap text-white;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 10px 22px -12px rgb(166 58 27 / 0.75);
+  }
+  .btn-ok {
+    @apply bg-ok text-white;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 10px 22px -12px rgb(62 92 54 / 0.7);
+  }
+  .btn-ghost { @apply border border-line bg-card/70 text-ink; }
+  .btn-sm { @apply min-h-10 px-4 py-1.5 text-[14.5px]; }
 
   .card {
-    @apply rounded-3xl border-[2.5px] border-ink bg-card p-5;
-    box-shadow: 0 5px 0 var(--color-ink);
+    @apply rounded-[28px] border border-line/70 bg-card p-5;
+    box-shadow: 0 1px 2px rgb(30 43 39 / 0.05), 0 18px 40px -26px rgb(30 43 39 / 0.38);
   }
-  .card-flat { @apply rounded-3xl border-[2.5px] border-ink bg-card p-4; }
+  .card-flat { @apply rounded-[24px] border border-line bg-card p-4; }
   .input {
-    @apply w-full rounded-2xl border-[2.5px] border-ink bg-white px-4 py-3 font-mono text-[18px] font-semibold outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/20;
+    @apply w-full rounded-2xl border border-line bg-card px-4 py-3 font-mono text-[17px] outline-none transition placeholder:text-ink/30 focus:border-ink/40 focus:ring-4 focus:ring-ink/8;
   }
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full border-2 border-ink px-2.5 py-0.5 text-xs font-extrabold;
+    @apply inline-flex items-center gap-1.5 rounded-full bg-soft px-2.5 py-1 text-[12px] font-semibold;
   }
   .kicker {
-    @apply font-display text-[13px] font-semibold uppercase tracking-[0.12em];
+    @apply text-[11.5px] font-bold uppercase tracking-[0.16em];
   }
   .key {
-    @apply flex h-12 select-none items-center justify-center rounded-xl border-2 border-ink bg-white font-display text-[19px] font-semibold transition-[transform,box-shadow] duration-75;
-    box-shadow: 0 3px 0 var(--color-ink);
+    @apply flex h-[50px] select-none items-center justify-center rounded-2xl border border-line bg-card font-display text-[21px] transition duration-75 active:scale-95 active:bg-soft;
   }
-  .key:active { transform: translateY(3px); box-shadow: 0 0 0 var(--color-ink); }
+  .rule { @apply h-px w-full bg-line; }
 }
+@keyframes gf-ring { to { stroke-dashoffset: 0; } }

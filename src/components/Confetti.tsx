@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { useMemo } from "react";
 import { useStore } from "../store";
 
-const COLORS = ["#6c3ce9", "#ff8a1f", "#12a67a", "#3ab4f2", "#ffd23f"];
+const COLORS = ["#d9532b", "#5b7f4f", "#c8912b", "#3d5a80", "#1e2b27"];
 
 export function Confetti({ count = 28 }: { count?: number }) {
   const reduce = useStore((s) => s.reduceMotion);
@@ -24,7 +24,7 @@ export function Confetti({ count = 28 }: { count?: number }) {
       {bits.map((b, i) => (
         <motion.span
           key={i}
-          className="absolute border-2 border-ink"
+          className="absolute border border-line"
           style={{ width: b.s, height: b.s, background: b.c, borderRadius: b.round ? 999 : 3 }}
           initial={{ x: 0, y: 0, opacity: 1, rotate: 0 }}
           animate={{ x: b.x, y: [0, b.y, b.y + 320], opacity: [1, 1, 0], rotate: b.r }}

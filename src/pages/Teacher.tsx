@@ -101,7 +101,7 @@ export default function Teacher() {
           return (
           <div key={sid} className={`card ${i === 0 ? "!bg-gap-soft" : ""}`} data-testid={`gap-group-${sid}`}>
             <div className="flex items-center gap-3">
-              <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[2.5px] border-ink font-display text-[32px] font-bold ${i === 0 ? "bg-gap" : "bg-white"}`}
+              <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-line font-display text-[32px] font-bold ${i === 0 ? "bg-gap" : "bg-card"}`}
                 data-testid={i === 0 ? "top-gap-count" : undefined}>{list.length}</div>
             <div className="text-[15px] leading-snug">
               {fil ? "student ang may gap sa" : "students share a gap in"} <b className="font-display text-[17px] font-semibold">{skillTitle(sid, lang)}</b>{" "}
@@ -143,7 +143,7 @@ export default function Teacher() {
           return (
             <button key={st.id} className={`card-flat flex w-full items-center gap-3 !p-3 text-left ${st.live ? "!bg-brand-soft" : ""}`}
               onClick={() => setSelected(st.id)} data-testid={st.live ? "row-kyla" : undefined}>
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-white font-display">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-card font-display">
                 {st.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
               </span>
               <span className="min-w-0 flex-1">
@@ -191,7 +191,7 @@ export default function Teacher() {
 
       {sel && (
         <div className="fixed inset-0 z-30 flex justify-end bg-black/30" onClick={() => setSelected(null)}>
-          <aside className="h-full w-full max-w-md overflow-y-auto border-l-[2.5px] border-ink bg-paper p-5" onClick={(e) => e.stopPropagation()}>
+          <aside className="h-full w-full max-w-md overflow-y-auto border-l border-line bg-paper p-5" onClick={(e) => e.stopPropagation()}>
             <button className="text-sm text-muted" onClick={() => setSelected(null)}>✕ {fil ? "Isara" : "Close"}</button>
             <h2 className="mt-2 text-xl font-bold">{sel.name}</h2>
             <div className="text-sm text-muted">{fil ? "Nakikita ng AI bilang" : "Seen by the AI as"} “{sel.anonId}”</div>
@@ -252,7 +252,7 @@ export default function Teacher() {
       {confirm && (
         <div className="fixed inset-0 z-30 flex items-end justify-center bg-ink/40 p-3 sm:items-center" role="dialog" aria-modal>
           <div className="card w-full max-w-md">
-            <h2 className="font-display text-2xl font-semibold">{fil ? "Ipadala ang practice? 📬" : "Send practice? 📬"}</h2>
+            <h2 className="font-display text-2xl font-semibold">{fil ? "Ipadala ang practice?" : "Send practice?"}</h2>
             <p className="mt-2 text-[15px]">
               {fil ? "Matatanggap ng" : ""} <b>{confirm.ids.length}</b> {fil ? "student ang practice para sa" : "students will get practice on"} <b>{skillTitle(confirm.skillId, lang)}</b>.
             </p>
@@ -265,7 +265,7 @@ export default function Teacher() {
       )}
 
       {toast && (
-        <div className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 whitespace-nowrap rounded-2xl border-[2.5px] border-ink bg-ink px-4 py-3 font-display text-white" role="status">
+        <div className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 whitespace-nowrap rounded-2xl border border-line bg-ink px-4 py-3 font-display text-white" role="status">
           ✓ {toast.text}
           <button className="font-semibold text-amber-300" onClick={undo}>{fil ? "I-undo" : "Undo"}</button>
         </div>

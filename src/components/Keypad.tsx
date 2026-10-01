@@ -18,7 +18,7 @@ export function Keypad({ onKey, onTextMode }: { onKey: (a: KeyAction) => void; o
     onKey({ insert: ins });
   };
   return (
-    <div className="card-flat !rounded-[26px] !p-2" style={{ boxShadow: "0 4px 0 var(--color-ink)" }} aria-label="Math keypad">
+    <div className="card-flat !rounded-[26px] !p-2" aria-label="Math keypad">
       <div className="grid grid-cols-6 gap-1.5">
         {ROWS.flat().map((k) => (
           <button

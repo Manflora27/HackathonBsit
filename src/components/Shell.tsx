@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { engineState, onEngineState, startEngine } from "../engine/client";
 import { useT } from "../i18n";
+import { Icon, type IconName } from "./Icon";
 import { useStore } from "../store";
 
 export function EngineBadge() {
@@ -14,10 +15,10 @@ export function EngineBadge() {
       off();
     };
   }, []);
-  if (state === "failed") return <span className="chip bg-red-100">Math checker failed to load</span>;
+  if (state === "failed") return <span className="chip bg-gap-soft text-gap-dark">Math checker failed to load</span>;
   return (
-    <span className={`chip ${state === "ready" ? "bg-ok-soft" : "bg-brand-soft"}`} data-testid="engine-badge">
-      <span className={`h-2 w-2 rounded-full ${state === "ready" ? "bg-ok" : "animate-pulse bg-brand"}`} />
+    <span className="chip !bg-transparent px-0 text-muted" data-testid="engine-badge">
+      <span className={`h-1.5 w-1.5 rounded-full ${state === "ready" ? "bg-ok" : "animate-pulse bg-ochre"}`} />
       {state === "ready" ? t("engineReady") : t("engineLoading")}
     </span>
   );
@@ -27,8 +28,12 @@ export function Stats() {
   const { gapsFixed, activeDays } = useStore();
   return (
     <div className="flex items-center gap-2">
-      <span className="chip bg-gap-soft text-[13px]" title="Days you practiced">🔥 {activeDays.length}</span>
-      <span className="chip bg-ok-soft text-[13px]" title="Gaps fixed">🧩 {gapsFixed.length}</span>
+      <span className="chip !bg-transparent !px-1 text-[13px]" title="Days you practiced" aria-label={`${activeDays.length} days practiced`}>
+        <Icon name="flame" size={16} className="text-ochre" /> {activeDays.length}
+      </span>
+      <span className="chip !bg-transparent !px-1 text-[13px]" title="Gaps fixed" aria-label={`${gapsFixed.length} gaps fixed`}>
+        <Icon name="sprout" size={16} className="text-ok" /> {gapsFixed.length}
+      </span>
     </div>
   );
 }
@@ -43,11 +48,11 @@ function useApplyPrefs() {
   }, [textScale, readableFont, reduceMotion, lang]);
 }
 
-const TABS = [
-  { to: "/student", icon: "🏠", en: "Home", fil: "Home" },
-  { to: "/map", icon: "🗺️", en: "Map", fil: "Mapa" },
-  { to: "/solve/custom", icon: "✏️", en: "Check", fil: "Check" },
-  { to: "/settings", icon: "⚙️", en: "Me", fil: "Ako" },
+const TABS: { to: string; icon: IconName; en: string; fil: string }[] = [
+  { to: "/student", icon: "home", en: "Home", fil: "Home" },
+  { to: "/map", icon: "roots", en: "Roots", fil: "Ugat" },
+  { to: "/solve/custom", icon: "pencil", en: "Check", fil: "Check" },
+  { to: "/settings", icon: "user", en: "Me", fil: "Ako" },
 ];
 
 /**
@@ -74,22 +79,22 @@ export function Shell({
 
   return (
     <div className={`mx-auto min-h-dvh ${wide ? "max-w-6xl" : "max-w-md"}`}>
-      <header className="sticky top-0 z-20 bg-paper/85 backdrop-blur-md">
-        <div className="flex h-14 items-center gap-2 px-4">
+      <header className="sticky top-0 z-20 bg-paper/80 backdrop-blur-md">
+        <div className="flex h-14 items-center gap-2.5 px-4">
           {back !== undefined ? (
-            <button className="btn-ghost btn-sm !min-h-9 !px-2.5" aria-label="Back"
+            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-line bg-card" aria-label="Back"
               onClick={() => (typeof back === "number" ? nav(back) : nav(back))}>
-              ←
+              <Icon name="back" size={18} />
             </button>
           ) : (
-            <button onClick={() => nav(role === "teacher" ? "/teacher" : role ? "/student" : "/")} className="flex items-center gap-2" aria-label="Home">
-              <img src="/icon.svg" alt="" className="h-8 w-8 rounded-[10px] border-2 border-ink" />
+            <button onClick={() => nav(role === "teacher" ? "/teacher" : role ? "/student" : "/")} aria-label="Home">
+              <img src="/icon.svg" alt="" className="h-8 w-8 rounded-[10px]" />
             </button>
           )}
-          <div className="min-w-0 flex-1 truncate font-display text-lg font-semibold">{title ?? "Gap Finder"}</div>
+          <div className="min-w-0 flex-1 truncate font-display text-[19px]">{title ?? "Gap Finder"}</div>
           {role === "student" && <Stats />}
-          <button className="btn-ghost btn-sm !min-h-9 !px-2.5 !text-[13px]" onClick={() => set({ lang: lang === "en" ? "fil" : "en" })}
-            aria-label="Switch language">
+          <button className="flex h-9 min-w-9 items-center justify-center rounded-full border border-line bg-card px-2.5 text-[12.5px] font-bold tracking-wide"
+            onClick={() => set({ lang: lang === "en" ? "fil" : "en" })} aria-label="Switch language">
             {lang === "en" ? "EN" : "FIL"}
           </button>
         </div>
@@ -97,13 +102,13 @@ export function Shell({
       <main className={`px-4 pt-2 ${showTabs ? "pb-28" : "pb-10"}`}>{children}</main>
       {showTabs && (
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md px-3 pb-[max(env(safe-area-inset-bottom),10px)]">
-          <div className="card-flat flex justify-around !rounded-[22px] !p-1.5" style={{ boxShadow: "0 4px 0 var(--color-ink)" }}>
+          <div className="flex justify-around rounded-full bg-ink p-1.5 text-paper" style={{ boxShadow: "0 18px 36px -16px rgb(30 43 39 / .7)" }}>
             {TABS.map((tab) => (
               <NavLink key={tab.to} to={tab.to} end={tab.to === "/student"}
                 className={({ isActive }) =>
-                  `flex flex-1 flex-col items-center rounded-2xl py-1.5 text-[12px] font-extrabold transition ${isActive ? "bg-brand-soft text-brand" : "text-muted"}`
+                  `flex flex-1 flex-col items-center gap-0.5 rounded-full py-2 text-[11px] font-bold tracking-wide transition ${isActive ? "bg-paper text-ink" : "text-paper/60"}`
                 }>
-                <span className="text-xl leading-none">{tab.icon}</span>
+                <Icon name={tab.icon} size={20} />
                 {lang === "fil" ? tab.fil : tab.en}
               </NavLink>
             ))}

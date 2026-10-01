@@ -3,8 +3,9 @@ import { motion } from "motion/react";
 import { skillById, skills, skillTitle } from "../data";
 import { useStore } from "../store";
 import type { SkillStatus } from "../types";
+import { InkCircle } from "./Icon";
 
-// A short glyph per skill, drawn inside its level bubble.
+// A short glyph per skill, set in the serif inside its node.
 const GLYPH: Record<string, string> = {
   quad_sqrt: "√=",
   quad_factor: "×0",
@@ -22,36 +23,38 @@ const GLYPH: Record<string, string> = {
   int_ops: "−+",
 };
 
-const GRADE_TONE: Record<number, string> = { 9: "bg-brand text-white", 8: "bg-sky text-ink", 7: "bg-gap text-ink" };
-const W = 320;
-const SWING = [0, 70, 100, 70, 0, -70, -100, -70];
-const STEP = 112;
-const BAND = 64;
+const W = 340;
+type Pt = { id: string; x: number; y: number };
 
-type Placed = { id: string; x: number; y: number };
-
-function layout(ids: string[]) {
-  const placed: Placed[] = [];
+/** Full map: a root system. Advanced skills on top, foundations below, real prerequisite edges between them. */
+function treeLayout() {
+  const rowH = 148;
+  const pts: Pt[] = skills.map((s) => ({ id: s.id, x: 44 + s.x * 84, y: 70 + s.y * rowH }));
   const bands: { grade: number; y: number }[] = [];
-  let y = 0;
-  let lastGrade = -1;
-  ids.forEach((id, i) => {
-    const g = skillById[id].grade;
-    if (g !== lastGrade) {
-      bands.push({ grade: g, y });
-      y += BAND;
-      lastGrade = g;
+  const seen = new Set<number>();
+  for (const s of [...skills].sort((a, b) => a.y - b.y)) {
+    if (!seen.has(s.grade)) {
+      seen.add(s.grade);
+      bands.push({ grade: s.grade, y: 70 + s.y * rowH - 50 });
     }
-    placed.push({ id, x: W / 2 + SWING[i % SWING.length], y: y + 36 });
-    y += STEP;
-  });
-  return { placed, bands, height: y + 10 };
+  }
+  const edges = skills.flatMap((s) => s.prereqs.map((p) => ({ from: p, to: s.id })));
+  return { pts, bands, edges, height: 70 + 4 * rowH + 90 };
 }
 
-/**
- * The skill map as a game-style level path, top (Grade 9) to bottom (Grade 7).
- * During a trace, a marker drops from node to node down to the root gap.
- */
+/** Trace view: just the chain being dug through, top to bottom. */
+function chainLayout(ids: string[]) {
+  const pts: Pt[] = ids.map((id, i) => ({ id, x: W / 2 + (i % 2 ? 58 : -58) * (i ? 1 : 0), y: 58 + i * 132 }));
+  const edges = ids.slice(1).map((id, i) => ({ from: id, to: ids[i] }));
+  return { pts, bands: [] as { grade: number; y: number }[], edges, height: 58 + (ids.length - 1) * 132 + 96 };
+}
+
+function curve(a: Pt, b: Pt) {
+  // from a (lower) up to b (upper), vertical tangents: reads like a root
+  const my = (a.y + b.y) / 2;
+  return `M${a.x},${a.y} C${a.x},${my} ${b.x},${my} ${b.x},${b.y}`;
+}
+
 export function PathMap({
   statuses,
   path = [],
@@ -69,103 +72,92 @@ export function PathMap({
 }) {
   const lang = useStore((s) => s.lang);
   const reduce = useStore((s) => s.reduceMotion);
-  const ids = useMemo(() => {
-    const base = only ?? [...skills].sort((a, b) => b.grade - a.grade || a.y - b.y || a.x - b.x).map((s) => s.id);
-    return base;
-  }, [only]);
-  const { placed, bands, height } = useMemo(() => layout(ids), [ids]);
-  const pos = Object.fromEntries(placed.map((p) => [p.id, p]));
+  const { pts, bands, edges, height } = useMemo(() => (only ? chainLayout(only) : treeLayout()), [only?.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+  const pos = Object.fromEntries(pts.map((p) => [p.id, p]));
 
   const instant = !animate || reduce || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const [lit, setLit] = useState(instant ? path.length : 0);
   useEffect(() => {
     if (instant) return setLit(path.length);
     setLit(0);
-    const timers = path.map((_, i) => setTimeout(() => setLit(i + 1), 300 + i * 750));
+    const timers = path.map((_, i) => setTimeout(() => setLit(i + 1), 250 + i * 700));
     return () => timers.forEach(clearTimeout);
   }, [path.join(","), instant]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const trail = path.slice(0, lit).map((id) => pos[id]).filter(Boolean);
-  const marker = trail[trail.length - 1];
+  const litIds = path.slice(0, lit);
   const done = lit >= path.length && !!root;
-
-  const d = placed.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ");
-  const trailD = trail.map((p, i) => `${i ? "L" : "M"}${p.x},${p.y}`).join(" ");
+  const onTrail = (from: string, to: string) => {
+    const i = litIds.indexOf(to);
+    return i >= 0 && litIds[i + 1] === from;
+  };
 
   return (
     <div className="relative mx-auto" style={{ width: W, height }}>
-      <svg className="absolute inset-0" width={W} height={height} aria-hidden>
-        <path d={d} fill="none" stroke="#1e1b3a" strokeOpacity={0.18} strokeWidth={10} strokeLinecap="round" strokeLinejoin="round" strokeDasharray="1 18" />
-        {trail.length > 1 && (
-          <motion.path
-            d={trailD}
-            fill="none"
-            stroke="var(--color-gap)"
-            strokeWidth={6}
-            strokeLinecap="round"
-            strokeDasharray="10 10"
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: instant ? 0 : 0.6 }}
-          />
-        )}
-      </svg>
-
       {bands.map((b) => (
-        <div key={b.grade} className="absolute inset-x-0 flex justify-center" style={{ top: b.y + 8 }}>
-          <span className={`chip !border-[2.5px] !px-4 !py-1 font-display !text-[14px] ${GRADE_TONE[b.grade] ?? "bg-white"}`}>
-            Grade {b.grade}
-          </span>
+        <div key={b.grade} className="absolute inset-x-0 flex items-center gap-3" style={{ top: b.y }}>
+          <span className="font-display text-[15px] text-muted">Grade {b.grade}</span>
+          <span className="rule flex-1" />
         </div>
       ))}
 
-      {placed.map((p) => {
+      <svg className="absolute inset-0 overflow-visible" width={W} height={height} aria-hidden>
+        {edges.map((e) => {
+          const a = pos[e.from];
+          const b = pos[e.to];
+          if (!a || !b) return null;
+          const hot = onTrail(e.from, e.to);
+          return (
+            <g key={`${e.from}-${e.to}`}>
+              <path d={curve(a, b)} fill="none" stroke="var(--color-ink)" strokeOpacity={hot ? 0 : 0.16} strokeWidth={1.4} />
+              {hot && (
+                <motion.path d={curve(a, b)} fill="none" stroke="var(--color-gap)" strokeWidth={2.6} strokeLinecap="round"
+                  initial={{ pathLength: instant ? 1 : 0 }} animate={{ pathLength: 1 }} transition={{ duration: instant ? 0 : 0.55, ease: "easeInOut" }} />
+              )}
+            </g>
+          );
+        })}
+      </svg>
+
+      {pts.map((p) => {
         const st = statuses[p.id] ?? "unknown";
-        const onPath = path.slice(0, lit).includes(p.id);
         const isRoot = done && p.id === root;
-        const fill = isRoot || st === "gap" ? "bg-gap" : st === "mastered" ? "bg-ok text-white" : onPath ? "bg-gap-soft" : "bg-white";
+        const isLit = litIds.includes(p.id);
+        const tone =
+          isRoot || st === "gap"
+            ? "bg-gap text-white border-gap"
+            : st === "mastered"
+              ? "bg-ok text-white border-ok"
+              : isLit
+                ? "bg-gap-soft text-gap-dark border-gap"
+                : "bg-card text-ink border-ink/25";
+        const node = (
+          <span className={`flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] font-display text-[15px] transition-colors duration-500 ${tone}`}
+            style={{ boxShadow: "0 6px 14px -8px rgb(30 43 39 / .45)" }}>
+            {GLYPH[p.id]}
+          </span>
+        );
         return (
           <button
             key={p.id}
-            className="absolute flex w-[132px] -translate-x-1/2 -translate-y-[34px] flex-col items-center"
+            className="absolute flex w-[92px] -translate-x-1/2 -translate-y-6 flex-col items-center"
             style={{ left: p.x, top: p.y }}
             onClick={() => onSelect?.(p.id)}
             aria-label={`${skillTitle(p.id, lang)}, grade ${skillById[p.id].grade}, ${isRoot ? "root gap" : st}`}
             data-testid={`node-${p.id}`}
           >
-            <motion.span
-              className={`relative flex h-[68px] w-[68px] items-center justify-center rounded-full border-[3px] border-ink font-display text-[17px] font-semibold ${fill} ${isRoot ? "bob" : ""}`}
-              style={{ boxShadow: "0 5px 0 var(--color-ink)" }}
-              animate={isRoot ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-              transition={{ duration: 0.6 }}
-            >
-              {GLYPH[p.id]}
-              {st === "mastered" && !isRoot && (
-                <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-ink bg-white text-[13px] text-ok">✓</span>
-              )}
-              {(st === "gap" || isRoot) && (
-                <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-ink bg-white text-[14px] text-gap-dark">!</span>
-              )}
+            <motion.span initial={false} animate={isRoot ? { scale: [1, 1.12, 1] } : { scale: 1 }} transition={{ duration: 0.6 }} className={isRoot ? "bob" : ""}>
+              {isRoot ? <InkCircle>{node}</InkCircle> : node}
             </motion.span>
-            <span className="mt-2 line-clamp-2 text-center text-[12.5px] font-extrabold leading-tight">{skillTitle(p.id, lang)}</span>
-            {isRoot && (
-              <span className="mt-1 rounded-full border-2 border-ink bg-ink px-2 py-0.5 font-display text-[12px] text-white">
-                {lang === "fil" ? "ang gap!" : "the gap!"}
-              </span>
+            <span className={`mt-1.5 line-clamp-3 text-center text-[11.5px] leading-[1.2] ${isRoot || isLit ? "font-bold text-ink" : "text-muted"}`}>
+              {skillTitle(p.id, lang)}
+            </span>
+            {only && (
+              <span className="mt-0.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted">Grade {skillById[p.id].grade}</span>
             )}
+            {isRoot && <span className="mt-1 font-display text-[14px] italic text-gap-dark">{lang === "fil" ? "ang ugat" : "the root"}</span>}
           </button>
         );
       })}
-
-      {marker && !done && (
-        <motion.div
-          className="pointer-events-none absolute h-5 w-5 rounded-full border-[3px] border-ink bg-gap"
-          style={{ marginLeft: -10, marginTop: -58 }}
-          initial={false}
-          animate={{ left: marker.x, top: marker.y }}
-          transition={{ type: "spring", stiffness: 220, damping: 14 }}
-        />
-      )}
     </div>
   );
 }

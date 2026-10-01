@@ -6,6 +6,7 @@ import { Confetti } from "../components/Confetti";
 import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, RichText, quickTex } from "../components/Math";
 import { EngineBadge, Shell } from "../components/Shell";
+import { Icon, InkCircle } from "../components/Icon";
 import { misconceptionById, misconceptionText, problemById, skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { useT } from "../i18n";
@@ -166,8 +167,8 @@ export default function Solve() {
   return (
     <Shell tabs={false} back={role === "guest" ? "/" : "/student"} title={retry ? (fil ? "Subukan ulit" : "Retry") : problem.prompt}>
       {retry && (
-        <div className="card-flat mb-3 flex items-center gap-2 !bg-brand-soft !p-3 text-[15px]">
-          🎯 {fil ? "Ngayon, ang problem na nagpahinto sa iyo." : "Now, the problem that stopped you."}
+        <div className="card-flat mb-3 flex items-center gap-2 !bg-gap-soft !p-3 text-[15px] text-gap-dark">
+          {fil ? "Ngayon, ang problem na nagpahinto sa iyo." : "Now, the problem that stopped you."}
         </div>
       )}
 
@@ -175,10 +176,10 @@ export default function Solve() {
         <EngineBadge />
       </div>
       <section className="card relative overflow-hidden !p-0">
-        <div className="border-b-[2.5px] border-ink bg-sky/20 px-5 py-4">
+        <div className="border-b border-line px-5 pb-4 pt-5">
           <div className="kicker text-muted">{problem.prompt}</div>
           {known ? (
-            <div className="mt-1 text-[28px]" data-testid="problem">
+            <div className="mt-1 text-[30px]" data-testid="problem">
               <Math tex={problemTex} />
             </div>
           ) : (
@@ -202,10 +203,10 @@ export default function Solve() {
             const st = s.trim() && idx >= 0 ? result?.steps[idx]?.status : undefined;
             const isErr = st === "error" || st === "unparsed";
             return (
-              <li key={i} className={`relative flex min-h-16 items-center gap-2 px-3 ${isErr ? "shake bg-gap-soft" : ""}`}>
-                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink font-display text-sm ${st === "ok" ? "bg-ok text-white" : isErr ? "bg-gap" : "bg-white"}`}
+              <li key={i} className={`relative flex min-h-16 items-center gap-2 px-3 ${isErr ? "shake bg-gap-soft/60" : ""}`}>
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[13px] ${st === "ok" ? "bg-ok text-white" : isErr ? "bg-gap text-white" : "border border-line text-muted"}`}
                   aria-label={st ?? `step ${i + 1}`}>
-                  {st === "ok" ? "✓" : isErr ? "!" : i + 1}
+                  {st === "ok" ? <Icon name="check" size={15} strokeWidth={2.4} /> : isErr ? "!" : i + 1}
                 </span>
                 <div className="min-w-0 flex-1 py-2">
                   <input
@@ -244,7 +245,7 @@ export default function Solve() {
             );
           })}
         </ol>
-        <div className="flex flex-wrap gap-2 border-t-2 border-dashed border-ink/15 p-3">
+        <div className="flex flex-wrap gap-2 border-t-2 border-line p-3">
           <button className="btn-ghost btn-sm" onClick={() => {
             setSteps([...steps, ""]);
             setFocus(steps.length);
@@ -259,7 +260,7 @@ export default function Solve() {
           )}
           {textMode && (
             <button className="btn-ghost btn-sm" onClick={() => setTextMode(false)}>
-              🔢 {fil ? "Math keypad" : "Math keypad"}
+              <Icon name="keyboard" size={16} /> {fil ? "Math keypad" : "Math keypad"}
             </button>
           )}
         </div>
@@ -267,7 +268,7 @@ export default function Solve() {
 
       {!keypadOpen && (
         <button className="btn-primary mt-4 w-full !text-lg" disabled={!ready || busy} onClick={openConfirm} data-testid="check">
-          {busy ? "…" : `${t("checkWork")} ✓`}
+          {busy ? "…" : t("checkWork")}
         </button>
       )}
 
@@ -288,7 +289,7 @@ export default function Solve() {
             <div className="mb-2 flex gap-2">
               <button className="btn-ghost btn-sm" onClick={() => setFocus(null)} aria-label="Hide keypad">⌄</button>
               <button className="btn-primary btn-sm flex-1" disabled={!ready || busy} onClick={openConfirm} data-testid="check">
-                {t("checkWork")} ✓
+                {t("checkWork")}
               </button>
             </div>
             <Keypad onKey={onKey} onTextMode={() => {
@@ -356,16 +357,16 @@ function ResultPanel({
 
   if (result.errorIndex === null) {
     if (!result.complete)
-      return <div className="card mt-5 !bg-brand-soft">👍 {t("notDoneYet")}</div>;
+      return <div className="card mt-5 !bg-ok-soft text-ok-dark">{t("notDoneYet")}</div>;
     return (
       <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
         className="card relative mt-5 !bg-ok-soft text-center" data-testid="success">
         <Confetti />
-        <div className="text-5xl">{retry ? "🏆" : "🎉"}</div>
-        <div className="mt-2 font-display text-2xl font-bold leading-tight">
+        <InkCircle color="var(--color-ok)" className="mx-auto mt-2 h-16 w-16 rounded-full bg-ok text-white"><Icon name="check" size={30} strokeWidth={2.4} /></InkCircle>
+        <div className="mt-5 font-display text-[28px] leading-tight">
           {retry ? (fil ? "Ang problem na nagpahinto sa iyo — nasagot mo!" : "The problem that stopped you — solved.") : t("allCorrect")}
         </div>
-        {retry && <div className="mt-2 text-muted">🧩 +1 {fil ? "gap na naayos" : "gap fixed"}</div>}
+        {retry && <div className="mt-2 flex items-center justify-center gap-1.5 text-ok-dark"><Icon name="sprout" size={16} /> +1 {fil ? "gap na naayos" : "gap fixed"}</div>}
         {retry && (
           <button className="btn-ok mt-4 w-full" onClick={() => nav("/map")}>
             {fil ? "Tingnan ang skill map ko" : "See my skill map"} →
@@ -383,23 +384,23 @@ function ResultPanel({
   return (
     <motion.section initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 22 }}
       className="card mt-5 !p-0" data-testid="diagnosis">
-      <div className="flex items-center gap-3 rounded-t-[21px] border-b-[2.5px] border-ink bg-gap px-5 py-3">
-        <span className="text-2xl">🎯</span>
-        <span className="font-display text-xl font-bold">{t("foundIt")}: {t("step")} {i + 1}</span>
+      <div className="px-5 pt-5">
+        <div className="kicker text-gap-dark">{t("foundIt")}</div>
+        <div className="mt-1 font-display text-[26px] leading-tight">{fil ? `Nagkamali sa step ${i + 1}` : `It broke at step ${i + 1}`}</div>
       </div>
       <div className="p-5">
         {result.steps[i]?.status === "unparsed" ? (
           <p>{fil ? `Hindi mabasa ang step ${i + 1}. Pakiulit.` : `We couldn't read step ${i + 1}. Can you retype it?`}</p>
         ) : (
           <div className="space-y-2">
-            <div className="rounded-2xl border-2 border-dashed border-ink/25 px-4 py-3">
+            <div className="rounded-2xl border-2 border-line px-4 py-3">
               <div className="kicker text-muted">{fil ? "Isinulat mo" : "You wrote"}</div>
               <div className="mt-1 text-[22px]" data-testid="student-line">
                 <Math tex={result.studentLatex ?? result.steps[i].latex ?? ""} />
               </div>
             </div>
-            <div className="text-center font-display text-muted">↓</div>
-            <div className="rounded-2xl border-[2.5px] border-ink bg-ok-soft px-4 py-3">
+            <div className="flex justify-center text-muted"><Icon name="arrow" size={16} className="rotate-90" /></div>
+            <div className="rounded-2xl bg-ok-soft/70 px-4 py-3">
               <div className="kicker text-ok-dark">{result.expectedLatex ? (fil ? "Dapat ay" : "It should be") : fil ? "Kulang" : "Missing"}</div>
               <div className="mt-1 text-[22px]" data-testid="expected-line">
                 {result.expectedLatex ? (
@@ -416,13 +417,12 @@ function ResultPanel({
 
         {mc ? (
           <div className="mt-5">
-            <div className="font-display text-[22px] font-bold leading-tight" data-testid="misconception">{mc.title}</div>
+            <div className="font-display text-[22px] leading-tight" data-testid="misconception">{mc.title}</div>
             <p className="mt-1.5 text-[16px] leading-relaxed">
               <RichText text={mc.what} />
             </p>
-            <p className="mt-3 flex gap-2 rounded-2xl bg-soft px-3 py-2 text-[13px] text-muted">
-              <span>{source === "rule" ? "🔬" : "🤖"}</span>
-              <span>
+            <p className="mt-4 border-l-2 border-line pl-3 text-[13px] leading-relaxed text-muted">
+                            <span>
                 {source === "rule"
                   ? fil ? "Tumugma sa kilalang pattern ng pagkakamali (sigurado). Ang tama at mali ay sinuri ng SymPy, hindi ng AI." : "Matched a known mistake pattern exactly (certain). Right and wrong are checked by SymPy, not by AI."
                   : fil ? `Hula ng AI (${globalThis.Math.round((aiMc?.confidence ?? 0) * 100)}%). Ang tama at mali ay sinuri ng SymPy.` : `AI suggestion (${globalThis.Math.round((aiMc?.confidence ?? 0) * 100)}% confident). Right and wrong are checked by SymPy.`}
@@ -436,7 +436,7 @@ function ResultPanel({
         )}
 
         <button className="btn-gap mt-5 w-full !text-lg" onClick={onTrace} data-testid="find-root">
-          🔎 {t("findRoot")}
+          <Icon name="search" size={18} /> {t("findRoot")}
         </button>
         <button
           className="mt-3 w-full py-2 text-sm text-muted underline decoration-dotted underline-offset-4"

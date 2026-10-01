@@ -14,8 +14,8 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@fontsource/fredoka": "^5.3.0",
-    "@fontsource/nunito": "^5.3.0",
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource/young-serif": "^5.3.0",
     "@supabase/supabase-js": "^2.117.2",
     "katex": "^0.18.10",
     "motion": "^13.4.6",
