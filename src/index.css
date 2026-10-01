@@ -85,11 +85,14 @@ h1, h2, h3, .font-display {
   75% { transform: translateX(-2px); }
 }
 .shake { animation: gf-shake 0.4s ease-in-out; }
-@keyframes gf-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-.bob { animation: gf-bob 2.2s ease-in-out infinite; }
+/* Bilog, the ink circle with eyes (components/Bilog.tsx). */
+.bilog { overflow: visible; }
+.bilog-loop, .bilog-wash { transition: stroke 0.5s ease, fill 0.5s ease, opacity 0.5s ease; }
+.bilog-blink { transform-box: fill-box; transform-origin: center; animation: bilog-blink 5.6s infinite; }
+@keyframes bilog-blink { 0%, 93%, 100% { transform: scaleY(1); } 95.5% { transform: scaleY(0.08); } }
+.bilog-spin { transform-box: view-box; transform-origin: 50px 50px; animation: bilog-spin 1.3s linear infinite; }
+@keyframes bilog-spin { to { transform: rotate(360deg); } }
+.bilog[data-off] * { animation-play-state: paused !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }

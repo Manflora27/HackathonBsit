@@ -5,14 +5,17 @@ import { useStore } from "../store";
 import { Icon } from "./Icon";
 
 /** The enrollment plan assembling itself: skeleton rows that resolve into units, one subject at a time. */
-export function PlanReveal({ subjects, grade }: { subjects: SubjectId[]; grade: number }) {
+export function PlanReveal({ subjects, grade, onReady }: { subjects: SubjectId[]; grade: number; onReady?: () => void }) {
   const { lang, reduceMotion } = useStore();
   const [ready, setReady] = useState(reduceMotion);
   useEffect(() => {
-    if (reduceMotion) return;
-    const id = setTimeout(() => setReady(true), 1100);
+    if (reduceMotion) return void onReady?.();
+    const id = setTimeout(() => {
+      setReady(true);
+      onReady?.();
+    }, 1100);
     return () => clearTimeout(id);
-  }, [reduceMotion]);
+  }, [reduceMotion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="space-y-5" data-testid="plan" aria-busy={!ready}>

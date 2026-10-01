@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../auth";
+import { Bilog } from "../components/Bilog";
 import { Icon } from "../components/Icon";
 import { Math, quickTex } from "../components/Math";
 import { OfflinePack } from "../components/OfflinePack";
@@ -18,6 +19,7 @@ export default function StudentHome() {
   const { profile, classes, joinClass, error } = useAuth();
   const [code, setCode] = useState("");
   const [joining, setJoining] = useState(false);
+  const rootRef = useRef<HTMLButtonElement | null>(null);
   const name = demo && !onboarding.name ? "Kyla" : profile?.display_name || onboarding.name || (fil0(lang) ? "kaibigan" : "friend");
   const signedIn = !demo && !!profile;
   const myClass = classes[0];
@@ -39,12 +41,16 @@ export default function StudentHome() {
 
   return (
     <Shell>
-      <section className="mt-2">
-        <div className="kicker text-muted">{greet}</div>
-        <h1 className="mt-1 text-[40px] leading-none" data-testid="greeting">{name}.</h1>
-        <div className="mt-2">
-          <EngineBadge />
+      <section className="mt-2 flex items-end gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="kicker text-muted">{greet}</div>
+          <h1 className="mt-1 text-[40px] leading-none" data-testid="greeting">{name}.</h1>
+          <div className="mt-2">
+            <EngineBadge />
+          </div>
         </div>
+        <Bilog size={64} lookAt={rootRef} sprout={gapsFixed.length > 0}
+          mood={trace && !trace.rootSkill ? "dig" : trace?.rootSkill && progress[trace.rootSkill] !== "mastered" ? "found" : "idle"} />
       </section>
 
       {trace && !trace.rootSkill && (
@@ -53,7 +59,7 @@ export default function StudentHome() {
         </button>
       )}
       {trace?.rootSkill && progress[trace.rootSkill] !== "mastered" && (
-        <button className="card mt-5 flex w-full items-center gap-4 !bg-gap-soft/70 !p-4 text-left" onClick={() => nav(`/learn/${trace.rootSkill}`)}>
+        <button ref={rootRef} className="card mt-5 flex w-full items-center gap-4 !bg-gap-soft/70 !p-4 text-left" onClick={() => nav(`/learn/${trace.rootSkill}`)}>
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gap font-display text-white">G{skillById[trace.rootSkill].grade}</span>
           <span className="flex-1">
             <span className="kicker block text-gap-dark">{fil ? "Ang ugat ng gap mo" : "The root of your gap"}</span>

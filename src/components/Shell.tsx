@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
+import { MotionConfig } from "motion/react";
 import { engineState, onEngineState, startEngine } from "../engine/client";
 import { useT } from "../i18n";
 import { Ambient } from "./Ambient";
@@ -77,11 +78,12 @@ export function Shell({
   bare?: boolean;
 }) {
   useApplyPrefs();
-  const { lang, role, set } = useStore();
+  const { lang, role, set, reduceMotion } = useStore();
   const nav = useNavigate();
   const showTabs = tabs && role === "student";
 
   return (
+    <MotionConfig reducedMotion={reduceMotion ? "always" : "user"}>
     <div className={`relative mx-auto min-h-dvh ${wide ? "max-w-6xl" : "max-w-md"}`}>
       <Ambient />
       {bare && (
@@ -127,5 +129,6 @@ export function Shell({
         </nav>
       )}
     </div>
+    </MotionConfig>
   );
 }

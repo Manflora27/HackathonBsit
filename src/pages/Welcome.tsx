@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth, type AccountType } from "../auth";
+import { Bilog, type BilogMood } from "../components/Bilog";
 import { Icon } from "../components/Icon";
 import { PlanReveal } from "../components/PlanReveal";
 import { Shell } from "../components/Shell";
@@ -26,6 +27,7 @@ export default function Welcome() {
   const [goal, setGoal] = useState<Goal | null>(onboarding.goal);
   const [busy, setBusy] = useState(false);
   const [codeError, setCodeError] = useState(false);
+  const [planReady, setPlanReady] = useState(false);
 
   useEffect(() => {
     if (!ready || onboarding.done) return; // done: finish() is already navigating
@@ -56,6 +58,9 @@ export default function Welcome() {
   const canNext = step === 1 ? canNext1 : step === 2 ? canNext2 : true;
   // Teachers have no plan to build: they skip straight from step 1 to finish.
   const teacherDone = !student && step === 1;
+  const showPlan = step === 3 && grade !== null && subjects.length > 0;
+  // Bilog watches you type your name, then builds the plan with you.
+  const mood: BilogMood = step === 1 ? "watch" : step === 2 ? "idle" : showPlan ? (planReady ? "happy" : "think") : "idle";
 
   return (
     <Shell tabs={false}>
@@ -66,6 +71,9 @@ export default function Welcome() {
           ))}
         </div>
         <div className="mt-2 text-right text-[12px] tracking-[0.14em] text-muted">{fil ? "HAKBANG" : "STEP"} {step} / {STEPS}</div>
+      </div>
+      <div className="pointer-events-none float-right ml-2 mt-3">
+        <Bilog size={58} mood={mood} />
       </div>
 
       {step === 1 && (
@@ -161,10 +169,10 @@ export default function Welcome() {
               ))}
             </div>
           </div>
-          {grade !== null && subjects.length > 0 && (
+          {showPlan && grade !== null && (
             <div className="mt-6">
               <div className="kicker text-gap-dark">{fil ? "Ang plano mo" : "Your plan"}</div>
-              <div className="mt-2"><PlanReveal subjects={subjects} grade={grade} /></div>
+              <div className="mt-2"><PlanReveal subjects={subjects} grade={grade} onReady={() => setPlanReady(true)} /></div>
               <p className="mt-3 text-[13px] text-muted">
                 {fil ? "Magsisimula ka rito. Kapag may nakitang gap, magdaragdag kami ng mga naunang skill." : "You start here. When we find a gap, we add the earlier skills it needs."}
               </p>
@@ -175,7 +183,7 @@ export default function Welcome() {
 
       {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
       <div className="mt-6 flex gap-3">
-        {step > 1 && <button className="btn-ghost" onClick={() => setStep(step - 1)}><Icon name="back" size={18} /> {fil ? "Balik" : "Back"}</button>}
+        {step > 1 && <button className="btn-ghost" onClick={() => { setPlanReady(false); setStep(step - 1); }}><Icon name="back" size={18} /> {fil ? "Balik" : "Back"}</button>}
         <button className="btn-primary flex-1" disabled={!canNext || busy} onClick={teacherDone ? () => void finish() : next} data-testid={step === STEPS || teacherDone ? "finish-profile" : "next-step"}>
           {step === STEPS || teacherDone ? (fil ? "Tapos na" : "Start") : fil ? "Susunod" : "Next"} <Icon name="arrow" size={18} />
         </button>

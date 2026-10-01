@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { readAloud } from "../ai/client";
 import { AreaModel } from "../components/AreaModel";
+import { Bilog } from "../components/Bilog";
 import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, RichText, quickTex } from "../components/Math";
 import { Shell } from "../components/Shell";
-import { Icon, InkCircle } from "../components/Icon";
+import { Icon } from "../components/Icon";
 import { lessons, skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { getLesson, skillTarget } from "../lessons/pipeline";
@@ -30,6 +31,7 @@ export default function Learn() {
   const [feedback, setFeedback] = useState<null | boolean>(null);
   const [speaking, setSpeaking] = useState(false);
   const [keypad, setKeypad] = useState(true);
+  const visualRef = useRef<HTMLElement | null>(null);
 
   // Generated and verified lesson first (shared cache), the hand-authored one only if none is available.
   useEffect(() => {
@@ -91,7 +93,15 @@ export default function Learn() {
 
   return (
     <Shell tabs={false} back="/student" title={`Grade ${skill.grade} · ${fil ? "Ayusin ang gap" : "Fix the gap"}`}>
-      <h1 className="font-display text-[30px] font-bold leading-tight">{skillTitle(skillId, lang)}</h1>
+      <div className="flex items-start gap-3">
+        <h1 className="min-w-0 flex-1 font-display text-[30px] font-bold leading-tight">{skillTitle(skillId, lang)}</h1>
+        {!mastered && (
+          <div className="-mt-1">
+            <Bilog size={50} lookAt={visualRef}
+              mood={stage === "learn" ? "learn" : feedback === true ? "happy" : feedback === false ? "found" : "watch"} />
+          </div>
+        )}
+      </div>
       <div className="mt-2 flex gap-1.5" aria-label="progress">
         {["learn", "practice", "retry"].map((s, i) => (
           <span key={s} className={`h-3 flex-1 rounded-full border border-line ${i === 0 || (i === 1 && stage === "practice") || (i === 2 && mastered) ? "bg-ok" : "bg-card"}`} />
@@ -115,7 +125,7 @@ export default function Learn() {
             </button>
           </section>
           {lesson.visual === "area-model" && (
-            <section className="mt-4">
+            <section className="mt-4" ref={visualRef}>
               <AreaModel b={3} />
             </section>
           )}
@@ -165,7 +175,7 @@ export default function Learn() {
       {mastered && (
         <motion.div initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
           className="card mt-5 !bg-ok-soft/70 text-center" data-testid="mastered">
-          <InkCircle color="var(--color-ok)" className="mx-auto mt-2 h-14 w-14 rounded-full bg-ok text-white"><Icon name="sprout" size={26} /></InkCircle>
+          <div className="flex justify-center"><Bilog size={72} mood="cheer" /></div>
           <div className="mt-1 font-display text-2xl font-bold">{fil ? "Naayos ang gap!" : "Gap fixed!"}</div>
           <p className="mt-1 text-[15px]">{fil ? "Ngayon, balikan ang problem na nagpahinto sa iyo." : "Now go back to the problem that stopped you."}</p>
           {trace ? (
