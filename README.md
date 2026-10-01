@@ -57,6 +57,7 @@ flowchart LR
 | `api/` | OpenRouter proxy (classification, teacher insight, TTS) |
 | `supabase/migrations/0001_init.sql` | Schema, Row Level Security, gap summary view |
 | `tests/demo.spec.ts` | The stage demo as a Playwright test (phone viewport) |
+| `docs/PLAN.md` | Full project plan: pitch, priorities, demo script, risks, build status |
 
 ## Setup
 
