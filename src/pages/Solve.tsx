@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { classifyWithAi } from "../ai/client";
-import { Confetti } from "../components/Confetti";
+import { Bilog } from "../components/Bilog";
 import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, RichText, quickTex } from "../components/Math";
 import { EngineBadge, Shell } from "../components/Shell";
-import { Icon, InkCircle } from "../components/Icon";
+import { Icon } from "../components/Icon";
 import { misconceptionById, misconceptionText, problemById, skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { useT } from "../i18n";
@@ -176,7 +176,8 @@ export default function Solve() {
         <EngineBadge />
       </div>
       <section className="card relative overflow-hidden !p-0">
-        <div className="border-b border-line px-5 pb-4 pt-5">
+        <div className="flex items-start gap-3 border-b border-line px-5 pb-4 pt-5">
+          <div className="min-w-0 flex-1">
           <div className="kicker text-muted">{problem.prompt}</div>
           {known ? (
             <div className="mt-1 text-[30px]" data-testid="problem">
@@ -194,6 +195,10 @@ export default function Solve() {
               data-testid="custom-problem"
             />
           )}
+          </div>
+          <div className={`-mr-1 -mt-2 transition-opacity duration-300 ${result ? "opacity-0" : ""}`}>
+            <Bilog size={50} mood={busy ? "think" : focus !== null && !confirm ? "watch" : "idle"} />
+          </div>
         </div>
 
         {/* notebook lines */}
@@ -352,6 +357,7 @@ function ResultPanel({
   const { lang, log, role } = useStore();
   const fil = lang === "fil";
   const [flagged, setFlagged] = useState(false);
+  const markRef = useRef<HTMLDivElement | null>(null);
 
   if (result.error) return <div className="card mt-5">{fil ? "Hindi mabasa ang problem. Pakiulit." : "We couldn't read the problem. Can you retype it?"}</div>;
 
@@ -361,9 +367,8 @@ function ResultPanel({
     return (
       <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
         className="card relative mt-5 !bg-ok-soft/70 text-center" data-testid="success">
-        <Confetti />
-        <InkCircle color="var(--color-ok)" className="mx-auto mt-2 h-16 w-16 rounded-full bg-ok text-white"><Icon name="check" size={30} strokeWidth={2.4} /></InkCircle>
-        <div className="mt-5 font-display text-[28px] leading-tight">
+        <div className="flex justify-center"><Bilog size={76} mood={retry ? "cheer" : "happy"} /></div>
+        <div className="mt-2 font-display text-[28px] leading-tight">
           {retry ? (fil ? "Ang problem na nagpahinto sa iyo — nasagot mo!" : "The problem that stopped you — solved.") : t("allCorrect")}
         </div>
         {retry && <div className="mt-2 flex items-center justify-center gap-1.5 text-ok-dark"><Icon name="sprout" size={16} /> +1 {fil ? "gap na naayos" : "gap fixed"}</div>}
@@ -384,9 +389,12 @@ function ResultPanel({
   return (
     <motion.section initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 22 }}
       className="card mt-5 !p-0" data-testid="diagnosis">
-      <div className="px-5 pt-5">
-        <div className="kicker text-gap-dark">{t("foundIt")}</div>
-        <div className="mt-1 font-display text-[26px] leading-tight">{fil ? `Nagkamali sa step ${i + 1}` : `It broke at step ${i + 1}`}</div>
+      <div className="flex items-start gap-3 px-5 pt-5">
+        <div className="min-w-0 flex-1">
+          <div className="kicker text-gap-dark">{t("foundIt")}</div>
+          <div className="mt-1 font-display text-[26px] leading-tight">{fil ? `Nagkamali sa step ${i + 1}` : `It broke at step ${i + 1}`}</div>
+        </div>
+        <div className="-mr-1 -mt-2"><Bilog size={54} mood="found" lookAt={markRef} /></div>
       </div>
       <div className="p-5">
         {result.steps[i]?.status === "unparsed" ? (
@@ -400,7 +408,7 @@ function ResultPanel({
               </div>
             </div>
             <div className="flex justify-center text-muted"><Icon name="arrow" size={16} className="rotate-90" /></div>
-            <div className="rounded-2xl bg-ok-soft/70 px-4 py-3">
+            <div ref={markRef} className="rounded-2xl bg-ok-soft/70 px-4 py-3">
               <div className="kicker text-ok-dark">{result.expectedLatex ? (fil ? "Dapat ay" : "It should be") : fil ? "Kulang" : "Missing"}</div>
               <div className="mt-1 text-[22px]" data-testid="expected-line">
                 {result.expectedLatex ? (

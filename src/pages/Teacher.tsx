@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { teacherInsight } from "../ai/client";
 import { useAuth } from "../auth";
+import { Bilog } from "../components/Bilog";
 import { Math } from "../components/Math";
 import { Shell } from "../components/Shell";
 import { misconceptionById, misconceptionText, misconceptions, problemById, skills as allSkills, skillTitle } from "../data";
@@ -21,6 +22,7 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
   const [toast, setToast] = useState<{ id: string; text: string } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [insight, setInsight] = useState<{ text: string; ai: boolean } | null>(null);
+  const topRef = useRef<HTMLDivElement | null>(null);
 
   // Kyla is live: her assigned work (class-visible) and, if she shares it, her skill map.
   const classAttempts = attempts.filter((a) => a.visibility === "class");
@@ -101,7 +103,7 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
           const still = list.filter((s) => s.skills[sid] !== "mastered");
           const fixed = list.length - still.length;
           return (
-          <div key={sid} className={`card ${i === 0 ? "!bg-gap-soft/70" : ""}`} data-testid={`gap-group-${sid}`}>
+          <div key={sid} ref={i === 0 ? topRef : undefined} className={`card ${i === 0 ? "!bg-gap-soft/70" : ""}`} data-testid={`gap-group-${sid}`}>
             <div className="flex items-center gap-3">
               <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-line font-display text-[32px] font-bold ${i === 0 ? "bg-gap" : "bg-card"}`}
                 data-testid={i === 0 ? "top-gap-count" : undefined}>{list.length}</div>
@@ -128,11 +130,14 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
       </section>
 
       {insight && (
-        <div className="card mt-4 !bg-brand-soft/70 text-[15px]">
-          <span className="chip mr-2 bg-brand text-white">{insight.ai ? "AI " : ""}{fil ? "mungkahi" : "suggestion"}</span>
-          {insight.text}
-          <div className="mt-1 text-xs text-muted">
-            {fil ? "Batay lang sa bilang ng class — walang pangalan na ipinadala. Ikaw ang magpapasya." : "Based only on class counts — no names were sent. You decide."}
+        <div className="card mt-4 flex items-start gap-3 !bg-brand-soft/70 text-[15px]">
+          <Bilog size={44} mood={toast ? "happy" : "found"} lookAt={topRef} />
+          <div className="min-w-0 flex-1">
+            <span className="chip mr-2 bg-brand text-white">{insight.ai ? "AI " : ""}{fil ? "mungkahi" : "suggestion"}</span>
+            {insight.text}
+            <div className="mt-1 text-xs text-muted">
+              {fil ? "Batay lang sa bilang ng class — walang pangalan na ipinadala. Ikaw ang magpapasya." : "Based only on class counts — no names were sent. You decide."}
+            </div>
           </div>
         </div>
       )}

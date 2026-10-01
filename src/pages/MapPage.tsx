@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Bilog } from "../components/Bilog";
 import { PathMap } from "../components/PathMap";
 import { Shell } from "../components/Shell";
 import { skillById, skillTitle } from "../data";
@@ -7,12 +8,15 @@ import { useStore } from "../store";
 
 export default function MapPage() {
   const t = useT();
-  const { progress, trace, lang, shareSkillMap, set } = useStore();
+  const { progress, trace, lang, shareSkillMap, set, gapsFixed } = useStore();
   const fil = lang === "fil";
   const [picked, setPicked] = useState<string | null>(null);
 
   return (
     <Shell title={fil ? "Mga ugat ko" : "My roots"}>
+      <div className="pointer-events-none float-right ml-2 mt-2">
+        <Bilog size={54} sprout={gapsFixed.length > 0} mood={gapsFixed.length > 0 ? "happy" : trace?.rootSkill ? "found" : "idle"} />
+      </div>
       <h1 className="mt-2 text-[34px] leading-tight">{fil ? "Saan nanggagaling ang math mo" : "Where your math grows from"}</h1>
       <p className="mt-1 text-[15px] text-muted">{fil ? "Nasa itaas ang Grade 9. Pababa, ang mga pundasyon." : "Grade 9 at the top. The foundations run underneath."}</p>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-[13px] text-muted">

@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { skillById, skills, skillTitle } from "../data";
 import { useStore } from "../store";
 import type { SkillStatus } from "../types";
+import { Bilog, type BilogMood } from "./Bilog";
 import { InkCircle } from "./Icon";
 
 // A short glyph per skill, set in the serif inside its node.
@@ -62,6 +63,7 @@ export function PathMap({
   animate = false,
   only,
   onSelect,
+  guide,
 }: {
   statuses: Record<string, SkillStatus>;
   path?: string[];
@@ -69,6 +71,8 @@ export function PathMap({
   animate?: boolean;
   only?: string[];
   onSelect?: (id: string) => void;
+  /** Trace view: Bilog walks down the chain beside the node being dug through. */
+  guide?: BilogMood | null;
 }) {
   const lang = useStore((s) => s.lang);
   const reduce = useStore((s) => s.reduceMotion);
@@ -86,6 +90,10 @@ export function PathMap({
 
   const litIds = path.slice(0, lit);
   const done = lit >= path.length && !!root;
+  // Bilog sits on the outer side of the node it is digging at, facing it.
+  const guideAt = guide ? pos[(done ? root : litIds[litIds.length - 1]) ?? path[0]] : null;
+  const side = guideAt && guideAt.x < W / 2 - 1 ? -1 : 1;
+  const GUIDE = 46;
   const onTrail = (from: string, to: string) => {
     const i = litIds.indexOf(to);
     return i >= 0 && litIds[i + 1] === from;
@@ -145,7 +153,7 @@ export function PathMap({
             aria-label={`${skillTitle(p.id, lang)}, grade ${skillById[p.id].grade}, ${isRoot ? "root gap" : st}`}
             data-testid={`node-${p.id}`}
           >
-            <motion.span initial={false} animate={isRoot ? { scale: [1, 1.12, 1] } : { scale: 1 }} transition={{ duration: 0.6 }} className={isRoot ? "bob" : ""}>
+            <motion.span initial={false} animate={isRoot ? { scale: [1, 1.12, 1] } : { scale: 1 }} transition={{ duration: 0.6 }}>
               {isRoot ? <InkCircle>{node}</InkCircle> : node}
             </motion.span>
             <span className={`mt-1.5 line-clamp-3 text-center text-[11.5px] leading-[1.2] ${isRoot || isLit ? "font-bold text-ink" : "text-muted"}`}>
@@ -158,6 +166,15 @@ export function PathMap({
           </button>
         );
       })}
+
+      {guide && guideAt && (
+        <motion.div className="pointer-events-none absolute left-0 top-0" data-testid="trace-guide"
+          initial={false}
+          animate={{ x: guideAt.x + side * 66 - GUIDE / 2, y: guideAt.y - (GUIDE * 1.18) / 2 - 6 }}
+          transition={instant ? { duration: 0 } : { type: "spring", stiffness: 110, damping: 17, mass: 0.9 }}>
+          <Bilog mood={guide} size={GUIDE} look={guide === "dig" ? { x: -side * 0.7, y: 0.75 } : guide === "root" ? { x: -side, y: 0.2 } : undefined} />
+        </motion.div>
+      )}
     </div>
   );
 }

@@ -506,6 +506,15 @@ Decisions from the design review. Where they conflict with earlier sections, thi
 
 **Known risk.** SymPy runs in the browser (Pyodide), so the verification gate runs on the client before a lesson is published to the shared cache. A hostile client could publish unverified content. Follow-up: re-check on the server (Python function with SymPy) before marking `verified`.
 
+## Update (Oct 1, evening): Bilog, the ink circle with eyes
+One animated character, built from scratch (no third-party character code). **Bilog** ("circle" in Filipino) is the signature hand-drawn ink circle given two eyes. It is an exception to "Skip: avatars and mascots" because it only acts out the core idea, never decorates: it watches you type, thinks while SymPy checks, re-circles itself in persimmon when the error is found (glancing at the circled term), walks down the root chain on the trace and settles beside the root gap, studies the area model, and turns moss and grows a sprout on mastery. No points, badges or speech bubbles.
+
+- **Where:** Landing hero, onboarding (watches your name, then thinks → smiles as the plan builds), Home (sprout stays once a gap is fixed), Solve, Trace (`PathMap guide`), Learn, retry success, Map, teacher insight card.
+- **Replaced:** Confetti and the infinite root-node bob (now the calm ring-close + sprout).
+- **Performance:** one small SVG; only transform, opacity and stroke animate; eyes are driven by one shared rAF loop (`src/lib/look.ts`) that writes transforms directly, runs only while something moves, and skips off-screen instances; CSS blink/spin pause off screen. No filters or blur.
+- **Reduced motion:** OS setting or the in-app toggle (`src/lib/calm.ts`, plus `MotionConfig` in the Shell) → static eyes, no tracking, no blink, mood changes are instant colour swaps.
+- **Code:** `src/components/Bilog.tsx`, `src/lib/look.ts`, `src/lib/calm.ts`.
+
 ## Build Status
 **Built and tested** (`npm run test:engine`: 43 passing; `npm run test:e2e`: demo flow + airplane mode, passing):
 - Engine (`engine/gapfinder.py`): step verification, 15 misconception types via buggy rules, wrong-term circling, answer/form checking, answer keys. Runs in Pyodide, fully offline.

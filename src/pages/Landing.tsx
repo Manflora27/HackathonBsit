@@ -1,11 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
+import { Bilog } from "../components/Bilog";
+import { useCalm } from "../lib/calm";
 import { Icon, InkCircle } from "../components/Icon";
 import { EngineBadge, Shell } from "../components/Shell";
 import { useAuth } from "../auth";
 import { authConfigured } from "../lib/supabase";
 import { useStore } from "../store";
+
+/** Bilog watches the drawing trace down, and lights up when the root gets circled. */
+function HeroDrawing() {
+  const calm = useCalm();
+  const [drawn, setDrawn] = useState(false);
+  const found = calm || drawn;
+  const rootRef = useRef<HTMLSpanElement | null>(null);
+  useEffect(() => {
+    const id = setTimeout(() => setDrawn(true), 2300); // when the drawing circles G7
+    return () => clearTimeout(id);
+  }, []);
+  return (
+    <div className="relative">
+      <RootDrawing />
+      {/* invisible anchor over the G7 root, for Bilog's eyes */}
+      <span ref={rootRef} className="absolute bottom-[8%] left-1/2 h-2 w-2" aria-hidden />
+      <div className="pointer-events-none absolute left-0 top-0">
+        <Bilog size={56} mood={found ? "found" : "watch"} lookAt={rootRef} />
+      </div>
+    </div>
+  );
+}
 
 /** Thin-line drawing of a mistake being traced down to its root. */
 function RootDrawing() {
@@ -76,7 +100,7 @@ export default function Landing() {
   return (
     <Shell tabs={false}>
       <section className="pt-3">
-        <RootDrawing />
+        <HeroDrawing />
         <div className="kicker mt-4 text-gap-dark">{fil ? "Para sa math na nakakalito" : "A diagnostic for math"}</div>
         <h1 className="mt-2 text-[40px] leading-[1.02]">
           {fil ? "Hindi ka mahina sa math." : "You're not bad at math."}

@@ -83,7 +83,8 @@ export default function Trace() {
         <span className="chip glass text-[13px]">{trace.path.map((s) => `G${skillById[s].grade}`).join(" → ")}{!root && " → ?"}</span>
       </div>
       <div className="mt-3">
-        <PathMap statuses={progress} path={trace.path} root={root} animate only={trace.path} />
+        <PathMap statuses={progress} path={trace.path} root={root} animate only={trace.path}
+          guide={root ? "root" : feedback === "pass" ? "happy" : feedback === "fail" ? "found" : "dig"} />
       </div>
 
       <AnimatePresence mode="wait">
