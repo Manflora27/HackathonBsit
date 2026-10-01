@@ -188,7 +188,7 @@ All AI actions are logged with what the AI suggested and what the person decided
 
 ## Visual Design (Khan Academy / 3Blue1Brown quality, selectively)
 
-> *Built (team decision, Oct 2):* the app moved to a **playful, game-like, mobile-first** direction: chunky "sticker" UI (thick ink outlines, hard shadows, buttons that press down), Fredoka + Nunito, grape / tangerine (gaps) / mint (mastered), a level-path skill map from Grade 9 down to Grade 7 with a marker that drops to the gap, a calculator-style math keypad, bottom tab bar, and a "gaps fixed" counter instead of XP. React Flow was replaced by the custom path map. The principles below (gaps aren't red, discovery framing, reduced motion, not color-only) still apply.
+> *Built (Oct 2):* mobile-first, editorial-warm identity built around "find the root": **Young Serif** headings (pairs with KaTeX's serif math) and **Atkinson Hyperlegible Next** body text (designed for low-vision readers); warm ivory paper with grain, pine ink, persimmon for gaps, moss for mastered; hairline rules and soft depth (no neobrutalism, no emoji). Signature motif: a hand-drawn ink circle (wrong term, root gap, logo). The skill map is a root system with real prerequisite edges; the trace draws the route down to the root. Bottom tab bar, calculator-style math keypad, "gaps fixed" counter. The principles below still apply.
 **Principle:** Polish comes from a calm, consistent design system first and animation second. Pick a few moments and make them great. Don't use Manim or rendered video; everything is live SVG in React.
 
 **Foundations:**
