@@ -18,7 +18,7 @@ const STEPS = 3;
 /** First-run onboarding: who you are, what you study and where you are now, then your plan. */
 export default function Welcome() {
   const nav = useNavigate();
-  const { user, profile, ready, completeProfile, joinClass, error } = useAuth();
+  const { user, profile, ready, profileReady, completeProfile, joinClass, error } = useAuth();
   const { consent, role, set, lang, onboarding, demoFlow } = useStore();
   const t = useT();
   const guest = !user && role === "guest";
@@ -41,9 +41,14 @@ export default function Welcome() {
   useEffect(() => {
     if (!ready || onboarding.done) return; // done: finish() is already navigating
     if (!consent || (!user && !guest)) return void nav("/", { replace: true });
-    if (profile?.onboarded_at) return void nav("/", { replace: true }); // already onboarded
+    if (user && !profileReady) return; // OAuth return: profile still loading, don't flash onboarding
+    if (profile?.onboarded_at) {
+      // Already onboarded (e.g. OAuth return for a returning user): skip straight home.
+      set({ role: profile.account_type === "teacher" ? "teacher" : "student", demo: false });
+      return void nav(profile.account_type === "teacher" ? "/teacher" : "/student", { replace: true });
+    }
     if (!name) setName((user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "");
-  }, [ready, user, profile, consent, guest, onboarding.done]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready, user, profile, profileReady, consent, guest, onboarding.done]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const student = type === "student";
   const canNext1 = name.trim().length > 0;

@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-route
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { useAuth } from "./auth";
 import { authConfigured } from "./lib/supabase";
+import AuthCallback from "./pages/AuthCallback";
 import Check from "./pages/Check";
 import ClassPage from "./pages/ClassPage";
 import Demo from "./pages/Demo";
@@ -25,11 +26,12 @@ import { useStore } from "./store";
 /** Signed in, or a demo/guest session. Teachers are never guests. */
 function Gate({ children, teacher = false }: { children: React.ReactNode; teacher?: boolean }) {
   const { consent, role, demo } = useStore();
-  const { user, profile, ready } = useAuth();
+  const { user, profile, ready, profileReady } = useAuth();
   if (!consent) return <Navigate to="/" replace />;
   if (demo) return <>{children}</>;
-  if (authConfigured && !ready) return null;
+  if (authConfigured && (!ready || (user && !profileReady))) return null;
   if (user) {
+    if (!profileReady) return null;
     if (!profile?.account_type || !profile.onboarded_at) return <Navigate to="/welcome" replace />;
     if (teacher && profile.account_type !== "teacher") return <Navigate to="/student" replace />;
     return <>{children}</>;
@@ -54,6 +56,7 @@ export default function App() {
       <RouteBoundary>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/student" element={<Gate><StudentHome /></Gate>} />

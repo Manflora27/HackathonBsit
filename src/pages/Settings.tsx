@@ -122,11 +122,53 @@ function MeSection() {
   );
 }
 
+/** Explicit account erasure (RA 10173): server rows first, then this device. Two taps, no native dialogs. */
+function DeleteAccount() {
+  const t = useT();
+  const nav = useNavigate();
+  const s = useStore();
+  const { deleteAccount, error } = useAuth();
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  async function erase() {
+    setBusy(true);
+    const ok = await deleteAccount();
+    setBusy(false);
+    if (!ok) return; // error from the store is shown below
+    s.resetDemo();
+    nav("/", { replace: true });
+  }
+  if (!confirming) {
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-muted">{t("settings.deleteAccountBlurb")}</p>
+        <button className="btn-ghost text-red-700" onClick={() => setConfirming(true)} data-testid="delete-account">
+          {t("settings.deleteAccount")}
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="rounded-2xl bg-red-50 p-3" data-testid="delete-account-confirm">
+      <p className="text-[14px] font-semibold text-red-800">{t("settings.deleteAccountConfirm")}</p>
+      {error && <p className="mt-1 text-[13px] text-red-700" data-testid="delete-account-error">{error}</p>}
+      <div className="mt-2 flex gap-2">
+        <button className="btn-ghost" disabled={busy} onClick={() => setConfirming(false)}>
+          {t("settings.deleteAccountCancel")}
+        </button>
+        <button className="btn-primary !bg-red-700" disabled={busy} onClick={() => void erase()} data-testid="delete-account-yes">
+          {busy ? t("settings.deletingAccount") : t("settings.deleteAccountYes")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Settings() {
   const nav = useNavigate();
   const s = useStore();
   const t = useT();
-  const { user, profile, signOut, deleteAccount } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const teacher = s.role === "teacher" || profile?.account_type === "teacher";
 
   function download() {
@@ -187,21 +229,21 @@ export default function Settings() {
         {teacher && <p className="text-sm text-muted">{t("teacher.youOnlySeeAssigned")}</p>}
         <div className="flex flex-wrap gap-2">
           <button className="btn-ghost" onClick={download}>⬇ {t("settings.downloadMyData")}</button>
-          <button
-            className="btn-ghost text-red-700"
-            onClick={async () => {
-              if (user) {
-                // Signed in: erasure means the account and its server rows, not just this device.
-                if (!confirm(t("settings.deleteAccountConfirm"))) return;
-                if (!(await deleteAccount())) return alert(t("settings.deleteFailed"));
-              } else if (!confirm(t("settings.deleteAllDataDevice"))) return;
-              s.resetDemo();
-              nav("/");
-            }}
-          >
-            {t("settings.deleteMyData")}
-          </button>
+          {!user && (
+            <button
+              className="btn-ghost text-red-700"
+              data-testid="delete-device-data"
+              onClick={() => {
+                if (!confirm(t("settings.deleteAllDataDevice"))) return;
+                s.resetDemo();
+                nav("/");
+              }}
+            >
+              {t("settings.deleteMyData")}
+            </button>
+          )}
         </div>
+        {user && <DeleteAccount />}
       </section>
 
       {!teacher && (

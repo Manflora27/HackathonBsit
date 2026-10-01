@@ -36,6 +36,8 @@ export interface RosterRow {
 
 interface AuthState {
   ready: boolean;
+  /** True once the profile (or its absence) has been loaded for the current user. Gates must wait for this. */
+  profileReady: boolean;
   user: User | null;
   profile: Profile | null;
   classes: ClassRow[];
@@ -43,7 +45,7 @@ interface AuthState {
   error: string | null;
   init: () => void;
   refresh: () => Promise<void>;
-  signInGoogle: () => Promise<void>;
+  signInGoogle: () => Promise<boolean>;
   /** Emails a magic sign-in link. Resolves true once it's sent. */
   signInEmail: (email: string) => Promise<boolean>;
   signOut: () => Promise<void>;
@@ -71,9 +73,17 @@ let started = false;
  * Local test accounts, for the e2e tests (VITE_LOCAL_ACCOUNTS=1 on the dev server): sign-in creates a pseudo account
  * kept on this device, same flow, no network. Never in a deployed build. Every local account shares one on-device
  * classroom (lib/localSchool), so a teacher and a student can take turns. Without the flag, sign-in is real Supabase;
- * for Google to come back to localhost, add http://localhost:5175/** to the project's Auth redirect URLs.
+ * for Google to come back to localhost, add http://localhost:5173/auth/callback (and your preview URLs) to the
+ * project's Auth redirect URLs (Supabase dashboard > Authentication > URL Configuration).
  */
 export const MOCK_AUTH = localAccounts;
+/**
+ * Where OAuth / email links land: a dedicated callback that exchanges the code for a session,
+ * then routes by profile. Uses the current origin so previews, custom domains and localhost all work.
+ * (The old build hardcoded the production URL, so sign-in from any other origin looked dead.)
+ */
+export const AFTER_SIGN_IN =
+  (typeof window !== "undefined" ? window.location.origin : "") + "/auth/callback";
 const MOCK_KEY = "hopper-test-account";
 const mockUserLoad = (): User | null => {
   try {
@@ -99,34 +109,44 @@ const makeCode = (name: string) => {
 
 export const useAuth = create<AuthState>((set, get) => ({
   ready: !supabase || MOCK_AUTH,
+  profileReady: !supabase || MOCK_AUTH,
   user: null,
   profile: null,
   classes: [],
   roster: [],
   error: null,
-  ...(MOCK_AUTH ? mockState(mockUserLoad()) : {}),
+  ...(MOCK_AUTH ? { ...mockState(mockUserLoad()), profileReady: true } : {}),
 
   init() {
     if (started || !supabase || MOCK_AUTH) return;
     started = true;
+    // Mark ready as soon as the session is known; profile loads in the background.
+    // Waiting for profile queries before setting ready left the Google button disabled
+    // and blank-gated /student, which made sign-in look dead on slow networks.
     supabase.auth.getSession().then(({ data }) => {
-      set({ user: data.session?.user ?? null });
-      get().refresh().finally(() => set({ ready: true }));
-    });
+      set({ user: data.session?.user ?? null, ready: true });
+      void get().refresh();
+    }).catch(() => set({ ready: true, profileReady: true }));
     supabase.auth.onAuthStateChange((_event, session) => {
-      set({ user: session?.user ?? null });
-      if (session?.user) void get().refresh();
-      else set({ profile: null, classes: [], roster: [] });
+      const next = session?.user ?? null;
+      const prev = get().user?.id ?? null;
+      set({ user: next });
+      if (next) {
+        // A new sign-in (or the OAuth return) always re-resolves the profile.
+        if (next.id !== prev) set({ profile: null, profileReady: false, classes: [], roster: [] });
+        void get().refresh();
+      } else set({ profile: null, profileReady: true, classes: [], roster: [] });
     });
   },
 
   async refresh() {
-    if (MOCK_AUTH) return set(mockState(get().user));
+    if (MOCK_AUTH) return set({ ...mockState(get().user), profileReady: true });
     const { user } = get();
-    if (!supabase || !user) return;
-    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
-    set({ profile: (profile as Profile | null) ?? null });
-    if (!profile) return set({ classes: [], roster: [] });
+    if (!supabase || !user) return set({ profileReady: true });
+    try {
+      const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
+      set({ profile: (profile as Profile | null) ?? null });
+      if (!profile) return set({ classes: [], roster: [], profileReady: true });
 
     const { data: mem } = await supabase
       .from("memberships")
@@ -151,32 +171,65 @@ export const useAuth = create<AuthState>((set, get) => ({
         })),
       });
     }
+    set({ profileReady: true });
+    } catch (e) {
+      report("refresh", e);
+      set({ profileReady: true });
+    }
   },
 
   async signInGoogle() {
     if (MOCK_AUTH) {
       const user = mockUser("test.learner@hopper.local", "Test Learner");
       mockUserSave(user);
-      return set({ ...mockState(user), error: null });
+      set({ ...mockState(user), profileReady: true, error: null });
+      return true;
     }
-    if (!supabase) return;
+    if (!supabase) {
+      set({ error: "Sign-in isn't connected yet (add the Supabase keys)." });
+      return false;
+    }
     set({ error: null });
-    const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin + "/welcome" } });
-    if (error) set({ error: error.message });
+    try {
+      // Supabase redirects to Google itself; when it can't (blocked navigation),
+      // fall back to a manual navigation so tapping never looks dead.
+      const { data, error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: AFTER_SIGN_IN } });
+      if (error) {
+        set({ error: error.message });
+        return false;
+      }
+      if (data?.url) window.location.href = data.url;
+      return true;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      report("signInGoogle", e);
+      set({ error: message || "Couldn't reach Google. Check your connection and try again." });
+      return false;
+    }
   },
 
   async signInEmail(email) {
     if (MOCK_AUTH) {
       const user = mockUser(email.trim().toLowerCase(), email.split("@")[0]);
       mockUserSave(user);
-      set({ ...mockState(user), error: null });
+      set({ ...mockState(user), profileReady: true, error: null });
       return true;
     }
     if (!supabase) return false;
     set({ error: null });
-    const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: window.location.origin + "/welcome" } });
-    if (error) return set({ error: error.message }), false;
-    return true;
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { emailRedirectTo: AFTER_SIGN_IN } });
+      if (error) {
+        set({ error: error.message });
+        return false;
+      }
+      return true;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      report("signInEmail", e);
+      set({ error: message || "Couldn't send the link. Check your connection and try again." });
+      return false;
+    }
   },
 
   async signOut() {
@@ -190,7 +243,7 @@ export const useAuth = create<AuthState>((set, get) => ({
         await supabase.auth.signOut({ scope: "local" }).catch(() => {});
       }
     }
-    set({ user: null, profile: null, classes: [], roster: [] });
+    set({ user: null, profile: null, profileReady: true, classes: [], roster: [] });
   },
 
   async deleteAccount() {
@@ -206,18 +259,39 @@ export const useAuth = create<AuthState>((set, get) => ({
         sc.results = sc.results.filter((r) => r.userId !== id && sc.tests.some((t) => t.id === r.testId));
       });
       mockUserSave(null);
-      set({ user: null, profile: null, classes: [], roster: [], error: null });
+      set({ user: null, profile: null, profileReady: true, classes: [], roster: [], error: null });
       return true;
     }
-    if (!supabase || !get().user) return false;
-    const { data } = await supabase.auth.getSession();
-    const token = data.session?.access_token;
-    if (!token) return false;
-    const res = await fetch("/api/delete-account", { method: "POST", headers: { authorization: `Bearer ${token}` } });
-    if (!res.ok) return false;
-    await supabase.auth.signOut();
-    set({ user: null, profile: null, classes: [], roster: [], error: null });
-    return true;
+    if (!supabase || !get().user) {
+      set({ error: "You're not signed in." });
+      return false;
+    }
+    set({ error: null });
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        set({ error: "Your session expired. Sign in again, then delete." });
+        return false;
+      }
+      const res = await fetch("/api/delete-account", { method: "POST", headers: { authorization: `Bearer ${token}` } });
+      if (!res.ok) {
+        let message = "Couldn't delete your account. Try again, or come back when you're online.";
+        try {
+          const body = (await res.json()) as { error?: string };
+          if (body?.error && res.status !== 503) message = body.error;
+        } catch { /* keep default */ }
+        set({ error: message });
+        return false;
+      }
+      await supabase.auth.signOut().catch(() => {});
+      set({ user: null, profile: null, profileReady: true, classes: [], roster: [], error: null });
+      return true;
+    } catch (e) {
+      report("deleteAccount", e);
+      set({ error: "Couldn't delete your account. Try again, or come back when you're online." });
+      return false;
+    }
   },
 
   async completeProfile({ name, type, consentBy, language, subjects, grade, goal }) {
@@ -227,7 +301,8 @@ export const useAuth = create<AuthState>((set, get) => ({
     const row = { id: user.id, display_name: name.trim(), account_type: type, language, subjects, current_grade: grade, goal, onboarded_at: new Date().toISOString() };
     if (MOCK_AUTH) {
       local.edit((sc) => { sc.profiles[user.id] = row; });
-      return set({ profile: row }), true;
+      set({ profile: row, profileReady: true });
+      return true;
     }
     if (!supabase) return false;
     let { error } = await supabase.from("profiles").upsert(row);

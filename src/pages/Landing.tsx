@@ -190,10 +190,11 @@ export default function Landing() {
   );
   const word = swap(t(`landing.stories.${story.id}.word`));
 
-  const { user, profile, ready, error, signInGoogle, signInEmail } = useAuth();
+  const { user, profile, ready, profileReady, error, signInGoogle, signInEmail } = useAuth();
   const [showEmail, setShowEmail] = useState(false);
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [sentTo, setSentTo] = useState<string | null>(null);
   const sendLink = async () => {
     agreeNow();
@@ -201,13 +202,24 @@ export default function Landing() {
     if (await signInEmail(email)) setSentTo(email.trim());
     setSending(false);
   };
+  const continueGoogle = async () => {
+    agreeNow();
+    setGoogleBusy(true);
+    try {
+      await signInGoogle();
+    } finally {
+      // On success the browser leaves for Google; if we're still here it failed
+      // (error is shown below) or navigation was blocked — either way, re-enable.
+      setGoogleBusy(false);
+    }
+  };
 
   useEffect(() => {
-    if (!consent || !ready || !user) return;
-    if (!profile) return void nav("/welcome", { replace: true });
+    if (!consent || !ready || !user || !profileReady) return;
+    if (!profile || !profile.account_type || !profile.onboarded_at) return void nav("/welcome", { replace: true });
     set({ role: profile.account_type === "teacher" ? "teacher" : "student", demo: false });
     nav(profile.account_type === "teacher" ? "/teacher" : "/student", { replace: true });
-  }, [consent, ready, user, profile]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [consent, ready, user, profile, profileReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Shell tabs={false} bare>
@@ -243,8 +255,8 @@ export default function Landing() {
         <section>
             {signInAvailable ? (
               <>
-                <button className="btn-primary w-full !py-4 text-[17px]" onClick={() => { agreeNow(); void signInGoogle(); }} disabled={!ready} data-testid="google-signin">
-                  <GoogleMark /> {t("landing.continueGoogle")}
+                <button className="btn-primary w-full !py-4 text-[17px]" onClick={() => void continueGoogle()} disabled={!ready || googleBusy} data-testid="google-signin">
+                  <GoogleMark /> {googleBusy ? t("landing.connecting") : t("landing.continueGoogle")}
                 </button>
                 {sentTo ? (
                   <p className="mt-3 text-center text-[14px] leading-snug text-muted" data-testid="email-sent">
@@ -272,7 +284,7 @@ export default function Landing() {
                 {t("landing.signIsntConnectedYet")}
               </p>
             )}
-            {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
+            {error && <p className="mt-3 text-[14px] text-gap-dark" data-testid="auth-error">{error}</p>}
             <p className="mt-4 text-center text-[12px] leading-snug text-muted" data-testid="consent-note">{t("landing.consent")}</p>
             {MOCK_AUTH && (
               <p className="mt-2 text-center text-[11px] text-muted" data-testid="test-mode">
