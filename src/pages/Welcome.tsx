@@ -75,9 +75,9 @@ export default function Welcome() {
           <p className="mt-2 text-balance text-[16px] text-muted">
             {guest ? (fil ? "Gagawa kami ng plano sa pag-aaral para sa iyo sa loob ng isang minuto. Walang account na kailangan." : "We'll build you a study plan in about a minute. No account needed.") : fil ? "Isang minuto lang para ihanda ang plano mo." : "One minute to set up your plan."}
           </p>
-          <div className="card mt-5">
+          <div className={guest ? "mt-7" : "card mt-5"}>
             <label className="kicker text-muted" htmlFor="nm">{fil ? "Ano ang itatawag namin sa iyo?" : "What should we call you?"}</label>
-            <input id="nm" autoFocus className="input mt-2 !py-4 !text-[20px] !font-sans" value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoComplete="given-name" data-testid="name" />
+            <input id="nm" className="input mt-2 !border-ink/25 !bg-white/85 !py-4 !text-[22px] !font-sans shadow-[0_6px_18px_-12px_rgb(30_43_39/.5)]" placeholder={fil ? "Unang pangalan" : "Your first name"} value={name} onChange={(e) => setName(e.target.value)} maxLength={40} autoComplete="given-name" data-testid="name" />
             <p className="mt-1 text-[13px] text-muted">
               {guest ? (fil ? "Nasa device na ito lang. Hindi ito ipinapadala sa AI." : "Stays on this device. It's never sent to the AI.") : fil ? "Makikita ito ng teacher mo. Hindi ito ipinapadala sa AI." : "Your teacher can see this. It's never sent to the AI."}
             </p>
@@ -103,7 +103,7 @@ export default function Welcome() {
             {student && !guest && (
               <>
                 <label className="kicker mt-6 block text-muted" htmlFor="cc">{fil ? "May class code? (opsyonal)" : "Have a class code? (optional)"}</label>
-                <input id="cc" className="input mt-2" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
+                <input id="cc" className="input mt-2 !border-ink/25 !bg-white/85" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
                 {codeError && <p className="mt-1 text-[13px] text-gap-dark">{fil ? "Hindi nahanap ang code. Puwede mo itong idagdag mamaya." : "We couldn't find that code. You can add it later from home."}</p>}
               </>
             )}
