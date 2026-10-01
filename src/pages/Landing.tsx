@@ -92,11 +92,6 @@ export default function Landing() {
     nav(profile.account_type === "teacher" ? "/teacher" : "/student", { replace: true });
   }, [consent, ready, user, profile]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const guest = () => {
-    set({ role: "guest", demo: false });
-    nav("/welcome");
-  };
-
   return (
     <Shell tabs={false} bare>
       <section>
@@ -159,8 +154,8 @@ export default function Landing() {
         </section>
       ) : (
         <section className="card mt-5 !p-5">
-          <h2 className="text-[22px]">{fil ? "Mag-sign in" : "Sign in to save your roots"}</h2>
-                    {authConfigured ? (
+          <h2 className="text-[22px]">{fil ? "Mag-sign in para magsimula" : "Sign in to get started"}</h2>
+          {authConfigured ? (
             <button className="btn-primary mt-5 w-full" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
               <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
             </button>
@@ -170,12 +165,6 @@ export default function Landing() {
             </p>
           )}
           {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
-          <div className="my-3 flex items-center gap-3 text-[12px] uppercase tracking-[0.16em] text-muted">
-            <span className="rule" /> {fil ? "o" : "or"} <span className="rule" />
-          </div>
-          <button className="btn-ghost w-full" onClick={guest} data-testid="try-it">
-            {fil ? "Subukan nang walang account" : "Try without an account"}
-          </button>
         </section>
       )}
       {consent && (

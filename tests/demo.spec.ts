@@ -1,5 +1,15 @@
 import { expect, test } from "@playwright/test";
 
+
+/** Local-only session for tests: the sign-in screen is Google-only, so seed the saved state instead. */
+async function enterGuest(page: import("@playwright/test").Page, to = "/welcome") {
+  await page.goto("/");
+  await page.evaluate(() =>
+    localStorage.setItem("gapfinder-v1", JSON.stringify({ state: { consent: { by: "self", at: 1 }, role: "guest", onboarding: { name: "", subjects: [], grade: null, goal: null, done: false } }, version: 0 })),
+  );
+  await page.goto(to);
+}
+
 // The full stage demo, as an acceptance test.
 test("Kyla: error circled → trace to Grade 7 gap → practice → retry → teacher sees 14", async ({ page }) => {
   const shot = (name: string) => page.screenshot({ path: `test-results/shots/${name}.png`, fullPage: true });
@@ -78,10 +88,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
 });
 
 test("airplane mode: still diagnoses with no internet", async ({ page, context }) => {
-  await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("try-it").click();
+  await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("subject-math").click();
@@ -99,12 +106,13 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
   await page.screenshot({ path: "test-results/shots/08-offline.png" });
 });
 
-test("landing without Supabase keys: real sign-in is honest, guest and demo still work", async ({ page }) => {
+test("landing without Supabase keys: sign-in is honest, no guest button, demo still works", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
   await expect(page.getByTestId("auth-unconfigured")).toBeVisible();
   await expect(page.getByTestId("google-signin")).toHaveCount(0);
+  await expect(page.getByTestId("try-it")).toHaveCount(0);
   await expect(page.getByTestId("demo-student")).toHaveCount(0); // no fake accounts on the main screen
   await page.goto("/student");
   await expect(page).toHaveURL(/\/$/); // protected route bounces to sign-in
@@ -112,10 +120,7 @@ test("landing without Supabase keys: real sign-in is honest, guest and demo stil
 });
 
 test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with no problems on it", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("try-it").click();
+  await enterGuest(page);
 
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
@@ -159,10 +164,7 @@ const draft = {
 };
 
 async function startPlan(page: import("@playwright/test").Page) {
-  await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("try-it").click();
+  await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("subject-math").click();
@@ -211,10 +213,7 @@ test("verifiers: unit keys are checked in the browser, wrong ones dropped", asyn
     ],
   };
   await page.route("**/api/lesson", (route) => route.fulfill({ json: units }));
-  await page.goto("/");
-  await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /let.s go/i }).click();
-  await page.getByTestId("try-it").click();
+  await enterGuest(page);
   await page.getByTestId("name").fill("Mika");
   await page.getByTestId("next-step").click();
   await page.getByTestId("subject-science").click();
