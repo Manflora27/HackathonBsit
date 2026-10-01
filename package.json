@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predev": "node scripts/fetch-pyodide.mjs",
+    "prebuild": "node scripts/fetch-pyodide.mjs",
+    "test:engine": "cd engine && uv run --no-project --with pytest --with sympy pytest -q",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
