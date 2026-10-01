@@ -84,6 +84,8 @@ export const MATATAG_MATH: Record<number, Record<number, MatatagDomain[]>> = {
     3: [
       { code: "DP", name: "Data and Probability", topics: [
         "a pictograph with a scale for the representation of data",
+      ] },
+      { code: "NA", name: "Number and Algebra", topics: [
         "multiplication and division of whole numbers using the 2, 3, 4, 5, and 10 multiplication tables",
         "odd and even numbers",
       ] },

@@ -100,6 +100,7 @@ Teachers stop grading only for scores and start seeing *why* students got it wro
 - Most content is pre-generated, so live calls are only jobs 1, 2, the personalization in 3, and 5.
 - Cache by `(skill, misconception, language)`.
 - Stream the explanation text so it starts appearing immediately.
+- Spend (OpenRouter list, Oct 2026 — verify live): text ~$0.15/$0.60 and vision ~$0.075/$0.25 per 1M in/out tokens; small calls ~$0.0002, lessons ~$0.01 paid ~once via the shared cache. Retry at most once per call; set an OpenRouter credit limit.
 
 **Evaluation:** the golden test set measures the error line (SymPy, should be ~100%) and misconception accuracy (buggy rules + AI) separately. These are the "[X/N]" and "[Y/N]" numbers.
 
@@ -243,12 +244,15 @@ Each one must **show the core idea** (find the real gap), not just decorate. Ran
 
 ## Offline Capability & Caching
 - **App shell:** cached by the PWA service worker, or bundled in the Capacitor APK.
-- **Verification:** SymPy runs in the browser via Pyodide.
-- **Diagnosis:** buggy-rule matching works offline. Uncommon cases are queued for AI analysis when the connection returns.
-- **Content:** the skill graph, misconception library, explanations, TTS audio, and practice problems are cached in IndexedDB.
-- **Speech offline:** cached audio plays. Voice input falls back to typing, and uncached read-aloud shows "Read aloud needs internet."
-- **Sync queue:** work done offline is saved locally and synced on reconnect.
-- **Response cache:** AI explanations for the same skill and misconception are reused across students.
+- **Verification:** SymPy runs in the browser via Pyodide. Airplane-mode diagnosis is an e2e test (`tests/demo.spec.ts`).
+- **Diagnosis:** buggy-rule matching works offline. Errors no rule matched wait for a connection (AI classification), with engine-only output meanwhile.
+- **Content:** the skill graph, misconception library, and practice live in the bundle; lessons live in device IndexedDB once opened or pack-downloaded (`src/lessons/store.ts`, `src/lessons/pack.ts`). A never-seen lesson shows a "needs connection" card and stays in the plan.
+- **Lesson packs:** per-subject "Download for offline" with a progress ring (`src/components/OfflinePack.tsx`); uncached lessons generate 2-at-a-time while online.
+- **Voice offline:** record → on-device Whisper → rule-based math formatting, once the one-time model download is done (`src/ai/speech.ts`, `src/ai/whisper.ts`, `src/ai/localMath.ts`). Read-aloud uses the device voice, no network.
+- **Photos need connection:** handwriting recognition is vision-model only, no offline path.
+- **Sync is best-effort, not queued:** classroom writes are no-ops offline (`src/classroom.ts`, `src/school.ts`) — nothing is lost locally (progress lives on the device), but uploads made while offline are not retried. Teacher realtime and sign-in need connection.
+- **First run needs Wi-Fi:** Pyodide, fonts, Whisper model, and lesson packs all download once, then persist.
+- **Response cache:** AI explanations for the same skill and misconception are reused across students (shared signed lesson cache).
 - **School option:** Ollama with a local model on one school computer.
 
 ## Data Privacy (RA 10173, Data Privacy Act of 2012)
@@ -327,6 +331,8 @@ Paste this into mermaid.live to export an image for the slides and README.
 
 ## Scalability & LMS Integration
 - **Scales cheaply:** verification runs on the learner's device, the AI is called only for uncommon errors and new explanations, and cached responses and audio are reused.
+- **Scales flat:** grading is $0 marginal at any user count (on-device SymPy), the API is stateless, and class views are bounded — roster 200, tests 50, results over the latest 20 tests (`src/school.ts`) — so page load is constant regardless of class history size. Holds to school/division scale (thousands of users, hundreds of classes) with no further work.
+- **Ceilings after that, in order:** realtime concurrent-connection limits (one channel per open class page), ~30s lesson generations vs serverless timeouts, OpenRouter rate limits on shared demo-day traffic (mitigated by warming the shared lesson cache beforehand).
 - **Curriculum expansion:** new strands are added as JSON skill graphs. That's content work, not new code.
 - **New audiences:**
   - **ALS (Alternative Learning System):** DepEd's program for out-of-school youth and adults. It already uses the K–12 competencies, so the same skill graph fits.
@@ -426,6 +432,14 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 5. **Teacher view** (~1.5 min), on a laptop: Kyla is one of 14 with the same gap → review → assign practice to all 14.
 6. **Architecture, privacy, test results** (~45 s).
 7. **Close** (~30 s): "Anyone can use it on their own," then the closing line.
+
+## Judges' Q&A
+
+**Why Capacitor over Expo?** The app *is* a web app — the math engine (Pyodide + SymPy) only runs in a browser/WebView, so React Native would strand it. Capacitor wraps the exact build we develop and test in the browser (fast agent loop, wrap at the end), the APK works offline from install, and if the native build fails the fallback is the installed PWA, not a rewrite.
+
+**Why is AI needed at all?** SymPy proves what's right but can't teach: it can't explain at a Grade 7 reading level in Bisaya, name a rare error outside the buggy rules, read messy handwriting, transcribe voice, write practice, or draft a lesson. Without AI the app still diagnoses offline — but it couldn't explain, listen, or generate anything. Split stands: everything truth-shaped goes to the verifier, everything language-shaped goes to the model.
+
+**Who checks the AI's work? (verification queue, e.g. lesson generation)** Every LLM artifact passes a gate before reaching a learner. Example: a generated lesson's draft goes back through the engine — each practice key is re-solved with the unit's verifier (`ENGINE_VERIFIED` in `api/_lessons.ts`), keys that fail are dropped, and units with no engine verifier ship labelled "AI-checked" so the UI says which you're getting. Same pattern everywhere: classification is constrained to a closed list, photo transcripts are re-judged by the engine, and nothing AI-written affects a grade un-re-checked.
 
 ## Future Work
 - Pre-topic checks before new lessons

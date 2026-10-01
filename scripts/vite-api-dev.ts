@@ -38,7 +38,10 @@ export function apiDev(): Plugin {
           const response = await handler(request);
           res.statusCode = response.status;
           response.headers.forEach((v, k) => res.setHeader(k, v));
-          res.end(Buffer.from(await response.arrayBuffer()));
+          // Piped, not buffered: streamed lessons and checks arrive as they're written, like on Vercel.
+          if (!response.body) return res.end();
+          for await (const chunk of response.body as unknown as AsyncIterable<Uint8Array>) res.write(chunk);
+          res.end();
         } catch (e) {
           server.config.logger.error(`[api] ${file}: ${String(e)}`);
           res.statusCode = 500;

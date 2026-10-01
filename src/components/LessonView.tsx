@@ -4,6 +4,7 @@ import { readAloud } from "../ai/client";
 import { lessonText } from "../data";
 import { useT } from "../i18n";
 import { useStore } from "../store";
+import type { LessonPreview } from "../lessons/pipeline";
 import type { Lang, Lesson } from "../types";
 import { FigureView, WorkedSteps } from "./Figures";
 import { Icon } from "./Icon";
@@ -47,6 +48,24 @@ function ConceptCheck({ check, answer }: { check: NonNullable<Lesson["en"]["chec
         </motion.p>
       )}
     </section>
+  );
+}
+
+/** A lesson still being written: its hook and body as they stream in, set like the finished page. */
+export function LessonPreviewView({ preview }: { preview: LessonPreview }) {
+  const t = useT();
+  return (
+    <div aria-busy data-testid="lesson-preview">
+      <p className="mt-5 border-l-[3px] border-gap/70 pl-4 font-serif text-[20px] italic leading-snug text-ink/90">
+        <RichText text={preview.hook} />
+      </p>
+      <section className="prose-lesson mt-5 space-y-4">
+        {preview.body.map((para, i) => <p key={i}><RichText text={para} /></p>)}
+      </section>
+      <p className="mt-5 flex items-center gap-2 text-[14px] text-muted">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ochre" /> {t("lesson.stillWriting")}
+      </p>
+    </div>
   );
 }
 

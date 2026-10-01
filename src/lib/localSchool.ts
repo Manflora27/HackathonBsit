@@ -5,10 +5,11 @@
  * Dev only (see MOCK_AUTH); deployed builds always use Supabase.
  */
 import type { Profile, ClassRow } from "../auth";
+import type { TestQuestion } from "../school";
 
 export interface LocalMember { classId: string; userId: string; name: string; role: "student" | "teacher"; joinedAt: string; leftAt: string | null; removedAt: string | null }
-export interface LocalTest { id: string; classId: string; kind: "quiz" | "exam"; title: string; unitIds: string[]; studentIds: string[] | null; createdBy: string; createdAt: string }
-export interface LocalResult { testId: string; userId: string; score: number; total: number; items: { unitId: string; right: boolean }[]; submittedAt: string }
+export interface LocalTest { id: string; classId: string; kind: "quiz" | "exam"; title: string; unitIds: string[]; studentIds: string[] | null; createdBy: string; createdAt: string; questions: TestQuestion[] | null }
+export interface LocalResult { testId: string; userId: string; score: number; total: number; items: { unitId: string; right: boolean; q?: number }[]; submittedAt: string }
 
 interface School {
   profiles: Record<string, Profile>;
@@ -16,10 +17,12 @@ interface School {
   members: LocalMember[];
   tests: LocalTest[];
   results: LocalResult[];
+  /** Unit progress students share with the classes they're in (only units of a joined class's subject). */
+  progress: Record<string, Record<string, string>>;
 }
 
 const KEY = "hopper-local-school";
-const empty = (): School => ({ profiles: {}, classes: [], members: [], tests: [], results: [] });
+const empty = (): School => ({ profiles: {}, classes: [], members: [], tests: [], results: [], progress: {} });
 
 export function load(): School {
   try {

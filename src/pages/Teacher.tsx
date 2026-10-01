@@ -30,7 +30,7 @@ type ShownAttempt = {
  * Real teachers use TeacherClasses / ClassPage instead.
  */
 function TeacherDashboard() {
-  const { lang, progress, attempts, shareSkillMap, practiceAssignments, set, updateAttempt, log } = useStore();
+  const { lang, progress, attempts, practiceAssignments, set, updateAttempt } = useStore();
   const t = useT();
   const seed = useMemo(buildSeedClass, []);
   const [confirm, setConfirm] = useState<{ skillId: string; ids: string[] } | null>(null);
@@ -40,11 +40,11 @@ function TeacherDashboard() {
   const [openSent, setOpenSent] = useState<string | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
 
-  // Kyla is live on this device: her assigned work (class-visible) and, if she shares it, her skill map.
+  // Kyla is live on this device: her assigned work (class-visible) and her progress in this class's subject (math).
   const classAttempts = attempts.filter((a) => a.visibility === "class");
   const kylaGap = classAttempts.map((a) => a.rootSkill).filter(Boolean).pop() ?? null;
   const kylaSkills: Record<string, SkillStatus> = {};
-  for (const s of skills) kylaSkills[s.id] = shareSkillMap ? (progress[s.id] ?? "unknown") : "unknown";
+  for (const s of skills) kylaSkills[s.id] = progress[s.id] ?? "unknown";
   if (kylaGap) kylaSkills[kylaGap] = progress[kylaGap] === "mastered" ? "mastered" : "gap";
   const kyla: Student = {
     id: KYLA_ID,
@@ -74,7 +74,6 @@ function TeacherDashboard() {
     if (!confirm) return;
     const id = uid();
     set({ practiceAssignments: [...practiceAssignments, { id, skillId: confirm.skillId, studentIds: confirm.ids, createdAt: Date.now() }] });
-    log({ action: "assign practice", suggestion: `group by gap: ${confirm.skillId}`, decision: `teacher assigned to ${confirm.ids.length}`, actor: "teacher" });
     setToast({ id, text: t.plural("teacher.sentTo", confirm.ids.length) });
     setConfirm(null);
     setTimeout(() => setToast((t) => (t?.id === id ? null : t)), 8000);
@@ -83,7 +82,6 @@ function TeacherDashboard() {
   function undo() {
     if (!toast) return;
     set({ practiceAssignments: useStore.getState().practiceAssignments.filter((p) => p.id !== toast.id) });
-    log({ action: "assign practice", suggestion: "-", decision: "teacher undid assignment", actor: "teacher" });
     setToast(null);
   }
 
@@ -101,7 +99,6 @@ function TeacherDashboard() {
     const patch = { misconceptionId, note: "" };
     updateAttempt(a.id, { teacherOverride: patch });
     void pushTeacherOverride(a.id, patch);
-    log({ action: "diagnosis", suggestion: a.analysis.misconception?.id ?? "none", decision: `teacher override: ${misconceptionId ?? "none"}`, actor: "teacher" });
   }
 
   const sel = students.find((s) => s.id === selected);
@@ -186,7 +183,6 @@ function TeacherDashboard() {
         onSelect={setSelected}
         onRemove={(id) => {
           set({ practiceAssignments: useStore.getState().practiceAssignments.filter((p) => p.id !== id) });
-          log({ action: "assign practice", suggestion: "-", decision: "teacher removed assignment", actor: "teacher" });
           if (openSent === id) setOpenSent(null);
         }}
       />

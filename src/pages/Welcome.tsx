@@ -3,10 +3,13 @@ import { useNavigate } from "react-router";
 import { useAuth, type AccountType } from "../auth";
 import { Bilog, type BilogMood } from "../components/Bilog";
 import { Icon, InkCircle } from "../components/Icon";
+import { JoinClassSheet } from "../components/JoinClassSheet";
 import { PlanReveal } from "../components/PlanReveal";
+import { AnimatePresence } from "motion/react";
+import { syncClassProgress } from "../classroom";
 import { SubjectIcon } from "../components/SubjectIcon";
 import { Shell } from "../components/Shell";
-import { GRADES, requiredSubjectsForGrade, subjectGroupsFor, subjectsFor, type SubjectId } from "../data/curriculum";
+import { GRADES, requiredSubjectsForGrade, schoolYear, subjectGroupsFor, subjectsFor, type SubjectId } from "../data/curriculum";
 import { useStore } from "../store";
 import { useT } from "../i18n";
 
@@ -30,6 +33,9 @@ export default function Welcome() {
   const [busy, setBusy] = useState(false);
   const [planReady, setPlanReady] = useState(false);
   const [codeError, setCodeError] = useState(false);
+  /** The student saw what the class's teacher will see and said yes; only then is the class joined. */
+  const [codeConfirmed, setCodeConfirmed] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const [showCode, setShowCode] = useState(false);
 
   useEffect(() => {
@@ -64,9 +70,13 @@ export default function Welcome() {
       // provenance belongs to those flows; the landing's "school" default mislabelled it.
       const ok = await completeProfile({ name, type, consentBy: "self", language: lang, subjects: picked, grade, goal: null });
       if (!ok) return setBusy(false);
-      if (student && code.trim()) setCodeError(!(await joinClass(code)));
+      if (student && code.trim() && codeConfirmed) {
+        const joined = await joinClass(code);
+        setCodeError(!joined);
+        if (joined) void syncClassProgress(useStore.getState().progress);
+      }
     }
-    set({ role: demoFlow ? "student" : guest ? "guest" : type, demo: demoFlow, demoFlow: false, ...(demoFlow ? {} : { consent: { by: "self" as const, at: consent?.at ?? Date.now() } }), onboarding: { name: name.trim(), subjects: picked, grade, goal: null, done: true } });
+    set({ role: demoFlow ? "student" : guest ? "guest" : type, demo: demoFlow, demoFlow: false, ...(demoFlow ? {} : { consent: { by: "self" as const, at: consent?.at ?? Date.now() } }), onboarding: { name: name.trim(), subjects: picked, grade, goal: null, done: true, gradeYear: schoolYear() } });
     setBusy(false);
     // Learners go straight to their first starting-point check; home is behind it, so "back" lands there.
     if (type === "teacher") return nav("/teacher", { replace: true });
@@ -74,7 +84,11 @@ export default function Welcome() {
     if (!demoFlow && picked[0]) nav(`/check/${picked[0]}`);
   }
 
-  const next = () => (step < STEPS ? setStep(step + 1) : void finish());
+  const next = () => {
+    // A class code goes through the join confirmation before onboarding moves on.
+    if (step === 1 && student && !guest && code.trim() && !codeConfirmed) return setConfirming(true);
+    return step < STEPS ? setStep(step + 1) : void finish();
+  };
   const canNext = step === 1 ? canNext1 : step === 2 ? canNext2 : true;
   // Teachers have no plan to build: they skip straight from step 1 to finish.
   const teacherDone = !student && step === 1;
@@ -142,7 +156,7 @@ export default function Welcome() {
                   <>
                     <label className="kicker text-muted" htmlFor="cc">{t("welcome.classCodeOptional")}</label>
                     <input id="cc" className="mt-1 w-full border-0 border-b-2 border-ink/25 bg-transparent px-0 pb-2 font-mono text-[22px] outline-none transition placeholder:text-ink/25 focus:border-ink"
-                      value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
+                      value={code} onChange={(e) => { setCode(e.target.value.toUpperCase()); setCodeConfirmed(false); }} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
                     {codeError && <p className="mt-2 text-[13px] text-gap-dark">{t("welcome.couldntFindCodeCan")}</p>}
                   </>
                 )}
@@ -214,7 +228,8 @@ export default function Welcome() {
       {step === 3 && (
         <>
           <div className="kicker mt-5 text-gap-dark">{t("welcome.almostThere")}</div>
-          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{t("welcome.planIsReady")}</h1>
+          {/* Only "ready" once it has actually assembled. */}
+          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]" aria-live="polite">{planReady ? t("welcome.planIsReady") : t("welcome.buildingPlan")}</h1>
           {showPlan && (
             <div className="mt-6">
               <div className="kicker text-gap-dark">{t("welcome.plan")}</div>
@@ -239,6 +254,14 @@ export default function Welcome() {
           </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {confirming && (
+          // Joining happens at the end of onboarding (the profile has to exist first); this is the student's yes.
+          <JoinClassSheet code={code} onClose={() => { setConfirming(false); setCode(""); }}
+            onConfirm={async () => { setCodeConfirmed(true); setConfirming(false); setStep(step + 1); return true; }} />
+        )}
+      </AnimatePresence>
     </Shell>
   );
 }

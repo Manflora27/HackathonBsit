@@ -19,6 +19,18 @@ def verify_items(items: list) -> list:
     return out
 
 
+def verify_examples(examples: list) -> list:
+    """One boolean per worked example: does every step follow from the one before?"""
+    out = []
+    for ex in examples:
+        try:
+            a = gapfinder.analyze(ex["problem"], ex["steps"], ex.get("kind", "solve"))
+            out.append(not a.get("error") and len(a["steps"]) == len(ex["steps"]) and all(s["status"] == "ok" for s in a["steps"]))
+        except Exception:  # noqa: BLE001
+            out.append(False)
+    return out
+
+
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         secret = os.environ.get("LESSON_SIGNING_KEY")

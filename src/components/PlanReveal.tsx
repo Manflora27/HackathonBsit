@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { buildPlan, startGrade, verifierMeta, type SubjectId } from "../data/curriculum";
+import { buildPlan, startGrade, type SubjectId } from "../data/curriculum";
 import { useStore } from "../store";
 import { useT } from "../i18n";
-import { Icon } from "./Icon";
 
 /** The enrollment plan assembling itself: skeleton rows that resolve into units, one subject at a time. */
 export function PlanReveal({ subjects, grade, onReady }: { subjects: SubjectId[]; grade: number | null; onReady?: () => void }) {
@@ -37,11 +36,6 @@ export function PlanReveal({ subjects, grade, onReady }: { subjects: SubjectId[]
                       {/* School quarters mean nothing to self-learners (grade === null): the plan is just an ordered list. */}
                       {grade !== null && <span className="chip shrink-0 !px-2 text-[12px]">Q{u.quarter}</span>}
                       <span className="flex-1 text-[16px]">{t.unit(u)}</span>
-                      <span className={`flex items-center gap-1 text-[12px] ${verifierMeta[u.verifier].verified ? "text-ok-dark" : "text-muted"}`}
-                        title={t.verifier(u.verifier)}>
-                        {verifierMeta[u.verifier].verified ? <Icon name="check" size={14} strokeWidth={2.2} /> : <span aria-hidden>AI</span>}
-                        <span className="sr-only">{t.verifier(u.verifier)}</span>
-                      </span>
                     </motion.div>
                   ) : (
                     <div className="flex w-full animate-pulse items-center gap-3" aria-hidden>

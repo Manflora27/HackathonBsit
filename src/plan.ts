@@ -1,5 +1,6 @@
 import { useAuth } from "./auth";
-import { buildPlan, foundationOf, startGrade, subjectsFor, unitById, type PlanUnit, type SubjectId } from "./data/curriculum";
+import { startGrade, subjectsFor, unitById, type PlanUnit, type SubjectId } from "./data/curriculum";
+import { pathFor } from "./data/graph";
 import { skillById } from "./data";
 import { useStore, type Placement } from "./store";
 
@@ -22,15 +23,28 @@ function placedGrade(p: Placement | undefined): number | null {
 }
 
 /**
- * One subject's roots as a single ordered line: from where the starting-point check placed the learner
- * up to their own grade, by grade then quarter. Earlier grades come from the grade-by-grade subject
- * (math or science) the foundations live in. Pure curriculum, so it's the same for everyone and needs no network.
+ * One subject's roots as a single ordered line: from where the starting-point check placed the learner up to
+ * their own grade, only the units their grade actually rests on (data/graph.ts), each after what it needs.
+ * The graph is shared and shipped with the app; only the learner's progress is theirs.
  */
 export function timeline(subject: SubjectId, grade: number | null, placement?: Placement): PlanUnit[] {
   const top = startGrade(subject, grade);
-  const { base, lowest } = foundationOf(subject);
-  const from = Math.max(lowest, Math.min(top, placedGrade(placement) ?? top));
-  const units: PlanUnit[] = [];
-  for (let g = from; g <= top; g++) units.push(...(g === top ? buildPlan(subject, g) : buildPlan(base, g)));
-  return units.sort((a, b) => a.grade - b.grade || a.quarter - b.quarter);
+  return pathFor(subject, grade, placedGrade(placement) ?? top, placement?.unitId ? [placement.unitId] : []);
+}
+
+/**
+ * Where the learner is now in one subject: the first unit from their starting point they haven't mastered.
+ * Finishing a unit moves this forward, through the foundations and up into their own grade.
+ * `behind` is true while that unit is still below their grade. Null until the starting-point check has run,
+ * or once every unit up to their grade is mastered.
+ */
+export function currentUnit(subject: SubjectId, grade: number | null, placement: Placement | undefined, progress: Record<string, string>) {
+  if (!placement) return null;
+  const units = timeline(subject, grade, placement);
+  const startAt = placement.unitId ? units.findIndex((u) => u.id === placement.unitId)
+    : placement.skillId ? units.findIndex((u) => u.grade === skillById[placement.skillId!]?.grade) : 0;
+  const start = Math.max(0, startAt);
+  const index = units.findIndex((u, i) => i >= start && progress[u.id] !== "mastered");
+  if (index < 0) return null;
+  return { unit: units[index], index, start, units, behind: units[index].grade < startGrade(subject, grade) };
 }

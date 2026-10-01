@@ -8,12 +8,12 @@ import { Bilog } from "../components/Bilog";
 import { Shell } from "../components/Shell";
 import { Icon } from "../components/Icon";
 import { lessons, skillById, skillTitle } from "../data";
-import { getLesson, skillTarget } from "../lessons/pipeline";
+import { getLesson, skillTarget, type LessonPreview } from "../lessons/pipeline";
 import { useT } from "../i18n";
 import type { Lesson } from "../types";
 import { useStore } from "../store";
 import { Burst, Practice, XP_DONE } from "../components/Practice";
-import { LessonView } from "../components/LessonView";
+import { LessonPreviewView, LessonView } from "../components/LessonView";
 
 export default function Learn() {
   const t = useT();
@@ -24,6 +24,7 @@ export default function Learn() {
   const skill = skillById[skillId];
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [preview, setPreview] = useState<LessonPreview | null>(null);
   // Unfinished practice from an earlier visit: go straight back to it.
   const [stage, setStage] = useState<"learn" | "practice">(() => (useStore.getState().practiceResume[skillId] ? "practice" : "learn"));
   const [mastered, setMastered] = useState(false);
@@ -34,8 +35,11 @@ export default function Learn() {
   useEffect(() => {
     if (!skill) return;
     let live = true;
-    getLesson(skillTarget(skill), lessonGoal({ examMode, behind: progress[skillId] === "gap" || !!trace?.rootSkill, inClass: classes.length > 0 })).then((r) => {
+    setPreview(null);
+    const streaming = { lang, onPreview: (p: LessonPreview) => live && setPreview(p) };
+    getLesson(skillTarget(skill), lessonGoal({ examMode, behind: progress[skillId] === "gap" || !!trace?.rootSkill, inClass: classes.length > 0 }), streaming).then((r) => {
       if (!live) return;
+      setPreview(null);
       const seed = lessons[skillId];
       const l = r ? { ...r.lesson, visual: seed?.visual, visualArgs: seed?.visualArgs } : seed ?? null;
       setLesson(l);
@@ -52,9 +56,11 @@ export default function Learn() {
     return (
       <Shell tabs={false} back="/student" title={t("common.gradeN", { n: skill.grade })}>
         <h1 className="font-display text-[30px] font-bold leading-tight">{skillTitle(skillId, lang)}</h1>
-        <div className="mt-4 animate-pulse space-y-3" aria-busy data-testid="lesson-skeleton">
-          <div className="card space-y-3">{[92, 100, 78].map((w, i) => <div key={i} className="h-4 rounded-full bg-soft" style={{ width: `${w}%` }} />)}</div>
-        </div>
+        {preview ? <LessonPreviewView preview={preview} /> : (
+          <div className="mt-4 animate-pulse space-y-3" aria-busy data-testid="lesson-skeleton">
+            <div className="card space-y-3">{[92, 100, 78].map((w, i) => <div key={i} className="h-4 rounded-full bg-soft" style={{ width: `${w}%` }} />)}</div>
+          </div>
+        )}
       </Shell>
     );
   const need = globalThis.Math.min(2, lesson.practice.length);

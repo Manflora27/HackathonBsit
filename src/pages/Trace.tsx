@@ -19,7 +19,7 @@ import { MicButton } from "../components/MicButton";
  */
 export default function Trace() {
   const nav = useNavigate();
-  const { trace, set, setSkill, progress, lang, log } = useStore();
+  const { trace, set, setSkill, progress, lang } = useStore();
   const t = useT();
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<null | "pass" | "fail">(null);
@@ -38,7 +38,6 @@ export default function Trace() {
       set({ trace: { ...trace, rootSkill: current } });
       setSkill(current, "gap");
       useStore.getState().updateAttempt(trace.attemptId, { rootSkill: current });
-      log({ action: "gap trace", suggestion: trace.path.join(" → "), decision: `root gap: ${current}`, actor: "student" });
     }
   }, [queue.length, current]); // eslint-disable-line react-hooks/exhaustive-deps
 

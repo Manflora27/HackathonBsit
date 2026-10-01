@@ -39,6 +39,16 @@ test("teacher with two classes sends a quiz, sees only its results, and removes 
       { prompt: "Evaluate", given: "2*0+5", form: "any", expected: "5" },
     ],
   } }));
+  // The test's own questions: two typed (the engine proves the keys in the teacher's browser), one multiple choice.
+  await page.route("**/api/ai", (route) => {
+    if (route.request().postDataJSON().op !== "test") return route.fallback();
+    const base = { unitId: "math-g9-q1-na", choices: [], answer: 0, why: "Multiply first, then add." };
+    return route.fulfill({ json: { questions: [
+      { ...base, difficulty: "easy", kind: "typed", prompt: "Evaluate", given: "2*3+5", expected: "11", form: "any" },
+      { ...base, difficulty: "medium", kind: "typed", prompt: "Evaluate", given: "2*0+5", expected: "5", form: "any" },
+      { ...base, difficulty: "hard", kind: "choice", prompt: "Which is a function?", given: "", expected: "", form: "any", choices: ["y=2x", "x^2+y^2=1", "x=3", "y^2=x"], answer: 0 },
+    ] } });
+  });
   await page.goto("/");
 
   // Teacher: two classes.
@@ -66,6 +76,10 @@ test("teacher with two classes sends a quiz, sees only its results, and removes 
   await page.getByTestId("join-class").getByRole("button").first().click();
   await page.getByTestId("class-code").fill(code);
   await page.getByTestId("join-btn").click();
+  // Before joining: the class, and what its teacher will see (Math progress, not other subjects).
+  await expect(page.getByTestId("join-sheet")).toContainText("Math 9");
+  await expect(page.getByTestId("join-can-see")).toContainText("progress in Mathematics");
+  await page.getByTestId("join-confirm").click();
   await expect(page.getByText("Math 9")).toBeVisible();
 
   // Teacher sends a quiz on one topic.
@@ -75,6 +89,9 @@ test("teacher with two classes sends a quiz, sees only its results, and removes 
   await page.getByTestId("compose-test").click();
   await page.getByTestId("topic-math-g9-q1-na").click();
   await page.getByTestId("test-title").fill("Functions quiz");
+  await page.getByTestId("make-test").click();
+  // The teacher reviews every question before it goes out.
+  await expect(page.getByTestId("composer-question")).toHaveCount(3);
   await page.getByTestId("send-test").click();
   await expect(page.getByTestId("test-Functions quiz")).toContainText("0 of 1 done");
 
@@ -83,18 +100,20 @@ test("teacher with two classes sends a quiz, sees only its results, and removes 
   await page.getByTestId("take-Functions quiz").click();
   await page.getByTestId("test-answer").fill("11");
   await page.getByTestId("test-next").click();
-  await expect(page.getByText("Question 2 of 2")).toBeVisible();
+  await expect(page.getByText("Question 2 of 3")).toBeVisible();
   await page.getByTestId("test-answer").fill("4");
   await page.getByTestId("test-next").click();
-  await expect(page.getByTestId("test-score")).toHaveText("1/2");
+  await expect(page.getByText("Question 3 of 3")).toBeVisible();
+  await page.getByTestId("test-choice-0").click();
+  await expect(page.getByTestId("test-score")).toHaveText("2/3");
   await page.screenshot({ path: "test-results/shots/test-done.png" });
 
   // Teacher sees the score and the missed topic, then removes the student.
   await become(page, teacher, "teacher", mathUrl);
-  await expect(page.getByTestId("class-summary")).toContainText("50%");
+  await expect(page.getByTestId("class-summary")).toContainText("67%");
   await page.screenshot({ path: "test-results/shots/class-page.png", fullPage: true });
   await page.getByTestId("pupil-Mika").click();
-  await expect(page.getByTestId("pupil-sheet")).toContainText("1/2");
+  await expect(page.getByTestId("pupil-sheet")).toContainText("2/3");
   await page.getByTestId("remove-student").click();
   await page.getByTestId("confirm-remove").click();
   await expect(page.getByTestId("removed-toast")).toBeVisible();
@@ -108,7 +127,7 @@ test("teacher with two classes sends a quiz, sees only its results, and removes 
   await page.getByTestId("join-class").getByRole("button").first().click();
   await page.getByTestId("class-code").fill(code);
   await page.getByTestId("join-btn").click();
-  await expect(page.getByText(/removed you from this class/)).toBeVisible();
+  await expect(page.getByTestId("join-error")).toContainText(/removed you from this class/);
   const kept = await page.evaluate(() => JSON.parse(localStorage.getItem("hopper-local-school")!).results.length);
   expect(kept).toBe(1);
 });
