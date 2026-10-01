@@ -470,6 +470,50 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 - Add a **"Reset demo data"** button so the run can be repeated.
 - **Git:** a single repo, one branch/worktree per parallel agent, `.env` in `.gitignore`, and merges at each checkpoint.
 
+## UI/UX Redesign: Student Experience
+**Scope:** student-facing UI only. No changes to the engine, AI proxy, Supabase schema, store shape, or data files. The teacher dashboard keeps its current UI (it inherits only the shared design tokens).
+
+**Goal:** turn "I'm bad at math" into "I found what I was missing." A mistake is presented as a discovery: "Almost! Let's look at this step," never "Wrong."
+
+**Flow the UI makes visible:** Problem → Work → Find Mistake → Discover Gap → Learn → Practice → Retry → Mastery.
+
+**Rules for every UI change**
+- Add it to this list *before* building it, then tick it off with a one-line "why."
+- Mobile-first (360 px wide first), tap targets ≥ 44 px, no horizontal scroll.
+- Low-end Android: no `backdrop-filter`, animate only `opacity`/`transform`, no new web fonts or heavy libraries.
+- Every animation has a reduced-motion fallback (OS setting or the in-app toggle).
+- State is never shown by color alone: ✓ / ! icons plus text labels.
+- Keep every existing `data-testid` and the phrases the e2e test looks for.
+
+**Checklist** (`[ ]` planned, `[x]` done; status as of Oct 1, verified by `npm run test:e2e`, 2/2 passing with no test changes)
+- [x] **Design tokens:** softer palette (calm indigo brand, warm amber "discovery" tone, mint for mastery), larger radii, soft shadows, one type scale, visible focus rings. *Why: a calm, consistent base reads as friendly instead of test-like.*
+- [x] **App shell:** solid (not blurred) top bar; bottom tab bar for students (Home, Skill Map, Progress, Settings) with safe-area padding. *Why: thumb-reachable navigation on phones; blur is slow on low-end Android.*
+- [x] **Journey bar:** a compact 7-step indicator (Work → Find → Gap → Learn → Practice → Retry → Mastery) on the solve, trace and lesson screens. *Why: students see where they are and that the mistake is a step on the way, not the end.*
+- [x] **1. Home:** greeting with a mastery summary, a "Pick up where you left off" card when a trace is in progress, a friendlier assignment list with status pills, a skill-map preview card, and the "Stuck on a problem?" card. *Why: one obvious next action.*
+- [x] **2. Problem solving:** numbered step cards with live math preview, a larger math keypad (44 px keys), and the check button pinned to the bottom on mobile. *Why: easier input on a phone keyboard.*
+- [x] **3. Step confirmation:** bottom sheet with a grab handle, numbered rendered steps, and "Looks right, check it" / "Edit". *Why: native-feeling on mobile; makes the confirm step feel safe.*
+- [x] **4. Mistake discovery:** "Almost! Let's look at step N." header; side-by-side "You wrote" vs "It should be" with the missing term circled; the pattern named as "What happened"; reassurance line; evidence note kept but quieter. *Why: discovery framing, not failure.*
+- [x] **5. Skill Map screen (`/map`):** full map, legend with icons + labels, and a plain list of skills grouped by grade (also works as the screen-reader view). *Why: the map deserves its own place; the list is easier to read on a small screen.*
+- [x] **6. Time Travel trace:** grade timeline ("Grade 9 → Grade 8 → Grade 7") that fills as the trace goes back; quick-check card with friendlier feedback; an "I'm not sure yet" button that counts as a miss without typing. *Why: makes the "it comes from Grade 7" moment legible; removes pressure from the probe.*
+- [x] **7. Interactive lesson:** sections labeled Explain → See it → Try → Feedback → Practice; "I'm stuck" panel with Explain simpler, Give a hint, Show an example, Show visually, Read aloud (all built from existing lesson content, no new AI calls). *Why: several ways in when the first explanation doesn't land.*
+- [x] **8. Practice:** progress dots toward mastery (2 correct), gentle "Not yet" feedback with a form-specific hint. *Why: progress is visible; misses come with a next step.*
+- [x] **9. Retry:** banner linking the fixed skill to the original problem ("You fixed X. Now try the problem that stopped you."). *Why: closes the loop explicitly.*
+- [x] **10. Mastery:** calm celebration (soft burst, no confetti spam), "Gap → Fixed" summary, buttons to the skill map and progress. *Why: rewards mastery, not speed or rank.*
+- [x] **11. Progress screen (`/progress`):** skills mastered by grade (bars with numbers), gaps found vs fixed, recent discoveries list. No points, streaks or leaderboards. *Why: healthy gamification focused on growth.*
+- [x] **12. Settings:** grouped cards, accessible switches and segmented controls, live preview of text size. *Why: the old native checkboxes were small and hard to tap.*
+- [x] **Copy pass (EN + FIL):** replace failure words ("wrong", "failed") with discovery language across student screens. *Why: core principle.*
+- [x] **Math preview fix:** "x=4 or x=-10" now previews as "x = 4 or x = −10" instead of "4orx" (`quickTex` in `src/components/Math.tsx`). *Why: found during visual QA of the retry screen.*
+- [x] **After mastery, hide the keypad and Check button** on the retry screen. *Why: the job is done; the celebration should be the only thing on screen.*
+
+**What changed (files):** `src/index.css` (tokens, `.btn-soft`, `.eyebrow`, `gf-rise`/`gf-burst` animations), new `src/components/ui.tsx` (JourneyBar, Switch, Segmented, ProgressDots, Sheet, BackButton), `Shell.tsx` (tab bar), `SkillMap.tsx` (palette only), new `src/content/stuckHelp.ts` (simpler explanation, hint and worked example per skill, EN + FIL), new pages `MapPage.tsx` and `Progress.tsx` with routes `/map` and `/progress` in `App.tsx`, and redesigned `StudentHome`, `Solve`, `Trace`, `Learn`, `Settings`.
+
+**Not changed:** engine, AI client/proxy, store shape, data JSON, Supabase, teacher dashboard layout, and the landing/consent screen.
+
+**Follow-ups:**
+- [ ] Native-speaker review of the Filipino copy in `src/content/stuckHelp.ts` and the new UI strings.
+- [ ] Test the "I'm stuck" panel, `/map`, `/progress` and "I'm not sure yet" in e2e (they were only checked by hand with screenshots).
+- [ ] Explainer visuals for skills other than the area model ("Show it visually" only appears where a visual exists).
+
 ## To Fill In
 - MATATAG competency codes (left blank in `src/data/skills.json` until verified)
 - Native-speaker review of the Filipino explanations
@@ -486,5 +530,7 @@ The bottleneck is AI generation speed, tool calls, and testing, so the plan is o
 - Vercel deploy + `OPENROUTER_API_KEY` (AI features currently use fallbacks).
 - Supabase project, so real auth and cross-device realtime can be wired in (the demo uses local storage + a demo switcher).
 - Android toolchain for the Capacitor APK.
+
+**UI/UX redesign (student):** done, see [UI/UX Redesign: Student Experience](#uiux-redesign-student-experience).
 
 **Not built yet:** voice input (STT), photo input, one-tap install button, "Ask why?" chat, Kapampangan, Ollama, LMS integration.

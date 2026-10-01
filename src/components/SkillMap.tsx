@@ -20,7 +20,7 @@ function SkillNode({ data }: NodeProps<Node<SkillNodeData>>) {
   const { title, grade, status, onPath, isRoot, lit } = data;
   const tone =
     isRoot && lit
-      ? "border-gap bg-gap-soft ring-4 ring-gap/30 animate-pulse"
+      ? "border-gap bg-gap-soft ring-4 ring-gap/25 animate-pulse"
       : status === "gap"
         ? "border-gap bg-gap-soft"
         : status === "mastered"
@@ -28,7 +28,7 @@ function SkillNode({ data }: NodeProps<Node<SkillNodeData>>) {
           : "border-line bg-card";
   const pathTone = onPath && lit && !isRoot ? "ring-2 ring-gap" : "";
   return (
-    <div className={`w-[190px] rounded-xl border-2 px-3 py-2 shadow-sm transition-all duration-500 ${tone} ${pathTone}`}>
+    <div className={`w-[190px] rounded-2xl border-2 px-3 py-2 shadow-sm transition-colors duration-500 ${tone} ${pathTone}`}>
       <Handle type="target" position={Position.Bottom} className="!opacity-0" />
       <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wide text-muted">
         <span>Grade {grade}</span>
@@ -112,7 +112,7 @@ export function SkillMap({
           target: s.id,
           animated: isLit,
           style: {
-            stroke: isLit ? "var(--color-gap)" : "#cfcabd",
+            stroke: isLit ? "var(--color-gap)" : "#d6d3e6",
             strokeWidth: isLit ? 3.5 : 1.5,
             transition: "stroke 0.4s, stroke-width 0.4s",
           },
@@ -123,7 +123,7 @@ export function SkillMap({
   }, [path, lit]);
 
   return (
-    <div style={{ height }} className="w-full overflow-hidden rounded-2xl border border-line bg-[#fbfaf7]">
+    <div style={{ height }} className="w-full overflow-hidden rounded-card border border-line bg-[#fbfaff] shadow-[var(--shadow-soft)]">
       <ReactFlow
         nodes={nodes}
         edges={edges}

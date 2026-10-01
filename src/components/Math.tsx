@@ -30,5 +30,6 @@ export function quickTex(s: string) {
     .replace(/sqrt\(([^)]*)\)/g, "\\sqrt{$1}")
     .replace(/\^(\d+|\([^)]*\))/g, (_, e) => `^{${e.replace(/^\(|\)$/g, "")}}`)
     .replace(/\*/g, " \\cdot ")
-    .replace(/±/g, "\\pm ");
+    .replace(/±/g, "\\pm ")
+    .replace(/\s+or\s+/g, "\\text{ or }");
 }
