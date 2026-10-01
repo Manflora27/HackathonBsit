@@ -81,17 +81,17 @@ export default function Teacher() {
   const sel = students.find((s) => s.id === selected);
 
   return (
-    <Shell wide>
+    <Shell wide title={fil ? "Klase ko" : "My class"}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-sm text-muted">Ms. Santos</div>
-          <h1 className="text-2xl font-bold">Grade 9 – Sampaguita</h1>
+          <div className="kicker text-muted">Ms. Santos</div>
+          <h1 className="font-display text-[30px] font-bold leading-tight">Grade 9 – Sampaguita</h1>
           <div className="text-sm text-muted">
             {students.length} {fil ? "student" : "students"} · {fil ? "Class code" : "Class code"}{" "}
             <span className="chip bg-brand-soft font-mono text-brand">{CLASS_CODE}</span>
           </div>
         </div>
-        <button className="btn-ghost text-sm" onClick={exportCsv}>⬇ CSV</button>
+        <button className="btn-ghost btn-sm" onClick={exportCsv}>⬇ CSV</button>
       </div>
 
       <section className="mt-5 grid gap-3 md:grid-cols-3">
@@ -99,11 +99,14 @@ export default function Teacher() {
           const still = list.filter((s) => s.skills[sid] !== "mastered");
           const fixed = list.length - still.length;
           return (
-          <div key={sid} className={`card ${i === 0 ? "border-gap md:col-span-1" : ""}`} data-testid={`gap-group-${sid}`}>
-            <div className="text-4xl font-extrabold text-gap" data-testid={i === 0 ? "top-gap-count" : undefined}>{list.length}</div>
-            <div className="text-[15px]">
-              {fil ? "student ang may gap sa" : "students share a gap in"} <b>{skillTitle(sid, lang)}</b>{" "}
+          <div key={sid} className={`card ${i === 0 ? "!bg-gap-soft" : ""}`} data-testid={`gap-group-${sid}`}>
+            <div className="flex items-center gap-3">
+              <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-[2.5px] border-ink font-display text-[32px] font-bold ${i === 0 ? "bg-gap" : "bg-white"}`}
+                data-testid={i === 0 ? "top-gap-count" : undefined}>{list.length}</div>
+            <div className="text-[15px] leading-snug">
+              {fil ? "student ang may gap sa" : "students share a gap in"} <b className="font-display text-[17px] font-semibold">{skillTitle(sid, lang)}</b>{" "}
               <span className="text-muted">(Grade {skills.find((s) => s.id === sid)?.grade})</span>
+            </div>
             </div>
             {fixed > 0 && (
               <div className="chip mt-2 bg-ok-soft text-ok" data-testid={i === 0 ? "top-gap-fixed" : undefined}>
@@ -112,7 +115,7 @@ export default function Teacher() {
             )}
             {list.some((s) => s.live) && <div className="chip mt-2 ml-1 bg-brand-soft text-brand">● {fil ? "Kasama si Kyla — live" : "Includes Kyla — live"}</div>}
             {still.length > 0 && (
-              <button className="btn-gap mt-3 w-full text-sm" onClick={() => setConfirm({ skillId: sid, ids: still.map((s) => s.id) })}
+              <button className={`${i === 0 ? "btn-gap" : "btn-ghost"} btn-sm mt-3 w-full`} onClick={() => setConfirm({ skillId: sid, ids: still.map((s) => s.id) })}
                 data-testid={i === 0 ? "assign-top" : undefined}>
                 {fil ? `Mag-assign ng practice sa ${still.length} na ito` : `Assign practice to these ${still.length}`}
               </button>
@@ -123,7 +126,7 @@ export default function Teacher() {
       </section>
 
       {insight && (
-        <div className="card mt-3 border-brand/30 bg-brand-soft/40 text-[15px]">
+        <div className="card mt-4 !bg-brand-soft text-[15px]">
           <span className="chip mr-2 bg-brand text-white">{insight.ai ? "AI " : ""}{fil ? "mungkahi" : "suggestion"}</span>
           {insight.text}
           <div className="mt-1 text-xs text-muted">
@@ -132,7 +135,30 @@ export default function Teacher() {
         </div>
       )}
 
-      <section className="card mt-5 overflow-x-auto !p-0">
+      <section className="mt-5 space-y-2 md:hidden">
+        <h2 className="kicker text-muted">{fil ? "Mga student" : "Students"}</h2>
+        {students.map((st) => {
+          const gaps = Object.entries(st.skills).filter(([, v]) => v === "gap").map(([k]) => k);
+          const done = Object.values(st.skills).filter((v) => v === "mastered").length;
+          return (
+            <button key={st.id} className={`card-flat flex w-full items-center gap-3 !p-3 text-left ${st.live ? "!bg-brand-soft" : ""}`}
+              onClick={() => setSelected(st.id)} data-testid={st.live ? "row-kyla" : undefined}>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-white font-display">
+                {st.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-extrabold">{st.name} {st.live && <span className="chip ml-1 bg-brand text-white">live</span>}</span>
+                <span className="block truncate text-[13px] text-muted">
+                  {gaps.length ? `! ${gaps.map((g) => skillTitle(g, lang)).join(", ")}` : `✓ ${done} ${fil ? "kaya na" : "mastered"}`}
+                </span>
+              </span>
+              <span className="font-display text-muted">›</span>
+            </button>
+          );
+        })}
+      </section>
+
+      <section className="card mt-5 hidden overflow-x-auto !p-0 md:block">
         <table className="w-full min-w-[820px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-line text-left">
@@ -148,7 +174,7 @@ export default function Teacher() {
           <tbody>
             {students.map((st) => (
               <tr key={st.id} className={`cursor-pointer border-b border-line/60 hover:bg-paper ${st.live ? "bg-brand-soft/30" : ""}`}
-                onClick={() => setSelected(st.id)} data-testid={st.live ? "row-kyla" : undefined}>
+                onClick={() => setSelected(st.id)}>
                 <td className="sticky left-0 bg-inherit p-2 pl-4 font-medium">
                   {st.name} {st.live && <span className="chip ml-1 bg-brand text-white">live</span>}
                 </td>
@@ -165,7 +191,7 @@ export default function Teacher() {
 
       {sel && (
         <div className="fixed inset-0 z-30 flex justify-end bg-black/30" onClick={() => setSelected(null)}>
-          <aside className="h-full w-full max-w-md overflow-y-auto bg-paper p-5" onClick={(e) => e.stopPropagation()}>
+          <aside className="h-full w-full max-w-md overflow-y-auto border-l-[2.5px] border-ink bg-paper p-5" onClick={(e) => e.stopPropagation()}>
             <button className="text-sm text-muted" onClick={() => setSelected(null)}>✕ {fil ? "Isara" : "Close"}</button>
             <h2 className="mt-2 text-xl font-bold">{sel.name}</h2>
             <div className="text-sm text-muted">{fil ? "Nakikita ng AI bilang" : "Seen by the AI as"} “{sel.anonId}”</div>
@@ -224,9 +250,9 @@ export default function Teacher() {
       )}
 
       {confirm && (
-        <div className="fixed inset-0 z-30 flex items-end justify-center bg-black/30 p-4 sm:items-center" role="dialog" aria-modal>
+        <div className="fixed inset-0 z-30 flex items-end justify-center bg-ink/40 p-3 sm:items-center" role="dialog" aria-modal>
           <div className="card w-full max-w-md">
-            <h2 className="text-lg font-bold">{fil ? "Ipadala ang practice?" : "Send practice?"}</h2>
+            <h2 className="font-display text-2xl font-semibold">{fil ? "Ipadala ang practice? 📬" : "Send practice? 📬"}</h2>
             <p className="mt-2 text-[15px]">
               {fil ? "Matatanggap ng" : ""} <b>{confirm.ids.length}</b> {fil ? "student ang practice para sa" : "students will get practice on"} <b>{skillTitle(confirm.skillId, lang)}</b>.
             </p>
@@ -239,7 +265,7 @@ export default function Teacher() {
       )}
 
       {toast && (
-        <div className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 rounded-xl bg-ink px-4 py-3 text-white shadow-lg" role="status">
+        <div className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 whitespace-nowrap rounded-2xl border-[2.5px] border-ink bg-ink px-4 py-3 font-display text-white" role="status">
           ✓ {toast.text}
           <button className="font-semibold text-amber-300" onClick={undo}>{fil ? "I-undo" : "Undo"}</button>
         </div>

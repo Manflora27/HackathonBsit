@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { AnimatePresence, motion } from "motion/react";
 import { readAloud } from "../ai/client";
 import { AreaModel } from "../components/AreaModel";
+import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, RichText, quickTex } from "../components/Math";
 import { Shell } from "../components/Shell";
 import { lessons, skillById, skillTitle } from "../data";
@@ -17,114 +19,134 @@ export default function Learn() {
   const fil = lang === "fil";
   const lesson = lessons[skillId];
   const skill = skillById[skillId];
-  const [answers, setAnswers] = useState<string[]>(lesson?.practice.map(() => "") ?? []);
+  const [stage, setStage] = useState<"learn" | "practice">("learn");
+  const [qi, setQi] = useState(0);
+  const [answer, setAnswer] = useState("");
   const [results, setResults] = useState<(boolean | null)[]>(lesson?.practice.map(() => null) ?? []);
+  const [feedback, setFeedback] = useState<null | boolean>(null);
   const [speaking, setSpeaking] = useState(false);
+  const [keypad, setKeypad] = useState(true);
 
-  if (!lesson || !skill) return <Shell>Unknown skill.</Shell>;
+  if (!lesson || !skill) return <Shell back="/student">Unknown skill.</Shell>;
   const text = lesson[lang];
+  const need = globalThis.Math.min(2, lesson.practice.length);
   const correct = results.filter(Boolean).length;
-  const mastered = correct >= Math_min(2, lesson.practice.length);
+  const mastered = correct >= need;
+  const p = lesson.practice[qi];
 
-  async function check(i: number) {
-    const p = lesson.practice[i];
-    const r = await engine.check(p.given, answers[i], p.form);
-    const next = results.map((x, j) => (j === i ? r.correct : x));
-    setResults(next);
-    if (next.filter(Boolean).length >= Math_min(2, lesson.practice.length) && progress[skillId] !== "mastered") {
-      setSkill(skillId, "mastered");
+  async function check() {
+    if (!answer.trim()) return;
+    const r = await engine.check(p.given, answer, p.form);
+    setFeedback(r.correct);
+    if (r.correct) {
+      const next = results.map((x, j) => (j === qi ? true : x));
+      setResults(next);
+      if (next.filter(Boolean).length >= need && progress[skillId] !== "mastered") setSkill(skillId, "mastered");
+      setTimeout(() => {
+        setFeedback(null);
+        setAnswer("");
+        if (qi < lesson.practice.length - 1) setQi(qi + 1);
+      }, 900);
+    } else {
+      setResults(results.map((x, j) => (j === qi ? false : x)));
     }
   }
 
+  function onKey(a: KeyAction) {
+    setFeedback(null);
+    if ("enter" in a) return void check();
+    if ("backspace" in a) return setAnswer((s) => s.slice(0, -1));
+    if ("insert" in a) setAnswer((s) => s + a.insert);
+  }
+
   return (
-    <Shell>
-      <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-        Grade {skill.grade} · {fil ? "Roadmap" : "Roadmap"}
-      </div>
-      <h1 className="text-2xl font-bold">{skillTitle(skillId, lang)}</h1>
-
-      <section className="card mt-4 space-y-3 text-[17px] leading-relaxed">
-        {text.body.map((p, i) => (
-          <p key={i}>
-            <RichText text={p} />
-          </p>
+    <Shell tabs={false} back="/student" title={`Grade ${skill.grade} · ${fil ? "Ayusin ang gap" : "Fix the gap"}`}>
+      <h1 className="font-display text-[30px] font-bold leading-tight">{skillTitle(skillId, lang)}</h1>
+      <div className="mt-2 flex gap-1.5" aria-label="progress">
+        {["learn", "practice", "retry"].map((s, i) => (
+          <span key={s} className={`h-3 flex-1 rounded-full border-2 border-ink ${i === 0 || (i === 1 && stage === "practice") || (i === 2 && mastered) ? "bg-ok" : "bg-white"}`} />
         ))}
-        <button
-          className="btn-ghost text-sm"
-          onClick={async () => {
-            setSpeaking(true);
-            await readAloud(text.spoken, lang);
-            setSpeaking(false);
-          }}
-          data-testid="read-aloud"
-        >
-          🔊 {speaking ? "…" : t("readAloud")}
-        </button>
-      </section>
+      </div>
 
-      {lesson.visual === "area-model" && (
-        <section className="mt-4">
-          <AreaModel b={3} />
-        </section>
+      {stage === "learn" && (
+        <>
+          <section className="card mt-4 space-y-3 text-[17px] leading-relaxed">
+            {text.body.map((para, i) => (
+              <p key={i}>
+                <RichText text={para} />
+              </p>
+            ))}
+            <button className="btn-ghost btn-sm" onClick={async () => {
+              setSpeaking(true);
+              await readAloud(text.spoken, lang);
+              setSpeaking(false);
+            }} data-testid="read-aloud">
+              {speaking ? "🔊 …" : `🔊 ${t("readAloud")}`}
+            </button>
+          </section>
+          {lesson.visual === "area-model" && (
+            <section className="mt-4">
+              <AreaModel b={3} />
+            </section>
+          )}
+          <button className="btn-primary mt-5 w-full !text-lg" onClick={() => setStage("practice")} data-testid="to-practice">
+            {fil ? "Practice na!" : "Let's practice!"} →
+          </button>
+        </>
       )}
 
-      <h2 className="mt-6 text-sm font-semibold uppercase tracking-wide text-muted">
-        {t("practice")} · {correct}/{lesson.practice.length}
-      </h2>
-      <div className="mt-2 space-y-3">
-        {lesson.practice.map((p, i) => (
-          <div key={i} className={`card !p-4 ${results[i] === true ? "border-ok" : results[i] === false ? "border-gap" : ""}`}>
-            <div className="flex items-center gap-2 text-lg">
-              <span className="text-sm text-muted">{p.prompt}:</span>
+      {stage === "practice" && !mastered && (
+        <AnimatePresence mode="wait">
+          <motion.section key={qi} initial={{ x: 60, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -60, opacity: 0 }}
+            className={`card mt-4 ${feedback === false ? "shake" : ""}`}>
+            <div className="flex items-center justify-between">
+              <span className="kicker text-muted">{t("practice")} {qi + 1}/{lesson.practice.length}</span>
+              <span className="flex gap-1">
+                {results.map((r, i) => (
+                  <span key={i} className={`h-4 w-4 rounded-full border-2 border-ink ${r ? "bg-ok" : r === false ? "bg-gap" : "bg-white"}`} />
+                ))}
+              </span>
+            </div>
+            <div className="mt-3 flex items-center gap-2 rounded-2xl bg-soft px-4 py-4 text-[26px]">
+              <span className="font-display text-base text-muted">{p.prompt}:</span>
               <Math tex={quickTex(p.given)} />
             </div>
-            <form
-              className="mt-2 flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (answers[i].trim()) check(i);
-              }}
-            >
-              <input
-                className="input"
-                value={answers[i]}
-                onChange={(e) => setAnswers(answers.map((a, j) => (j === i ? e.target.value : a)))}
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-                data-testid={`practice-${i}`}
-              />
-              <button className="btn-primary shrink-0" data-testid={`practice-check-${i}`}>OK</button>
+            <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); check(); }}>
+              <input className="input" value={answer} onChange={(e) => { setFeedback(null); setAnswer(e.target.value); }}
+                inputMode={keypad ? "none" : "text"} autoCapitalize="off" autoCorrect="off" spellCheck={false}
+                placeholder={fil ? "Sagot mo" : "Your answer"} data-testid="practice-answer" />
+              <button className="btn-primary shrink-0" data-testid="practice-check">OK</button>
             </form>
-            {results[i] === true && <p className="mt-1 text-sm font-semibold text-ok">✓ {fil ? "Tama" : "Correct"}</p>}
-            {results[i] === false && (
-              <p className="mt-1 text-sm font-semibold text-gap">
-                ! {p.form === "expanded" ? (fil ? "Hindi pa tama — siguraduhing naka-expand ito." : "Not yet — make sure it's fully expanded.") : fil ? "Hindi pa tama — subukan ulit." : "Not yet — try again."}
-              </p>
+            {feedback !== null && (
+              <motion.p initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className={`mt-3 rounded-2xl border-[2.5px] border-ink px-3 py-2 font-display text-[17px] ${feedback ? "bg-ok text-white" : "bg-gap"}`}>
+                {feedback ? (fil ? "✓ Tama!" : "✓ Nice!") : p.form === "expanded" ? (fil ? "Hindi pa — siguraduhing naka-expand." : "Not yet — make sure it's fully expanded.") : fil ? "Hindi pa — subukan ulit." : "Not yet — try again."}
+              </motion.p>
             )}
-          </div>
-        ))}
-      </div>
+            {keypad && (
+              <div className="mt-3">
+                <Keypad onKey={onKey} onTextMode={() => setKeypad(false)} />
+              </div>
+            )}
+          </motion.section>
+        </AnimatePresence>
+      )}
 
       {mastered && (
-        <div className="card mt-5 border-ok bg-ok-soft/60" data-testid="mastered">
-          <div className="text-lg font-bold text-ok">✓ {skillTitle(skillId, lang)}</div>
-          <p className="text-[15px]">{fil ? "Naayos mo ang gap. Ngayon, balikan natin ang orihinal na problem." : "Gap fixed. Now let's go back to the original problem."}</p>
+        <motion.div initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
+          className="card mt-5 !bg-ok-soft text-center" data-testid="mastered">
+          <div className="text-5xl">💪</div>
+          <div className="mt-1 font-display text-2xl font-bold">{fil ? "Naayos ang gap!" : "Gap fixed!"}</div>
+          <p className="mt-1 text-[15px]">{fil ? "Ngayon, balikan ang problem na nagpahinto sa iyo." : "Now go back to the problem that stopped you."}</p>
           {trace ? (
-            <button className="btn-primary mt-3 w-full" onClick={() => nav(`/solve/${trace.problemId}?mode=retry`)} data-testid="retry">
-              {t("retry")} →
+            <button className="btn-primary mt-4 w-full !text-lg" onClick={() => nav(`/solve/${trace.problemId}?mode=retry`)} data-testid="retry">
+              🎯 {t("retry")}
             </button>
           ) : (
-            <button className="btn-primary mt-3 w-full" onClick={() => nav("/student")}>
-              {fil ? "Bumalik" : "Back home"}
-            </button>
+            <button className="btn-primary mt-4 w-full" onClick={() => nav("/student")}>{fil ? "Bumalik" : "Back home"}</button>
           )}
-        </div>
+        </motion.div>
       )}
     </Shell>
   );
-}
-
-function Math_min(a: number, b: number) {
-  return a < b ? a : b;
 }

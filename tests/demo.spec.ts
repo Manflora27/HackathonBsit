@@ -6,14 +6,18 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
 
   await page.goto("/");
   await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /continue/i }).click();
+  await page.getByRole("button", { name: /let.s go/i }).click();
   await page.getByTestId("demo-student").click();
   await expect(page.getByTestId("assignment-card")).toBeVisible();
   await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
   await shot("01-home");
+  await page.goto("/map");
+  await shot("01b-map");
+  await page.goto("/student");
 
   await page.getByTestId("problem-p-kyla").click();
   await page.getByTestId("fill-demo").click();
+  await shot("02a-solve");
   await page.getByTestId("check").click();
   await expect(page.getByText("Is this what you wrote?")).toBeVisible();
   await shot("02-confirm");
@@ -24,6 +28,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await shot("03-diagnosis");
 
   await page.getByTestId("find-root").click();
+  await shot("03b-probe");
   // poly_mult probe: Kyla gets it wrong -> one level deeper
   await page.getByTestId("probe-answer").fill("x^2+10");
   await page.getByTestId("probe-submit").click();
@@ -41,10 +46,13 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await shot("04-root-gap");
 
   await page.getByTestId("start-roadmap").click();
-  await page.getByTestId("practice-0").fill("x^2+5x+4");
-  await page.getByTestId("practice-check-0").click();
-  await page.getByTestId("practice-1").fill("x^2+10x+25");
-  await page.getByTestId("practice-check-1").click();
+  await shot("05a-learn");
+  await page.getByTestId("to-practice").click();
+  await page.getByTestId("practice-answer").fill("x^2+5x+4");
+  await page.getByTestId("practice-check").click();
+  await expect(page.getByTestId("practice-answer")).toHaveValue("");
+  await page.getByTestId("practice-answer").fill("x^2+10x+25");
+  await page.getByTestId("practice-check").click();
   await expect(page.getByTestId("mastered")).toBeVisible();
   await shot("05-learn");
 
@@ -71,7 +79,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
 test("airplane mode: still diagnoses with no internet", async ({ page, context }) => {
   await page.goto("/");
   await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /continue/i }).click();
+  await page.getByRole("button", { name: /let.s go/i }).click();
   await page.getByTestId("try-it").click();
   await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
 

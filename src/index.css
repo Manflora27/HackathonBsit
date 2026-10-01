@@ -1,31 +1,54 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
+@import "@fontsource/fredoka/500.css";
+@import "@fontsource/fredoka/600.css";
+@import "@fontsource/fredoka/700.css";
+@import "@fontsource/nunito/600.css";
+@import "@fontsource/nunito/700.css";
+@import "@fontsource/nunito/800.css";
 
 @theme {
-  --color-ink: #1c2433;
-  --color-muted: #5b6577;
-  --color-paper: #f7f6f2;
+  --color-ink: #1e1b3a;
+  --color-muted: #6b6789;
+  --color-paper: #fff7ea;
   --color-card: #ffffff;
-  --color-line: #e4e1d8;
-  --color-brand: #3346c9;
-  --color-brand-soft: #e8ebfb;
-  --color-gap: #d97706;
-  --color-gap-soft: #fef3c7;
-  --color-ok: #15803d;
-  --color-ok-soft: #dcfce7;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --color-line: #1e1b3a;
+  --color-soft: #f1ebff;
+  --color-brand: #6c3ce9;
+  --color-brand-dark: #4b22b8;
+  --color-brand-soft: #e9e0ff;
+  --color-gap: #ff8a1f;
+  --color-gap-dark: #d0650a;
+  --color-gap-soft: #ffe7cc;
+  --color-ok: #12a67a;
+  --color-ok-dark: #0b7a59;
+  --color-ok-soft: #cff7e7;
+  --color-sky: #3ab4f2;
+  --font-sans: "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-display: "Fredoka", "Nunito", ui-rounded, sans-serif;
 }
 
 html {
   font-size: calc(16px * var(--text-scale, 1));
+  -webkit-tap-highlight-color: transparent;
 }
 body {
-  @apply bg-paper text-ink antialiased;
-  font-family: var(--font-sans);
+  @apply bg-paper font-sans font-semibold text-ink antialiased;
+  background-image: radial-gradient(circle, rgb(30 27 58 / 0.07) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+  overscroll-behavior-y: none;
 }
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+.readable-font,
 .readable-font body,
-.readable-font {
-  font-family: Verdana, "Atkinson Hyperlegible", Tahoma, sans-serif;
+.readable-font h1,
+.readable-font h2,
+.readable-font h3,
+.readable-font .font-display {
+  font-family: Verdana, "Atkinson Hyperlegible", Tahoma, sans-serif !important;
   letter-spacing: 0.02em;
   word-spacing: 0.08em;
 }
@@ -33,44 +56,73 @@ body {
 /* "Circle the wrong term", the way a teacher marks it */
 .gf-mark {
   display: inline-block;
-  padding: 0.05em 0.3em;
+  padding: 0.05em 0.32em;
   margin: -0.05em -0.05em;
-  border: 2.5px solid var(--color-gap);
+  border: 3px solid var(--color-gap);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-gap-soft) 70%, transparent);
-  animation: gf-pop 0.5s ease-out both;
+  background: var(--color-gap-soft);
+  animation: gf-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 @keyframes gf-pop {
-  from { transform: scale(1.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from { transform: scale(1.8) rotate(-8deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
 }
+@keyframes gf-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-1deg); }
+  40% { transform: translateX(6px) rotate(1deg); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.shake { animation: gf-shake 0.5s ease-in-out; }
+@keyframes gf-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.bob { animation: gf-bob 1.4s ease-in-out infinite; }
 
 .react-flow__attribution { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
 .reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
-  animation-duration: 0.001ms !important; transition-duration: 0.001ms !important;
+  animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important;
 }
 
 @layer components {
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-110 active:scale-[.98] disabled:opacity-50;
+  /* Chunky "sticker" buttons that physically press down */
+  .btn, .btn-primary, .btn-gap, .btn-ok, .btn-ghost {
+    @apply relative inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-2xl border-[2.5px] border-ink px-5 py-3 font-display text-[17px] font-semibold tracking-wide transition-[transform,box-shadow] duration-100 disabled:opacity-40;
+    box-shadow: 0 4px 0 var(--color-ink);
   }
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-card px-4 py-2.5 font-medium text-ink transition hover:bg-paper active:scale-[.98] disabled:opacity-50;
+  :is(.btn, .btn-primary, .btn-gap, .btn-ok, .btn-ghost):active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--color-ink);
   }
-  .btn-gap {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gap px-4 py-2.5 font-semibold text-white shadow-sm transition hover:brightness-110 active:scale-[.98];
-  }
+  .btn-primary { @apply bg-brand text-white; }
+  .btn-gap { @apply bg-gap text-ink; }
+  .btn-ok { @apply bg-ok text-white; }
+  .btn-ghost { @apply bg-white text-ink; }
+  .btn-sm { @apply min-h-10 rounded-xl px-3 py-1.5 text-[15px]; box-shadow: 0 3px 0 var(--color-ink); }
+
   .card {
-    @apply rounded-2xl border border-line bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,.04)];
+    @apply rounded-3xl border-[2.5px] border-ink bg-card p-5;
+    box-shadow: 0 5px 0 var(--color-ink);
   }
+  .card-flat { @apply rounded-3xl border-[2.5px] border-ink bg-card p-4; }
   .input {
-    @apply w-full rounded-xl border border-line bg-white px-3 py-2.5 font-mono text-[17px] outline-none focus:border-brand focus:ring-2 focus:ring-brand/20;
+    @apply w-full rounded-2xl border-[2.5px] border-ink bg-white px-4 py-3 font-mono text-[18px] font-semibold outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/20;
   }
   .chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1 rounded-full border-2 border-ink px-2.5 py-0.5 text-xs font-extrabold;
   }
+  .kicker {
+    @apply font-display text-[13px] font-semibold uppercase tracking-[0.12em];
+  }
+  .key {
+    @apply flex h-12 select-none items-center justify-center rounded-xl border-2 border-ink bg-white font-display text-[19px] font-semibold transition-[transform,box-shadow] duration-75;
+    box-shadow: 0 3px 0 var(--color-ink);
+  }
+  .key:active { transform: translateY(3px); box-shadow: 0 0 0 var(--color-ink); }
 }

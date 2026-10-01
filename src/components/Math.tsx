@@ -28,7 +28,10 @@ export function RichText({ text, className = "" }: { text: string; className?: s
 export function quickTex(s: string) {
   return s
     .replace(/sqrt\(([^)]*)\)/g, "\\sqrt{$1}")
+    .replace(/\(([^()]+)\)\/(\(([^()]+)\)|[\w.]+)/g, (_, a, b, inner) => `\\frac{${a}}{${inner ?? b}}`)
+    .replace(/([\w.^]+)\/(\(([^()]+)\)|[\w.]+)/g, (_, a, b, inner) => `\\frac{${a}}{${inner ?? b}}`)
     .replace(/\^(\d+|\([^)]*\))/g, (_, e) => `^{${e.replace(/^\(|\)$/g, "")}}`)
     .replace(/\*/g, " \\cdot ")
-    .replace(/±/g, "\\pm ");
+    .replace(/±/g, "\\pm ")
+    .replace(/\s*\bor\b\s*/g, "\\quad\\text{or}\\quad ");
 }

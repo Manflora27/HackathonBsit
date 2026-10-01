@@ -17,12 +17,11 @@ export default function Settings() {
   }
 
   return (
-    <Shell>
-      <button className="text-sm text-muted" onClick={() => nav(-1)}>← {fil ? "Bumalik" : "Back"}</button>
-      <h1 className="mt-2 text-2xl font-bold">{fil ? "Settings" : "Settings"}</h1>
+    <Shell title={fil ? "Ako" : "Me"}>
+      <h1 className="font-display text-[30px] font-bold">{fil ? "Settings" : "Settings"}</h1>
 
       <section className="card mt-4 space-y-4">
-        <h2 className="font-bold">{fil ? "Pagbasa" : "Reading"}</h2>
+        <h2 className="font-display text-xl font-semibold">{fil ? "Pagbasa" : "Reading"}</h2>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Wika ng paliwanag" : "Explanation language"}
           <select className="input !w-40 !font-sans !text-base" value={s.lang} onChange={(e) => s.set({ lang: e.target.value as "en" | "fil" })}>
@@ -40,19 +39,19 @@ export default function Settings() {
         </label>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Mas madaling basahing font" : "Easier-to-read font"}
-          <input type="checkbox" checked={s.readableFont} onChange={(e) => s.set({ readableFont: e.target.checked })} />
+          <input type="checkbox" className="h-5 w-5 accent-[#6c3ce9]" checked={s.readableFont} onChange={(e) => s.set({ readableFont: e.target.checked })} />
         </label>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Bawasan ang animation" : "Reduce motion"}
-          <input type="checkbox" checked={s.reduceMotion} onChange={(e) => s.set({ reduceMotion: e.target.checked })} />
+          <input type="checkbox" className="h-5 w-5 accent-[#6c3ce9]" checked={s.reduceMotion} onChange={(e) => s.set({ reduceMotion: e.target.checked })} />
         </label>
       </section>
 
       <section className="card mt-4 space-y-3">
-        <h2 className="font-bold">{fil ? "Privacy (RA 10173)" : "Privacy (RA 10173)"}</h2>
+        <h2 className="font-display text-xl font-semibold">{fil ? "Privacy (RA 10173)" : "Privacy (RA 10173)"}</h2>
         <label className="flex items-center justify-between gap-3">
           {fil ? "Ibahagi ang skill map ko sa teacher" : "Share my skill map with my teacher"}
-          <input type="checkbox" checked={s.shareSkillMap} onChange={(e) => s.set({ shareSkillMap: e.target.checked })} />
+          <input type="checkbox" className="h-5 w-5 accent-[#6c3ce9]" checked={s.shareSkillMap} onChange={(e) => s.set({ shareSkillMap: e.target.checked })} />
         </label>
         <p className="text-sm text-muted">
           {fil
@@ -76,7 +75,7 @@ export default function Settings() {
       </section>
 
       <section className="card mt-4 space-y-2">
-        <h2 className="font-bold">{fil ? "AI log" : "AI decisions log"}</h2>
+        <h2 className="font-display text-xl font-semibold">{fil ? "AI log" : "AI decisions log"}</h2>
         {s.aiLog.length === 0 ? (
           <p className="text-sm text-muted">{fil ? "Wala pa." : "Nothing yet."}</p>
         ) : (

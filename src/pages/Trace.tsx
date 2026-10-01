@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, quickTex } from "../components/Math";
+import { PathMap } from "../components/PathMap";
 import { Shell } from "../components/Shell";
-import { SkillMap } from "../components/SkillMap";
 import { skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { useStore } from "../store";
@@ -21,6 +22,7 @@ export default function Trace() {
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<null | "pass" | "fail">(null);
   const [passed, setPassed] = useState<string[]>([]);
+  const [keypad, setKeypad] = useState(true);
 
   const current = trace?.path[trace.path.length - 1] ?? null;
   const queue = useMemo(() => {
@@ -30,7 +32,6 @@ export default function Trace() {
   const probeSkill = trace?.rootSkill ? null : queue[0] ?? null;
   const probe = probeSkill ? skillById[probeSkill].probes[0] : null;
 
-  // When nothing is left to probe, the current skill is the root gap.
   useEffect(() => {
     if (trace && !trace.rootSkill && current && queue.length === 0) {
       set({ trace: { ...trace, rootSkill: current } });
@@ -42,9 +43,8 @@ export default function Trace() {
 
   if (!trace) {
     return (
-      <Shell>
-        <p>{fil ? "Wala pang ina-analyze na problem." : "No problem analyzed yet."}</p>
-        <button className="btn-primary mt-3" onClick={() => nav("/student")}>OK</button>
+      <Shell back="/student">
+        <p className="mt-4">{fil ? "Wala pang ina-analyze na problem." : "No problem analyzed yet."}</p>
       </Shell>
     );
   }
@@ -62,81 +62,103 @@ export default function Trace() {
       } else {
         set({ trace: { ...trace, path: [...trace.path, probeSkill] } });
       }
-    }, 900);
+    }, 1000);
+  }
+
+  function onKey(a: KeyAction) {
+    if ("enter" in a) return answer.trim() && submitProbe();
+    if ("backspace" in a) return setAnswer((s) => s.slice(0, -1));
+    if ("insert" in a) setAnswer((s) => s + a.insert);
   }
 
   const root = trace.rootSkill;
   const top = skillById[trace.path[0]];
   const rootSkill = root ? skillById[root] : null;
-  const statuses = { ...progress };
-  for (const p of trace.path.slice(1)) if (!root || p !== root) statuses[p] = statuses[p] ?? "unknown";
+  const revealDelay = 0.4 + trace.path.length * 0.75;
 
   return (
-    <Shell>
-      <h1 className="text-xl font-bold">
-        {root ? (fil ? "Nahanap na ang ugat ng gap" : "Found the root gap") : fil ? "Hinahanap ang ugat…" : "Tracing it back…"}
-      </h1>
-
-      <div className="mt-3">
-        <SkillMap statuses={statuses} path={trace.path} root={root} animate height={430} />
+    <Shell tabs={false} back="/student" title={root ? (fil ? "Nahanap!" : "Found it!") : fil ? "Hinahanap ang gap…" : "Digging for the gap…"}>
+      <div className="flex justify-center">
+        <span className="chip bg-white text-[13px]">{trace.path.map((s) => `G${skillById[s].grade}`).join(" → ")}{!root && " → ?"}</span>
       </div>
-      <p className="mt-2 text-center text-sm text-muted" aria-live="polite">
-        {trace.path.map((s) => `Grade ${skillById[s].grade}`).join("  →  ")}
-      </p>
+      <div className="mt-3">
+        <PathMap statuses={progress} path={trace.path} root={root} animate only={trace.path} />
+      </div>
 
-      {probe && probeSkill && (
-        <motion.div key={probeSkill} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card mt-4" data-testid="probe">
-          <div className="text-xs font-semibold uppercase tracking-wide text-muted">
-            {fil ? "Mabilis na check" : "Quick check"} · {skillTitle(probeSkill, lang)} · Grade {skillById[probeSkill].grade}
-          </div>
-          <div className="mt-2 flex items-center gap-2 text-xl">
-            <span className="text-base text-muted">{probe.prompt}:</span>
-            <Math tex={quickTex(probe.given)} />
-          </div>
-          <form
-            className="mt-3 flex gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (answer.trim()) submitProbe();
-            }}
-          >
-            <input className="input" value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder={fil ? "Sagot mo" : "Your answer"}
-              data-testid="probe-answer" autoCapitalize="off" autoCorrect="off" spellCheck={false} />
-            <button className="btn-primary shrink-0" data-testid="probe-submit">OK</button>
-          </form>
-          {feedback && (
-            <p className={`mt-2 font-semibold ${feedback === "pass" ? "text-ok" : "text-gap"}`}>
-              {feedback === "pass"
-                ? fil ? "✓ Kaya mo ito. Hindi ito ang gap." : "✓ You've got this one. Not the gap."
-                : fil ? "! Dito pa tayo bababa." : "! Let's look one level deeper."}
-            </p>
-          )}
-        </motion.div>
-      )}
+      <AnimatePresence mode="wait">
+        {probe && probeSkill && (
+          <motion.div key={probeSkill} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+            className={`card mt-2 ${feedback === "fail" ? "shake" : ""}`} data-testid="probe">
+            <div className="kicker text-muted">
+              {fil ? "Mabilis na check" : "Quick check"} · Grade {skillById[probeSkill].grade}
+            </div>
+            <div className="font-display text-lg font-semibold leading-tight">{skillTitle(probeSkill, lang)}</div>
+            <div className="mt-3 flex items-center gap-2 rounded-2xl bg-soft px-4 py-3 text-[24px]">
+              <span className="font-display text-base text-muted">{probe.prompt}:</span>
+              <Math tex={quickTex(probe.given)} />
+            </div>
+            <form
+              className="mt-3 flex gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (answer.trim()) submitProbe();
+              }}
+            >
+              <input className="input" value={answer} onChange={(e) => setAnswer(e.target.value)} placeholder={fil ? "Sagot mo" : "Your answer"}
+                inputMode={keypad ? "none" : "text"} onFocus={() => setKeypad((k) => k)}
+                data-testid="probe-answer" autoCapitalize="off" autoCorrect="off" spellCheck={false} />
+              <button className="btn-primary shrink-0" data-testid="probe-submit">OK</button>
+            </form>
+            {feedback && (
+              <motion.p initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className={`mt-3 rounded-2xl border-[2.5px] border-ink px-3 py-2 font-display text-[17px] ${feedback === "pass" ? "bg-ok text-white" : "bg-gap"}`}>
+                {feedback === "pass"
+                  ? fil ? "✓ Kaya mo ito. Hindi ito ang gap." : "✓ You've got this one. Not the gap."
+                  : fil ? "⛏️ Dito pa tayo bababa." : "⛏️ Let's look one level deeper."}
+              </motion.p>
+            )}
+            {keypad && (
+              <div className="mt-3">
+                <Keypad onKey={onKey} onTextMode={() => setKeypad(false)} />
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {rootSkill && (
-        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 + trace.path.length * 0.8 }}
-          className="card mt-4 border-gap bg-gap-soft/60" data-testid="root-gap">
-          <div className="text-sm font-bold uppercase tracking-wide text-gap">{fil ? "Nahanap na" : "Found it"}</div>
-          <div className="mt-1 text-2xl font-extrabold">{skillTitle(rootSkill.id, lang)}</div>
-          {top.grade !== rootSkill.grade ? (
-            <p className="mt-2 text-lg">
-              {fil ? (
-                <>Ang pagkakamali mo sa <b>Grade {top.grade}</b> ay nagmula sa isang skill sa <b>Grade {rootSkill.grade}</b>.</>
-              ) : (
-                <>Your <b>Grade {top.grade}</b> mistake comes from a <b>Grade {rootSkill.grade}</b> skill.</>
-              )}
+        <motion.div initial={{ opacity: 0, y: 40, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: revealDelay, type: "spring", stiffness: 240, damping: 18 }}
+          className="card mt-2 !p-0" data-testid="root-gap">
+          <div className="rounded-t-[21px] border-b-[2.5px] border-ink bg-gap px-5 py-3 font-display text-xl font-bold">
+            🎯 {fil ? "Nahanap na ang gap!" : "Found the gap!"}
+          </div>
+          <div className="p-5">
+            <div className="font-display text-[28px] font-bold leading-tight">{skillTitle(rootSkill.id, lang)}</div>
+            {top.grade !== rootSkill.grade ? (
+              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-soft p-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-brand font-display text-white">G{top.grade}</span>
+                <span className="font-display text-xl">←</span>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-[2.5px] border-ink bg-gap font-display">G{rootSkill.grade}</span>
+                <span className="text-[15px] leading-snug">
+                  {fil ? (
+                    <>Ang pagkakamali mo sa <b>Grade {top.grade}</b> ay galing sa skill sa <b>Grade {rootSkill.grade}</b>.</>
+                  ) : (
+                    <>Your <b>Grade {top.grade}</b> mistake comes from a <b>Grade {rootSkill.grade}</b> skill.</>
+                  )}
+                </span>
+              </div>
+            ) : (
+              <p className="mt-2 text-[16px]">{fil ? "Ito ang eksaktong skill na aayusin natin." : "This is the exact skill we'll fix."}</p>
+            )}
+            <p className="mt-3 text-[15px] text-muted">
+              {fil ? "Hindi ka mahina sa math — isang skill lang ito, at kaya itong ayusin." : "You're not bad at math. It's one skill, and it's fixable."}
+              {rootSkill.matatag ? ` · MATATAG ${rootSkill.matatag}` : ""}
             </p>
-          ) : (
-            <p className="mt-2 text-lg">{fil ? "Ito ang eksaktong skill na aayusin natin." : "This is the exact skill we'll fix."}</p>
-          )}
-          <p className="mt-1 text-sm text-muted">
-            {fil ? "Hindi ka mahina sa math — isang skill lang ito, at kaya itong ayusin." : "You're not bad at math — it's one skill, and it's fixable."}
-            {rootSkill.matatag ? ` · MATATAG ${rootSkill.matatag}` : ""}
-          </p>
-          <button className="btn-primary mt-4 w-full" onClick={() => nav(`/learn/${rootSkill.id}`)} data-testid="start-roadmap">
-            {fil ? "Simulan ang roadmap" : "Start the roadmap"} →
-          </button>
+            <button className="btn-primary mt-4 w-full !text-lg" onClick={() => nav(`/learn/${rootSkill.id}`)} data-testid="start-roadmap">
+              🚀 {fil ? "Ayusin ang gap ko" : "Fix my gap"}
+            </button>
+          </div>
         </motion.div>
       )}
     </Shell>

@@ -39,6 +39,8 @@ interface State {
   trace: Trace | null;
   practiceAssignments: PracticeAssignment[];
   aiLog: AiLogEntry[];
+  gapsFixed: string[];
+  activeDays: string[];
 
   set: (patch: Partial<State>) => void;
   setSkill: (id: string, status: SkillStatus) => void;
@@ -61,6 +63,8 @@ const initial = {
   trace: null,
   practiceAssignments: [],
   aiLog: [],
+  gapsFixed: [] as string[],
+  activeDays: [] as string[],
 };
 
 export const useStore = create<State>()(
@@ -69,7 +73,11 @@ export const useStore = create<State>()(
       ...initial,
       set: (patch) => set(patch),
       setSkill: (id, status) => set((s) => ({ progress: { ...s.progress, [id]: status } })),
-      addAttempt: (a) => set((s) => ({ attempts: [...s.attempts, a] })),
+      addAttempt: (a) =>
+        set((s) => {
+          const day = new Date(a.createdAt).toDateString();
+          return { attempts: [...s.attempts, a], activeDays: s.activeDays.includes(day) ? s.activeDays : [...s.activeDays, day] };
+        }),
       updateAttempt: (id, patch) =>
         set((s) => ({ attempts: s.attempts.map((a) => (a.id === id ? { ...a, ...patch } : a)) })),
       log: (e) => set((s) => ({ aiLog: [...s.aiLog, { ...e, at: Date.now() }] })),

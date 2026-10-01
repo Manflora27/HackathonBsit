@@ -187,6 +187,8 @@ All AI actions are logged with what the AI suggested and what the person decided
 6. Students receive assignment cards.
 
 ## Visual Design (Khan Academy / 3Blue1Brown quality, selectively)
+
+> *Built (team decision, Oct 2):* the app moved to a **playful, game-like, mobile-first** direction: chunky "sticker" UI (thick ink outlines, hard shadows, buttons that press down), Fredoka + Nunito, grape / tangerine (gaps) / mint (mastered), a level-path skill map from Grade 9 down to Grade 7 with a marker that drops to the gap, a calculator-style math keypad, bottom tab bar, and a "gaps fixed" counter instead of XP. React Flow was replaced by the custom path map. The principles below (gaps aren't red, discovery framing, reduced motion, not color-only) still apply.
 **Principle:** Polish comes from a calm, consistent design system first and animation second. Pick a few moments and make them great. Don't use Manim or rendered video; everything is live SVG in React.
 
 **Foundations:**
