@@ -8,7 +8,7 @@ import { Math, RichText, quickTex } from "../components/Math";
 import { Shell } from "../components/Shell";
 import { subjectLabel, unitById, verifierMeta } from "../data/curriculum";
 import { engine } from "../engine/client";
-import { getLesson, type CachedLesson } from "../lessons/pipeline";
+import { getLesson, unitTarget, type CachedLesson } from "../lessons/pipeline";
 import { useT } from "../i18n";
 import { useStore } from "../store";
 
@@ -47,7 +47,7 @@ export default function Unit() {
     if (!unit) return;
     let live = true;
     setState("loading");
-    getLesson(unit).then((r) => {
+    getLesson(unitTarget(unit)).then((r) => {
       if (!live) return;
       setState(r ?? "failed");
       setResults(r?.lesson.practice.map(() => null) ?? []);

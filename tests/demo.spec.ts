@@ -125,6 +125,21 @@ test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with n
   await expect(page.getByTestId("assignment-card")).toHaveCount(0);
 });
 
+/** The first lesson saved on the device (IndexedDB). */
+async function storedLesson(page: import("@playwright/test").Page) {
+  return page.evaluate(
+    () =>
+      new Promise<{ lesson: { practice: unknown[] }; verified: boolean }>((resolve) => {
+        const open = indexedDB.open("gf-lessons", 1);
+        open.onsuccess = () => {
+          const st = open.result.transaction("lessons").objectStore("lessons");
+          const all = st.getAll();
+          all.onsuccess = () => resolve(all.result[0]);
+        };
+      }),
+  );
+}
+
 const draft = {
   en: { body: ["Expanding means multiplying every term. $(x+1)(x+4)=x^2+5x+4$."], spoken: "Expanding means multiplying every term." },
   fil: { body: ["Ang expanding ay pag-multiply sa bawat term."], spoken: "Ang expanding ay pag-multiply sa bawat term." },
@@ -161,9 +176,9 @@ test("lesson pipeline: skeleton, generated lesson, engine drops a wrong key, pra
   await page.screenshot({ path: "test-results/shots/12-skeleton.png" });
   release();
   await expect(page.getByTestId("lesson-body")).toBeVisible({ timeout: 90_000 });
-  const stored = await page.evaluate(() => Object.entries(localStorage).find(([k]) => k.startsWith("gf-lesson:"))?.[1] ?? "");
-  expect(JSON.parse(stored).lesson.practice).toHaveLength(2); // the wrong key was dropped
-  expect(JSON.parse(stored).verified).toBe(true);
+  const stored = await storedLesson(page);
+  expect(stored.lesson.practice).toHaveLength(2); // the wrong key was dropped
+  expect(stored.verified).toBe(true);
   await page.getByTestId("to-practice").click();
   await page.getByTestId("practice-answer").fill("x^2+5x+4");
   await page.getByTestId("practice-check").click();
@@ -200,11 +215,38 @@ test("verifiers: unit keys are checked in the browser, wrong ones dropped", asyn
   await page.getByTestId("finish-profile").click();
   await page.getByTestId("unit-science").click();
   await expect(page.getByTestId("lesson-body")).toBeVisible({ timeout: 90_000 });
-  const stored = await page.evaluate(() => Object.entries(localStorage).find(([k]) => k.startsWith("gf-lesson:"))?.[1] ?? "");
-  expect(JSON.parse(stored).lesson.practice).toHaveLength(2);
-  expect(JSON.parse(stored).verified).toBe(true);
+  const stored = await storedLesson(page);
+  expect(stored.lesson.practice).toHaveLength(2);
+  expect(stored.verified).toBe(true);
   await page.getByTestId("to-practice").click();
   await page.getByTestId("practice-answer").fill("18 km/h");
   await page.getByTestId("practice-check").click();
   await expect(page.getByText("Nice!")).toBeVisible();
+});
+
+test("demo from a fresh onboarding lands in the seeded assignment", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /let.s go/i }).click();
+  await page.getByTestId("to-demo").click();
+  await page.getByTestId("demo-fresh").click();
+  await page.getByTestId("name").fill("Kyla");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("subject-math").click();
+  await page.getByTestId("grade-9").click();
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("finish-profile").click();
+  await expect(page.getByTestId("assignment-card")).toBeVisible();
+  await expect(page.getByTestId("plan-home")).toBeVisible();
+});
+
+test("offline pack: download the plan, then open a lesson with no connection", async ({ page, context }) => {
+  await page.route("**/api/lesson", (route) => route.fulfill({ json: draft }));
+  await startPlan(page);
+  await expect(page.getByTestId("pack-math")).toBeVisible();
+  await page.getByTestId("pack-go-math").click();
+  await expect(page.getByTestId("pack-math")).toContainText("Ready offline", { timeout: 120_000 });
+  await context.setOffline(true);
+  await page.getByTestId("unit-math").click();
+  await expect(page.getByTestId("lesson-body")).toBeVisible();
 });

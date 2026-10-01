@@ -13,7 +13,7 @@ const STEPS = 3;
 export default function Welcome() {
   const nav = useNavigate();
   const { user, profile, ready, completeProfile, joinClass, error } = useAuth();
-  const { consent, role, set, lang, onboarding } = useStore();
+  const { consent, role, set, lang, onboarding, demoFlow } = useStore();
   const fil = lang === "fil";
   const guest = !user && role === "guest";
 
@@ -28,11 +28,11 @@ export default function Welcome() {
   const [codeError, setCodeError] = useState(false);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || onboarding.done) return; // done: finish() is already navigating
     if (!consent || (!user && !guest)) return void nav("/", { replace: true });
     if (profile?.onboarded_at) return void nav("/", { replace: true }); // already onboarded
     if (!name) setName((user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "");
-  }, [ready, user, profile, consent, guest]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready, user, profile, consent, guest, onboarding.done]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const student = type === "student";
   const canNext1 = name.trim().length > 0;
@@ -47,7 +47,7 @@ export default function Welcome() {
       if (!ok) return setBusy(false);
       if (student && code.trim()) setCodeError(!(await joinClass(code)));
     }
-    set({ role: guest ? "guest" : type, demo: false, onboarding: { subjects: picked, grade, goal, done: true } });
+    set({ role: demoFlow ? "student" : guest ? "guest" : type, demo: demoFlow, demoFlow: false, onboarding: { subjects: picked, grade, goal, done: true } });
     setBusy(false);
     nav(type === "teacher" ? "/teacher" : "/student", { replace: true });
   }

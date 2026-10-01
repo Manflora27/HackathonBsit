@@ -38,6 +38,8 @@ interface State {
   consent: { by: "self" | "guardian" | "school"; at: number } | null;
   role: "student" | "teacher" | "guest" | null;
   demo: boolean;
+  /** Judging run: after a fresh onboarding, land in the seeded demo as that new student. */
+  demoFlow: boolean;
   onboarding: Onboarding;
   lang: Lang;
   textScale: number;
@@ -64,6 +66,7 @@ const initial = {
   consent: null,
   role: null,
   demo: false,
+  demoFlow: false,
   onboarding: { subjects: [], grade: null, goal: null, done: false } as Onboarding,
   lang: "en" as Lang,
   textScale: 1,

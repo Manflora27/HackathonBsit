@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { readAloud } from "../ai/client";
@@ -9,7 +9,9 @@ import { Shell } from "../components/Shell";
 import { Icon, InkCircle } from "../components/Icon";
 import { lessons, skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
+import { getLesson, skillTarget } from "../lessons/pipeline";
 import { useT } from "../i18n";
+import type { Lesson } from "../types";
 import { useStore } from "../store";
 
 export default function Learn() {
@@ -18,17 +20,44 @@ export default function Learn() {
   const { skillId = "" } = useParams();
   const { lang, setSkill, trace, progress } = useStore();
   const fil = lang === "fil";
-  const lesson = lessons[skillId];
   const skill = skillById[skillId];
+  const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [stage, setStage] = useState<"learn" | "practice">("learn");
   const [qi, setQi] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [results, setResults] = useState<(boolean | null)[]>(lesson?.practice.map(() => null) ?? []);
+  const [results, setResults] = useState<(boolean | null)[]>([]);
   const [feedback, setFeedback] = useState<null | boolean>(null);
   const [speaking, setSpeaking] = useState(false);
   const [keypad, setKeypad] = useState(true);
 
-  if (!lesson || !skill) return <Shell back="/student">Unknown skill.</Shell>;
+  // Generated and verified lesson first (shared cache), the hand-authored one only if none is available.
+  useEffect(() => {
+    if (!skill) return;
+    let live = true;
+    getLesson(skillTarget(skill)).then((r) => {
+      if (!live) return;
+      const seed = lessons[skillId];
+      const l = r ? { ...r.lesson, visual: seed?.visual } : seed ?? null;
+      setLesson(l);
+      setLoaded(true);
+      setResults(l?.practice.map(() => null) ?? []);
+    });
+    return () => { live = false; };
+  }, [skillId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!skill) return <Shell back="/student">Unknown skill.</Shell>;
+  if (loaded && !lesson)
+    return <Shell back="/student">{fil ? "Kailangan ng koneksyon para ihanda ang lesson na ito." : "This lesson needs a connection to prepare."}</Shell>;
+  if (!lesson)
+    return (
+      <Shell tabs={false} back="/student" title={`Grade ${skill.grade}`}>
+        <h1 className="font-display text-[30px] font-bold leading-tight">{skillTitle(skillId, lang)}</h1>
+        <div className="mt-4 animate-pulse space-y-3" aria-busy data-testid="lesson-skeleton">
+          <div className="card space-y-3">{[92, 100, 78].map((w, i) => <div key={i} className="h-4 rounded-full bg-soft" style={{ width: `${w}%` }} />)}</div>
+        </div>
+      </Shell>
+    );
   const text = lesson[lang];
   const need = globalThis.Math.min(2, lesson.practice.length);
   const correct = results.filter(Boolean).length;
@@ -46,7 +75,7 @@ export default function Learn() {
       setTimeout(() => {
         setFeedback(null);
         setAnswer("");
-        if (qi < lesson.practice.length - 1) setQi(qi + 1);
+        if (qi < lesson!.practice.length - 1) setQi(qi + 1);
       }, 900);
     } else {
       setResults(results.map((x, j) => (j === qi ? false : x)));

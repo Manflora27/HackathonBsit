@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../auth";
 import { Icon } from "../components/Icon";
 import { Math, quickTex } from "../components/Math";
+import { OfflinePack } from "../components/OfflinePack";
 import { EngineBadge, Shell } from "../components/Shell";
 import { buildPlan, subjectLabel, verifierMeta } from "../data/curriculum";
 import { demoAssignment, problemById, skillById, skillTitle } from "../data";
@@ -92,7 +93,7 @@ export default function StudentHome() {
         </div>
       )}
 
-      {demo ? (
+      {demo && (
       <section className="card tape mt-6 !p-0" data-testid="assignment-card">
         <div className="flex items-end justify-between gap-3 px-5 pb-3 pt-5">
           <div>
@@ -129,21 +130,23 @@ export default function StudentHome() {
           })}
         </ul>
       </section>
-      ) : (
-        planGrade !== null && planSubjects.length > 0 && (
+      )}
+      {planGrade !== null && planSubjects.length > 0 && (
           <section className="mt-6 space-y-3" data-testid="plan-home">
             {planSubjects.map((sub) => {
               const next = buildPlan(sub, planGrade)[0];
               return (
-                <button key={sub} className="card w-full !p-4 text-left" onClick={() => nav(`/unit/${next.id}`)} data-testid={`unit-${sub}`}>
+                <div key={sub}>
+                <button className="card w-full !p-4 text-left" onClick={() => nav(`/unit/${next.id}`)} data-testid={`unit-${sub}`}>
                   <div className="kicker text-muted">{subjectLabel(sub, lang)} · {fil ? "Grade" : "Grade"} {planGrade}</div>
                   <div className="mt-1 font-display text-[22px] leading-tight">{fil ? "Susunod:" : "Up next:"} {next.title[lang]}</div>
                   <div className="mt-1 text-[14px] text-muted">Q{next.quarter} · {verifierMeta[next.verifier][lang]}</div>
                 </button>
+                <OfflinePack subject={sub} grade={planGrade} />
+                </div>
               );
             })}
           </section>
-        )
       )}
 
       <section className="mt-4 grid grid-cols-2 gap-3">

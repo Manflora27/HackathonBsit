@@ -1,4 +1,6 @@
-import type { PlanUnit } from "../data/curriculum";
+import type { PlanUnit, SubjectId } from "../data/curriculum";
+import type { Skill } from "../types";
+import { deviceGet, deviceSet } from "./store";
 import { engine } from "../engine/client";
 import { supabase } from "../lib/supabase";
 import type { Form, Lesson } from "../types";
@@ -10,7 +12,6 @@ export interface CachedLesson {
   source: "device" | "shared" | "generated";
 }
 
-const LS = (id: string) => `gf-lesson:${id}`;
 const TIMEOUT_MS = 30_000;
 /** Verifier tags the offline engine checks. Only "llm" units are published as AI-checked.
  * Statistics and geometry keys are verified as calculations: `given` is the computation, the engine confirms the value. */
@@ -18,17 +19,22 @@ const ENGINE_VERIFIED = new Set(["sympy", "arithmetic", "statistics", "geometry"
 
 type Draft = { en: Lesson["en"]; fil: Lesson["fil"]; practice: { prompt: string; given: string; form: Form; expected: string }[] };
 
-function readDevice(id: string): { lesson: Lesson; verified: boolean } | null {
-  try {
-    const raw = localStorage.getItem(LS(id));
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+/** What a lesson is about. Plan units and the original 14 skills both reduce to this. */
+export interface LessonTarget {
+  id: string;
+  subject: SubjectId;
+  grade: number;
+  quarter: number;
+  domain: string;
+  title: string;
+  verifier: PlanUnit["verifier"];
 }
 
+export const unitTarget = (u: PlanUnit): LessonTarget => ({ id: u.id, subject: u.subject, grade: u.grade, quarter: u.quarter, domain: u.domain, title: u.title.en, verifier: u.verifier });
+export const skillTarget = (k: Skill): LessonTarget => ({ id: `skill:${k.id}`, subject: "math", grade: k.grade, quarter: 1, domain: k.id, title: k.title, verifier: "sympy" });
+
 /** The gate: keep only practice items whose key the engine accepts. */
-async function gate(unit: PlanUnit, d: Draft): Promise<{ lesson: Lesson; verified: boolean } | null> {
+async function gate(unit: LessonTarget, d: Draft): Promise<{ lesson: Lesson; verified: boolean } | null> {
   const engineChecked = ENGINE_VERIFIED.has(unit.verifier);
   const kept: Draft["practice"] = [];
   for (const p of d.practice) {
@@ -47,7 +53,7 @@ async function gate(unit: PlanUnit, d: Draft): Promise<{ lesson: Lesson; verifie
   return { lesson, verified: engineChecked };
 }
 
-async function generate(unit: PlanUnit): Promise<Draft | null> {
+async function generate(unit: LessonTarget): Promise<Draft | null> {
   if (!navigator.onLine) return null;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
@@ -55,7 +61,7 @@ async function generate(unit: PlanUnit): Promise<Draft | null> {
     const res = await fetch("/api/lesson", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ subject: unit.subject, grade: unit.grade, quarter: unit.quarter, domain: unit.domain, title: unit.title.en, verifier: unit.verifier }),
+      body: JSON.stringify({ subject: unit.subject, grade: unit.grade, quarter: unit.quarter, domain: unit.domain, title: unit.title, verifier: unit.verifier }),
       signal: ctrl.signal,
     });
     return res.ok ? ((await res.json()) as Draft) : null;
@@ -67,15 +73,15 @@ async function generate(unit: PlanUnit): Promise<Draft | null> {
 }
 
 /** device cache → shared cache → generate, verify, publish. Returns null when nothing is available (offline, timeout, failed gate). */
-export async function getLesson(unit: PlanUnit): Promise<CachedLesson | null> {
-  const local = readDevice(unit.id);
+export async function getLesson(unit: LessonTarget): Promise<CachedLesson | null> {
+  const local = await deviceGet<{ lesson: Lesson; verified: boolean }>(unit.id);
   if (local) return { ...local, source: "device" };
 
   if (supabase && navigator.onLine) {
     const { data } = await supabase.from("lesson_cache").select("content, verified").eq("unit_id", unit.id).maybeSingle();
     if (data) {
       const hit = { lesson: data.content as Lesson, verified: data.verified as boolean };
-      localStorage.setItem(LS(unit.id), JSON.stringify(hit));
+      await deviceSet(unit.id, hit);
       return { ...hit, source: "shared" };
     }
   }
@@ -84,7 +90,7 @@ export async function getLesson(unit: PlanUnit): Promise<CachedLesson | null> {
   if (!draft) return null;
   const checked = await gate(unit, draft);
   if (!checked) return null;
-  localStorage.setItem(LS(unit.id), JSON.stringify(checked));
+  await deviceSet(unit.id, checked);
   if (supabase) await supabase.from("lesson_cache").insert({ unit_id: unit.id, content: checked.lesson, verified: checked.verified, verifier: unit.verifier });
   return { ...checked, source: "generated" };
 }
