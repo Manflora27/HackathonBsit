@@ -1,0 +1,6 @@
+{
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "headers": [
+    { "source": "/pyodide/(.*)", "headers": [{ "key": "cache-control", "value": "public, max-age=31536000, immutable" }] }
+  ]
+}

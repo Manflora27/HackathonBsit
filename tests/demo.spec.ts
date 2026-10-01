@@ -67,3 +67,18 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await page.getByTestId("confirm-assign").click();
   await expect(page.getByRole("status")).toContainText("Sent to 13");
 });
+
+test("airplane mode: still diagnoses with no internet", async ({ page, context }) => {
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /continue/i }).click();
+  await page.getByTestId("try-it").click();
+  await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
+
+  await context.setOffline(true);
+  await page.getByTestId("step-0").fill("3x-2=12");
+  await page.getByTestId("check").click();
+  await page.getByTestId("confirm").click();
+  await expect(page.getByTestId("misconception")).toHaveText("Multiplied only the first term");
+  await page.screenshot({ path: "test-results/shots/08-offline.png" });
+});
