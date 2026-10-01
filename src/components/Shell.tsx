@@ -66,12 +66,15 @@ export function Shell({
   tabs = true,
   title,
   back,
+  bare = false,
 }: {
   children: React.ReactNode;
   wide?: boolean;
   tabs?: boolean;
   title?: React.ReactNode;
   back?: string | number;
+  /** No top bar: just a small language pill. For full-screen first impressions. */
+  bare?: boolean;
 }) {
   useApplyPrefs();
   const { lang, role, set } = useStore();
@@ -79,9 +82,15 @@ export function Shell({
   const showTabs = tabs && role === "student";
 
   return (
-    <div className={`mx-auto min-h-dvh ${wide ? "max-w-6xl" : "max-w-md"}`}>
+    <div className={`relative mx-auto min-h-dvh ${wide ? "max-w-6xl" : "max-w-md"}`}>
       <Ambient />
-      <header className="sticky top-2 z-20 px-3 pt-1">
+      {bare && (
+        <button className="absolute right-4 top-4 z-20 flex h-9 min-w-9 items-center justify-center rounded-full bg-white/60 px-2.5 text-[12.5px] font-bold tracking-wide shadow-[inset_0_1px_0_#fff]"
+          onClick={() => set({ lang: lang === "en" ? "fil" : "en" })} aria-label="Switch language">
+          {lang === "en" ? "EN" : "FIL"}
+        </button>
+      )}
+      {!bare && <header className="sticky top-2 z-20 px-3 pt-1">
         <div className="glass flex h-14 items-center gap-2.5 rounded-full px-3">
           {back !== undefined ? (
             <button className="flex h-9 w-9 items-center justify-center rounded-full bg-white/60 shadow-[inset_0_1px_0_#fff]" aria-label="Back"
@@ -100,8 +109,8 @@ export function Shell({
             {lang === "en" ? "EN" : "FIL"}
           </button>
         </div>
-      </header>
-      <main className={`px-4 pt-4 ${showTabs ? "pb-28" : "pb-10"}`}>{children}</main>
+      </header>}
+      <main className={`px-4 ${bare ? "pt-12" : "pt-4"} ${showTabs ? "pb-28" : bare ? "pb-6" : "pb-10"}`}>{children}</main>
       {showTabs && (
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md px-3 pb-[max(env(safe-area-inset-bottom),10px)]">
           <div className="glass-dark flex justify-around rounded-full p-1.5 text-paper">

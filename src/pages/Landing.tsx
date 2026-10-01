@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Icon, InkCircle } from "../components/Icon";
-import { EngineBadge, Shell } from "../components/Shell";
+import { Shell } from "../components/Shell";
 import { useAuth } from "../auth";
 import { authConfigured } from "../lib/supabase";
 import { useStore } from "../store";
@@ -74,25 +74,22 @@ export default function Landing() {
   };
 
   return (
-    <Shell tabs={false}>
-      <section className="pt-3">
-        <RootDrawing />
-        <div className="kicker mt-4 text-gap-dark">{fil ? "Para sa math na nakakalito" : "A diagnostic for math"}</div>
-        <h1 className="mt-2 text-[40px] leading-[1.02]">
+    <Shell tabs={false} bare>
+      <section>
+        <div className="mx-auto w-[40%] max-w-[150px]"><RootDrawing /></div>
+        <div className="kicker mt-3 text-gap-dark">{fil ? "Para sa math na nakakalito" : "A diagnostic for math"}</div>
+        <h1 className="mt-1.5 text-[28px] leading-[1.06]">
           {fil ? "Hindi ka mahina sa math." : "You're not bad at math."}
           <br />
           {fil ? "May " : "You're missing "}
           <InkCircle className="px-1 text-gap">{fil ? "isang" : "one"}</InkCircle>
           {fil ? " skill lang na kulang." : " skill."}
         </h1>
-        <p className="mt-4 text-[17px] leading-relaxed text-muted">
+        <p className="mt-2 text-[14px] leading-snug text-muted">
           {fil
             ? "Isulat ang solusyon mo. Hahanapin namin ang linyang nagkamali, at ang skill mula sa mga nakaraang taon na nagdulot nito."
             : "Show your steps. We find the line that broke, and the skill from years back that caused it."}
         </p>
-        <div className="mt-3">
-          <EngineBadge />
-        </div>
       </section>
 
       {!consent ? (
@@ -137,28 +134,24 @@ export default function Landing() {
           </button>
         </section>
       ) : (
-        <section className="card mt-7">
-          <h2 className="text-[24px]">{fil ? "Mag-sign in" : "Sign in to save your roots"}</h2>
-          <p className="mt-1 text-[15px] text-muted">
-            {fil ? "Para ma-save ang skill map mo at makasali sa klase." : "Keep your skill map, and join your class with a code."}
-          </p>
-          {authConfigured ? (
+        <section className="card mt-5 !p-5">
+          <h2 className="text-[22px]">{fil ? "Mag-sign in" : "Sign in to save your roots"}</h2>
+                    {authConfigured ? (
             <button className="btn-primary mt-5 w-full" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
               <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
             </button>
           ) : (
-            <p className="mt-4 rounded-2xl bg-gap-soft/70 p-3 text-[14px] text-gap-dark" data-testid="auth-unconfigured">
-              {fil ? "Hindi pa nakakonekta ang sign-in. Idagdag ang Supabase keys sa .env." : "Sign-in isn't connected yet. Add the Supabase keys to .env (see .env.example)."}
+            <p className="mt-3 rounded-2xl bg-gap-soft/70 px-3 py-2 text-[13px] text-gap-dark" data-testid="auth-unconfigured">
+              {fil ? "Hindi pa nakakonekta ang sign-in." : "Sign-in isn't connected yet (add the Supabase keys)."}
             </p>
           )}
           {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
-          <div className="my-5 flex items-center gap-3 text-[12px] uppercase tracking-[0.16em] text-muted">
+          <div className="my-3 flex items-center gap-3 text-[12px] uppercase tracking-[0.16em] text-muted">
             <span className="rule" /> {fil ? "o" : "or"} <span className="rule" />
           </div>
           <button className="btn-ghost w-full" onClick={guest} data-testid="try-it">
             {fil ? "Subukan nang walang account" : "Try without an account"}
           </button>
-          <p className="mt-2 text-center text-[13px] text-muted">{fil ? "Ikaw lang ang makakakita. Hindi ise-save." : "Only you can see it. Nothing is saved to an account."}</p>
         </section>
       )}
       {consent && (
