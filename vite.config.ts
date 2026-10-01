@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
       manifest: {
-        name: "Gap Finder",
-        short_name: "Gap Finder",
+        name: "Hopper",
+        short_name: "Hopper",
         description: "Finds the exact math skill behind a mistake.",
         theme_color: "#1e2b27",
         background_color: "#f4efe4",

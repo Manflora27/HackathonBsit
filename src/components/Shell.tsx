@@ -104,7 +104,7 @@ export function Shell({
               <img src="/icon.svg" alt="" className="h-8 w-8 rounded-[10px]" />
             </button>
           )}
-          <div className="min-w-0 flex-1 truncate font-display text-[19px]">{title ?? "Gap Finder"}</div>
+          <div className="min-w-0 flex-1 truncate font-display text-[19px]">{title ?? "Hopper"}</div>
           {role === "student" && <Stats />}
           <button className="flex h-9 min-w-9 items-center justify-center rounded-full bg-white/60 px-2.5 text-[12.5px] font-bold tracking-wide shadow-[inset_0_1px_0_#fff]"
             onClick={() => set({ lang: lang === "en" ? "fil" : "en" })} aria-label="Switch language">

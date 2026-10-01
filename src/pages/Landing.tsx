@@ -230,7 +230,7 @@ export default function Landing() {
       <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col">
         <div className="-mt-8 flex h-9 items-center gap-2 pr-14">
           <img src="/icon.svg" alt="" className="h-7 w-7 rounded-[9px]" />
-          <span className="font-display text-[18px]">Gap Finder</span>
+          <span className="font-display text-[18px]">Hopper</span>
         </div>
 
         <div className="mt-3 flex flex-1 flex-col"><HeroDrawing story={story} /></div>

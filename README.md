@@ -1,4 +1,4 @@
-# Gap Finder
+# Hopper
 
 **Finds the one math skill behind a mistake.** A student writes their solution step by step; the app finds the exact line where it broke, names the misconception, and traces it back through a prerequisite skill graph to the root gap — often from years earlier. Teachers see which gaps their class shares and assign targeted practice in one click.
 

@@ -86,7 +86,7 @@ export default function Welcome() {
       {step === 1 && (
         <>
           <div className="kicker mt-5 text-gap-dark">{fil ? "Una sa lahat" : "First things first"}</div>
-          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{guest ? (fil ? "Kumusta! Ano ang pangalan mo?" : "Hi! What's your name?") : fil ? "Sino ka sa Gap Finder?" : "Who's using Gap Finder?"}</h1>
+          <h1 className="mt-1 text-balance text-[34px] leading-[1.06]">{guest ? (fil ? "Kumusta! Ano ang pangalan mo?" : "Hi! What's your name?") : fil ? "Sino ka sa Hopper?" : "Who's using Hopper?"}</h1>
           <p className="mt-2 text-balance text-[16px] text-muted">
             {guest ? (fil ? "Gagawa kami ng plano sa pag-aaral para sa iyo sa loob ng isang minuto. Walang account na kailangan." : "We'll build you a study plan in about a minute. No account needed.") : fil ? "Isang minuto lang para ihanda ang plano mo." : "One minute to set up your plan."}
           </p>
@@ -176,7 +176,7 @@ export default function Welcome() {
                 ))}
               </div>
               <p className="mt-2 text-[13px] text-muted">
-                {fil ? "Panimulang punto lang ito, hindi ito sukat ng level mo. Susubukan ng Gap Finder kung nasaan ka talaga." : "This is just a starting point, not a measure of your level. Gap Finder checks where you really are."}
+                {fil ? "Panimulang punto lang ito, hindi ito sukat ng level mo. Susubukan ng Hopper kung nasaan ka talaga." : "This is just a starting point, not a measure of your level. Hopper checks where you really are."}
               </p>
             </div>
 

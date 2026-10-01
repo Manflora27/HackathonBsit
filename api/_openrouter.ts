@@ -11,7 +11,7 @@ export function headers() {
   return {
     authorization: `Bearer ${key()}`,
     "content-type": "application/json",
-    "x-title": "Gap Finder",
+    "x-title": "Hopper",
   };
 }
 

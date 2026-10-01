@@ -14,7 +14,7 @@ export default function Settings() {
     const blob = new Blob([JSON.stringify({ consent, progress, attempts, shareSkillMap, aiLog }, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "my-gap-finder-data.json";
+    a.download = "my-hopper-data.json";
     a.click();
   }
 
