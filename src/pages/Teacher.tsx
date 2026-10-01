@@ -1,30 +1,46 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { teacherInsight } from "../ai/client";
-import { useAuth } from "../auth";
 import { Bilog } from "../components/Bilog";
 import { Math } from "../components/Math";
 import { Shell } from "../components/Shell";
+import { pushTeacherOverride } from "../classroom";
+import TeacherClasses from "./TeacherClasses";
 import { misconceptionById, misconceptionText, misconceptions, problemById, skills as allSkills, skillTitle } from "../data";
+import { useT } from "../i18n";
 
 // Foundational skills first, so the gap columns are visible without scrolling.
 const skills = [...allSkills].sort((a, b) => a.grade - b.grade || a.y - b.y || a.x - b.x).reverse().sort((a, b) => a.grade - b.grade);
 import { buildSeedClass, KYLA_ID } from "../data/seedClass";
 import { uid, useStore } from "../store";
-import type { SkillStatus, Student } from "../types";
+import type { Analysis, SkillStatus, Student } from "../types";
 
 const CLASS_CODE = "SAMP-924";
 
-function TeacherDashboard({ sample = false, header }: { sample?: boolean; header?: React.ReactNode }) {
+/** The shape the slide-over renders, for local demo attempts and server attempts alike. */
+type ShownAttempt = {
+  id: string;
+  problemId: string;
+  assignmentId?: string | null;
+  analysis: Analysis;
+  teacherOverride?: { misconceptionId: string | null; note: string };
+};
+
+/**
+ * The stage demo's class: Ms. Santos's Grade 9 with Kyla live on this device, plus a seeded class.
+ * Real teachers use TeacherClasses / ClassPage instead.
+ */
+function TeacherDashboard() {
   const { lang, progress, attempts, shareSkillMap, practiceAssignments, set, updateAttempt, log } = useStore();
-  const fil = lang === "fil";
+  const t = useT();
   const seed = useMemo(buildSeedClass, []);
   const [confirm, setConfirm] = useState<{ skillId: string; ids: string[] } | null>(null);
   const [toast, setToast] = useState<{ id: string; text: string } | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [insight, setInsight] = useState<{ text: string; ai: boolean } | null>(null);
+  const [openSent, setOpenSent] = useState<string | null>(null);
   const topRef = useRef<HTMLDivElement | null>(null);
 
-  // Kyla is live: her assigned work (class-visible) and, if she shares it, her skill map.
+  // Kyla is live on this device: her assigned work (class-visible) and, if she shares it, her skill map.
   const classAttempts = attempts.filter((a) => a.visibility === "class");
   const kylaGap = classAttempts.map((a) => a.rootSkill).filter(Boolean).pop() ?? null;
   const kylaSkills: Record<string, SkillStatus> = {};
@@ -39,7 +55,7 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
     rootGap: kylaGap ?? undefined,
     live: true,
   };
-  const students = [kyla, ...seed];
+  const students: Student[] = [kyla, ...seed];
 
   const groups = useMemo(() => {
     const out: Record<string, Student[]> = {};
@@ -54,12 +70,12 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
     teacherInsight({ skill: skillTitle(top[0], "en"), count: top[1].length, classSize: students.length, lang }).then(setInsight);
   }, [top?.[0], top?.[1].length, lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function assign() {
+  async function assign() {
     if (!confirm) return;
     const id = uid();
     set({ practiceAssignments: [...practiceAssignments, { id, skillId: confirm.skillId, studentIds: confirm.ids, createdAt: Date.now() }] });
     log({ action: "assign practice", suggestion: `group by gap: ${confirm.skillId}`, decision: `teacher assigned to ${confirm.ids.length}`, actor: "teacher" });
-    setToast({ id, text: fil ? `Naipadala sa ${confirm.ids.length} student` : `Sent to ${confirm.ids.length} students` });
+    setToast({ id, text: t.plural("teacher.sentTo", confirm.ids.length) });
     setConfirm(null);
     setTimeout(() => setToast((t) => (t?.id === id ? null : t)), 8000);
   }
@@ -81,22 +97,31 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
     a.click();
   }
 
+  function override(a: ShownAttempt, misconceptionId: string | null) {
+    const patch = { misconceptionId, note: "" };
+    updateAttempt(a.id, { teacherOverride: patch });
+    void pushTeacherOverride(a.id, patch);
+    log({ action: "diagnosis", suggestion: a.analysis.misconception?.id ?? "none", decision: `teacher override: ${misconceptionId ?? "none"}`, actor: "teacher" });
+  }
+
   const sel = students.find((s) => s.id === selected);
+  const shownAttempts: ShownAttempt[] = classAttempts;
 
   return (
-    <Shell wide title={sample ? undefined : fil ? "Klase ko" : "My class"}>
-      {header}
-      <div className={`${sample ? "hidden " : ""}flex flex-wrap items-end justify-between gap-3`}>
-        <div>
-          <div className="kicker text-muted">Ms. Santos</div>
-          <h1 className="font-display text-[30px] font-bold leading-tight">Grade 9 – Sampaguita</h1>
-          <div className="text-sm text-muted">
-            {students.length} {fil ? "student" : "students"} · {fil ? "Class code" : "Class code"}{" "}
-            <span className="chip bg-brand-soft font-mono text-brand">{CLASS_CODE}</span>
+    <Shell wide title={t("teacher.myClass")}>
+      {(
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <div className="kicker text-muted">Ms. Santos</div>
+            <h1 className="font-display text-[30px] font-bold leading-tight">{t("common.gradeN", { n: 9 })} – Sampaguita</h1>
+            <div className="text-sm text-muted">
+              {t.plural("teacher.studentCount", students.length)} · {t("teacher.classCode")}{" "}
+              <span className="chip bg-brand-soft font-mono text-brand">{CLASS_CODE}</span>
+            </div>
           </div>
+          <button className="btn-ghost btn-sm" onClick={exportCsv}>⬇ CSV</button>
         </div>
-        <button className="btn-ghost btn-sm" onClick={exportCsv}>⬇ CSV</button>
-      </div>
+      )}
 
       <section className="mt-5 grid gap-3 md:grid-cols-3">
         {groups.slice(0, 3).map(([sid, list], i) => {
@@ -108,20 +133,22 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
               <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-line font-display text-[32px] font-bold ${i === 0 ? "bg-gap" : "bg-card"}`}
                 data-testid={i === 0 ? "top-gap-count" : undefined}>{list.length}</div>
             <div className="text-[15px] leading-snug">
-              {fil ? "student ang may gap sa" : "students share a gap in"} <b className="font-display text-[17px] font-semibold">{skillTitle(sid, lang)}</b>{" "}
-              <span className="text-muted">(Grade {skills.find((s) => s.id === sid)?.grade})</span>
+              {t.rich("teacher.shareGapIn", {
+                skill: <b className="font-display text-[17px] font-semibold">{skillTitle(sid, lang)}</b>,
+                grade: <span className="text-muted">({t("common.gradeN", { n: skills.find((s) => s.id === sid)?.grade ?? "" })})</span>,
+              })}
             </div>
             </div>
             {fixed > 0 && (
               <div className="chip mt-2 bg-ok-soft text-ok" data-testid={i === 0 ? "top-gap-fixed" : undefined}>
-                ✓ {fixed} {fil ? "ang nakaayos na" : fixed === 1 ? "already fixed it" : "already fixed it"}
+                ✓ {t("teacher.alreadyFixed", { count: fixed })}
               </div>
             )}
-            {list.some((s) => s.live) && <div className="chip mt-2 ml-1 bg-brand-soft text-brand">● {fil ? "Kasama si Kyla — live" : "Includes Kyla — live"}</div>}
+            {list.some((s) => s.live) && <div className="chip mt-2 ml-1 bg-brand-soft text-brand">● {t("teacher.includesKylaLive")}</div>}
             {still.length > 0 && (
               <button className={`${i === 0 ? "btn-gap" : "btn-ghost"} btn-sm mt-3 w-full`} onClick={() => setConfirm({ skillId: sid, ids: still.map((s) => s.id) })}
                 data-testid={i === 0 ? "assign-top" : undefined}>
-                {fil ? `Mag-assign ng practice sa ${still.length} na ito` : `Assign practice to these ${still.length}`}
+                {t("teacher.assignTo", { count: still.length })}
               </button>
             )}
           </div>
@@ -129,21 +156,43 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
         })}
       </section>
 
-      {insight && (
+      {insight && students.length > 0 && (
         <div className="card mt-4 flex items-start gap-3 !bg-brand-soft/70 text-[15px]">
           <Bilog size={44} mood={toast ? "happy" : "found"} lookAt={topRef} />
           <div className="min-w-0 flex-1">
-            <span className="chip mr-2 bg-brand text-white">{insight.ai ? "AI " : ""}{fil ? "mungkahi" : "suggestion"}</span>
+            <span className="chip mr-2 bg-brand text-white">{insight.ai ? "AI " : ""}{t("teacher.suggestion")}</span>
             {insight.text}
             <div className="mt-1 text-xs text-muted">
-              {fil ? "Batay lang sa bilang ng class — walang pangalan na ipinadala. Ikaw ang magpapasya." : "Based only on class counts — no names were sent. You decide."}
+              {t("teacher.basedOnlyClassCounts")}
             </div>
           </div>
         </div>
       )}
 
+      <SentHistory
+        assignments={
+          practiceAssignments.map((p) => ({
+            id: p.id,
+            skillId: p.skillId,
+            createdAt: p.createdAt,
+            studentIds: p.studentIds,
+          }))
+        }
+        students={students}
+        attemptsFor={(id) => (id === KYLA_ID ? classAttempts : [])}
+        showEmpty={false}
+        expanded={openSent}
+        onToggle={(id) => setOpenSent((cur) => (cur === id ? null : id))}
+        onSelect={setSelected}
+        onRemove={(id) => {
+          set({ practiceAssignments: useStore.getState().practiceAssignments.filter((p) => p.id !== id) });
+          log({ action: "assign practice", suggestion: "-", decision: "teacher removed assignment", actor: "teacher" });
+          if (openSent === id) setOpenSent(null);
+        }}
+      />
+
       <section className="mt-5 space-y-2 md:hidden">
-        <h2 className="kicker text-muted">{fil ? "Mga student" : "Students"}</h2>
+        <h2 className="kicker text-muted">{t("teacher.students2")}</h2>
         {students.map((st) => {
           const gaps = Object.entries(st.skills).filter(([, v]) => v === "gap").map(([k]) => k);
           const done = Object.values(st.skills).filter((v) => v === "mastered").length;
@@ -154,9 +203,9 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
                 {st.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate font-extrabold">{st.name} {st.live && <span className="chip ml-1 bg-brand text-white">live</span>}</span>
+                <span className="block truncate font-extrabold">{st.name} {st.live && <span className="chip ml-1 bg-brand text-white">{t("teacher.live")}</span>}</span>
                 <span className="block truncate text-[13px] text-muted">
-                  {gaps.length ? `! ${gaps.map((g) => skillTitle(g, lang)).join(", ")}` : `✓ ${done} ${fil ? "kaya na" : "mastered"}`}
+                  {gaps.length ? `! ${gaps.map((g) => skillTitle(g, lang)).join(", ")}` : `✓ ${t("teacher.masteredCount", { count: done })}`}
                 </span>
               </span>
               <span className="font-display text-muted">›</span>
@@ -169,7 +218,7 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
         <table className="w-full min-w-[820px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-line text-left">
-              <th className="sticky left-0 bg-white/60 p-2 pl-4">{fil ? "Student" : "Student"}</th>
+              <th className="sticky left-0 bg-white/60 p-2 pl-4">{t("teacher.student")}</th>
               {skills.map((s) => (
                 <th key={s.id} className="p-1 text-center text-[11px] font-medium text-muted" title={skillTitle(s.id, lang)}>
                   G{s.grade}
@@ -183,7 +232,7 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
               <tr key={st.id} className={`cursor-pointer border-b border-line/60 hover:bg-paper ${st.live ? "bg-brand-soft/30" : ""}`}
                 onClick={() => setSelected(st.id)}>
                 <td className="sticky left-0 bg-inherit p-2 pl-4 font-medium">
-                  {st.name} {st.live && <span className="chip ml-1 bg-brand text-white">live</span>}
+                  {st.name} {st.live && <span className="chip ml-1 bg-brand text-white">{t("teacher.live")}</span>}
                 </td>
                 {skills.map((s) => (
                   <td key={s.id} className="p-1 text-center">
@@ -199,19 +248,19 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
       {sel && (
         <div className="fixed inset-0 z-30 flex justify-end bg-ink/30 backdrop-blur-sm" onClick={() => setSelected(null)}>
           <aside className="h-full w-full max-w-md overflow-y-auto glass-strong !rounded-none p-5" onClick={(e) => e.stopPropagation()}>
-            <button className="text-sm text-muted" onClick={() => setSelected(null)}>✕ {fil ? "Isara" : "Close"}</button>
+            <button className="text-sm text-muted" onClick={() => setSelected(null)}>✕ {t("teacher.close")}</button>
             <h2 className="mt-2 text-xl font-bold">{sel.name}</h2>
-            <div className="text-sm text-muted">{fil ? "Nakikita ng AI bilang" : "Seen by the AI as"} “{sel.anonId}”</div>
+            <div className="text-sm text-muted">{t("teacher.seenAiAs")} “{sel.anonId}”</div>
             {sel.lastMisconception && (
               <div className="card mt-3">
-                <div className="text-xs font-semibold uppercase text-muted">{fil ? "Huling diagnosis" : "Latest diagnosis"}</div>
+                <div className="text-xs font-semibold uppercase text-muted">{t("teacher.latestDiagnosis")}</div>
                 <div className="font-bold">{misconceptionText(sel.lastMisconception, lang).title}</div>
               </div>
             )}
             {sel.live && (
               <div className="mt-3 space-y-3">
-                {classAttempts.length === 0 && <p className="text-sm text-muted">{fil ? "Wala pang ipinasa." : "No submitted work yet."}</p>}
-                {classAttempts.map((a) => (
+                {shownAttempts.length === 0 && <p className="text-sm text-muted">{t("teacher.noSubmittedWorkYet")}</p>}
+                {shownAttempts.map((a) => (
                   <div key={a.id} className="card">
                     <div className="text-sm text-muted">{problemById[a.problemId]?.given}</div>
                     <ol className="mt-1 space-y-1">
@@ -223,17 +272,14 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
                       ))}
                     </ol>
                     <label className="mt-3 block text-xs font-semibold uppercase text-muted">
-                      {fil ? "Diagnosis (puwedeng palitan)" : "Diagnosis (you can override)"}
+                      {t("teacher.diagnosisCanOverride")}
                     </label>
                     <select
                       className="input mt-1 !font-sans !text-sm"
                       value={a.teacherOverride?.misconceptionId ?? a.analysis.misconception?.id ?? ""}
-                      onChange={(e) => {
-                        updateAttempt(a.id, { teacherOverride: { misconceptionId: e.target.value || null, note: "" } });
-                        log({ action: "diagnosis", suggestion: a.analysis.misconception?.id ?? "none", decision: `teacher override: ${e.target.value}`, actor: "teacher" });
-                      }}
+                      onChange={(e) => override(a, e.target.value || null)}
                     >
-                      <option value="">{fil ? "— walang pattern —" : "— no pattern —"}</option>
+                      <option value="">{t("teacher.noPattern")}</option>
                       {misconceptions.map((m) => (
                         <option key={m.id} value={m.id}>
                           {misconceptionText(m.id, lang).title}
@@ -241,16 +287,14 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
                       ))}
                     </select>
                     {a.teacherOverride && misconceptionById[a.teacherOverride.misconceptionId ?? ""] && (
-                      <div className="mt-1 text-xs text-brand">{fil ? "Pinalitan mo ang diagnosis ng AI/engine." : "You overrode the engine's diagnosis."}</div>
+                      <div className="mt-1 text-xs text-brand">{t("teacher.overrodeEnginesDiagnosis")}</div>
                     )}
                   </div>
                 ))}
               </div>
             )}
             <p className="mt-4 text-xs text-muted">
-              {fil
-                ? "Nakikita mo lang ang assigned na gawa, at ang skill map kung ibinahagi ito ng student."
-                : "You only see assigned work, plus the skill map if the student chose to share it."}
+              {t("teacher.youOnlySeeAssigned")}
             </p>
           </aside>
         </div>
@@ -259,13 +303,13 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
       {confirm && (
         <div className="fixed inset-0 z-30 flex items-end justify-center bg-ink/30 p-3 backdrop-blur-sm sm:items-center" role="dialog" aria-modal>
           <div className="card w-full max-w-md">
-            <h2 className="font-display text-2xl font-semibold">{fil ? "Ipadala ang practice?" : "Send practice?"}</h2>
+            <h2 className="font-display text-2xl font-semibold">{t("teacher.sendPractice")}</h2>
             <p className="mt-2 text-[15px]">
-              {fil ? "Matatanggap ng" : ""} <b>{confirm.ids.length}</b> {fil ? "student ang practice para sa" : "students will get practice on"} <b>{skillTitle(confirm.skillId, lang)}</b>.
+              {t.rich("teacher.confirmPractice", { count: <b>{confirm.ids.length}</b>, skill: <b>{skillTitle(confirm.skillId, lang)}</b> })}
             </p>
             <div className="mt-5 flex gap-2">
-              <button className="btn-ghost flex-1" onClick={() => setConfirm(null)}>{fil ? "Kanselahin" : "Cancel"}</button>
-              <button className="btn-primary flex-1" onClick={assign} data-testid="confirm-assign">{fil ? "Ipadala" : "Send"}</button>
+              <button className="btn-ghost flex-1" onClick={() => setConfirm(null)}>{t("teacher.cancel")}</button>
+              <button className="btn-primary flex-1" onClick={assign} data-testid="confirm-assign">{t("teacher.send")}</button>
             </div>
           </div>
         </div>
@@ -274,7 +318,7 @@ function TeacherDashboard({ sample = false, header }: { sample?: boolean; header
       {toast && (
         <div className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 whitespace-nowrap rounded-2xl border border-line bg-ink px-4 py-3 font-display text-white" role="status">
           ✓ {toast.text}
-          <button className="font-semibold text-amber-300" onClick={undo}>{fil ? "I-undo" : "Undo"}</button>
+          <button className="font-semibold text-amber-300" onClick={undo}>{t("teacher.undo")}</button>
         </div>
       )}
     </Shell>
@@ -287,61 +331,122 @@ function Cell({ status }: { status: SkillStatus }) {
   return <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-paper text-xs text-muted" aria-label="not checked">·</span>;
 }
 
-export default function Teacher() {
-  const demo = useStore((x) => x.demo);
-  const lang = useStore((x) => x.lang);
-  const fil = lang === "fil";
-  const { profile, classes, roster, createClass, error } = useAuth();
-  const [name, setName] = useState("");
-  const [section, setSection] = useState("");
-  const [busy, setBusy] = useState(false);
-  const cls = classes[0];
+type SentItem = { id: string; skillId: string; createdAt: string | number; studentIds: string[] };
+type PerStudent = "done" | "tried" | "waiting";
 
-  if (demo) return <TeacherDashboard />;
+/**
+ * Previously sent practice with per-student performance. Same card/chip/button
+ * vocabulary as the student app. "Done" means the skill shows mastered or a
+ * linked attempt checked out correct; "tried" means an attempt exists but the
+ * gap is still open; otherwise waiting.
+ */
+function SentHistory({
+  assignments,
+  students,
+  attemptsFor,
+  showEmpty,
+  expanded,
+  onToggle,
+  onSelect,
+  onRemove,
+}: {
+  assignments: SentItem[];
+  students: Student[];
+  attemptsFor: (studentId: string) => { assignmentId?: string | null; analysis: Analysis }[];
+  showEmpty: boolean;
+  expanded: string | null;
+  onToggle: (id: string) => void;
+  onSelect: (studentId: string) => void;
+  onRemove: (id: string) => void;
+}) {
+  const { lang } = useStore();
+  const t = useT();
+  if (!assignments.length && !showEmpty) return null;
+  const byId = new Map(students.map((s) => [s.id, s]));
 
-  if (!cls)
-    return (
-      <Shell title={fil ? "Gumawa ng klase" : "Create a class"}>
-        <div className="kicker mt-3 text-gap-dark">{fil ? "Isang hakbang" : "One step"}</div>
-        <h1 className="mt-1 text-[34px] leading-tight">{fil ? `Hi, ${profile?.display_name ?? "teacher"}. Gumawa ng klase.` : `Hi, ${profile?.display_name ?? "teacher"}. Make your first class.`}</h1>
-        <form className="card mt-5" onSubmit={async (e) => { e.preventDefault(); setBusy(true); await createClass(name, section); setBusy(false); }}>
-          <label className="kicker text-muted" htmlFor="cn">{fil ? "Pangalan ng klase" : "Class name"}</label>
-          <input id="cn" className="input mt-2 !font-sans" value={name} onChange={(e) => setName(e.target.value)} placeholder="Grade 9 Math" data-testid="class-name" />
-          <label className="kicker mt-4 block text-muted" htmlFor="cs">{fil ? "Section (opsyonal)" : "Section (optional)"}</label>
-          <input id="cs" className="input mt-2 !font-sans" value={section} onChange={(e) => setSection(e.target.value)} placeholder="Sampaguita" />
-          {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
-          <button className="btn-primary mt-5 w-full" disabled={!name.trim() || busy} data-testid="create-class">{fil ? "Gumawa" : "Create class"}</button>
-          <p className="mt-2 text-center text-[13px] text-muted">{fil ? "Bibigyan ka ng code na ibabahagi sa mga student." : "You'll get a code to share with your students."}</p>
-        </form>
-      </Shell>
-    );
+  const statusOf = (st: Student | undefined, skillId: string, assignmentId: string): PerStudent => {
+    if (!st) return "waiting";
+    if (st.skills[skillId] === "mastered") return "done";
+    const linked = attemptsFor(st.id).filter((a) => a.assignmentId === assignmentId);
+    if (!linked.length) return "waiting";
+    return linked.some((a) => a.analysis.errorIndex === null && a.analysis.complete) ? "done" : "tried";
+  };
 
   return (
-    <TeacherDashboard
-      sample
-      header={
-        <>
-      <section className="card mt-2">
-        <div className="kicker text-muted">{fil ? "Iyong klase" : "Your class"}</div>
-        <div className="mt-1 font-display text-[28px] leading-tight">{cls.name}{cls.section ? ` · ${cls.section}` : ""}</div>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <span className="rounded-2xl bg-white/60 px-4 py-2 font-mono text-[22px] tracking-widest" data-testid="class-code-display">{cls.class_code}</span>
-          <button className="btn-ghost btn-sm" onClick={() => navigator.clipboard?.writeText(cls.class_code)}>{fil ? "Kopyahin" : "Copy"}</button>
-        </div>
-        <p className="mt-2 text-[13px] text-muted">{fil ? "Ipasok ito ng mga student sa Home nila para sumali." : "Students enter this on their home screen to join."}</p>
-        <div className="kicker mt-5 text-muted">{roster.length} {fil ? "student ang sumali" : roster.length === 1 ? "student joined" : "students joined"}</div>
-        {roster.length === 0 ? (
-          <p className="mt-2 text-[15px] text-muted">{fil ? "Wala pa. Ibahagi ang code." : "No one yet. Share the code."}</p>
-        ) : (
-          <ul className="mt-2 divide-y divide-line">{roster.map((r) => <li key={r.user_id} className="py-2 text-[16px]">{r.display_name}</li>)}</ul>
-        )}
-      </section>
-      <div className="mt-6 flex items-center gap-3">
-        <span className="chip bg-gap-soft text-gap-dark">Sample data</span>
-        <span className="text-[14px] text-muted">{fil ? "Ganito ang magiging itsura ng dashboard kapag may nag-submit na." : "This is how your dashboard fills in once students submit work."}</span>
-      </div>
-        </>
-      }
-    />
+    <section className="mt-5" data-testid="sent-history" aria-label={t("teacher.sentTitle")}>
+      <h2 className="kicker text-muted">{t("teacher.sentTitle")} · {assignments.length}</h2>
+      {assignments.length === 0 ? (
+        <p className="mt-2 text-[15px] text-muted">{t("teacher.sentEmpty")}</p>
+      ) : (
+        <ul className="mt-3 space-y-3">
+          {assignments.map((a) => {
+            const targets = a.studentIds.length ? a.studentIds : students.map((s) => s.id);
+            const states = targets.map((id) => statusOf(byId.get(id), a.skillId, a.id));
+            const done = states.filter((s) => s === "done").length;
+            const tried = states.filter((s) => s === "tried").length;
+            const pct = targets.length ? globalThis.Math.round((done / targets.length) * 100) : 0;
+            const open = expanded === a.id;
+            const when = (() => {
+              const d = new Date(a.createdAt);
+              return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+            })();
+            return (
+              <li key={a.id} className="card !p-4" data-testid={`sent-item-${a.id}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="truncate font-display text-[18px] leading-tight">{a.skillId ? skillTitle(a.skillId, lang) : "—"}</div>
+                    <div className="mt-1 text-[13px] text-muted">
+                      {when}{when ? " · " : ""}{t.plural("teacher.sentTo", targets.length)}
+                      {tried > 0 && done < targets.length ? ` · ${tried} ${t("teacher.sentTried")}` : ""}
+                    </div>
+                  </div>
+                  <span className={`chip shrink-0 ${done === targets.length && targets.length > 0 ? "bg-ok-soft text-ok" : "bg-brand-soft text-brand"}`}>
+                    {t("teacher.sentDoneOf", { done, total: targets.length })}
+                  </span>
+                </div>
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-ink/10" aria-hidden>
+                  <div className="h-full rounded-full bg-ok transition-all" style={{ width: `${pct}%` }} />
+                </div>
+                {open && (
+                  <ul className="mt-3 divide-y divide-line border-t border-line">
+                    {targets.map((id) => {
+                      const st = byId.get(id);
+                      const s = statusOf(st, a.skillId, a.id);
+                      return (
+                        <li key={id}>
+                          <button className="flex w-full items-center gap-3 py-2.5 text-left" onClick={() => st && onSelect(st.id)}>
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line bg-card font-display text-[13px]">
+                              {(st?.name ?? "?").split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                            </span>
+                            <span className="min-w-0 flex-1 truncate text-[15px] font-semibold">{st?.name ?? id}</span>
+                            <span className={`chip shrink-0 ${s === "done" ? "bg-ok-soft text-ok" : s === "tried" ? "bg-gap-soft text-gap-dark" : "bg-paper text-muted"}`}>
+                              {s === "done" ? `✓ ${t("teacher.sentDone")}` : s === "tried" ? `! ${t("teacher.sentTried")}` : `· ${t("teacher.sentWaiting")}`}
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+                <div className="mt-3 flex gap-2">
+                  <button className="btn-ghost btn-sm flex-1" onClick={() => onToggle(a.id)} data-testid={`sent-toggle-${a.id}`}>
+                    {open ? t("teacher.sentHide") : t("teacher.sentViewStudents")}
+                  </button>
+                  <button className="btn-ghost btn-sm" onClick={() => onRemove(a.id)} aria-label={t("teacher.sentRemove")}>
+                    ✕
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
   );
+}
+
+/** Teachers: their classes (TeacherClasses, ClassPage). The stage demo keeps its sample class. */
+export default function Teacher() {
+  const demo = useStore((x) => x.demo);
+  return demo ? <TeacherDashboard /> : <TeacherClasses />;
 }

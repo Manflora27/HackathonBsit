@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Sign in to Hopper</title>
+</head>
+<body style="margin:0;padding:0;background:#f1ebde;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1ebde;">
+    <tr>
+      <td align="center" style="padding:40px 16px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;">
+          <!-- wordmark -->
+          <tr>
+            <td style="padding:0 4px 20px;">
+              <table role="presentation" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="32" height="32" align="center" valign="middle" style="background:#1e2b27;border-radius:9px;">
+                    <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#d9532b;"></span>
+                  </td>
+                  <td style="padding-left:10px;font-family:'Young Serif',Georgia,'Times New Roman',serif;font-size:21px;color:#1e2b27;">Hopper</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- card -->
+          <tr>
+            <td style="background:#fbf8f1;border:1px solid #ffffff;border-radius:24px;padding:32px 28px;box-shadow:0 18px 40px -28px rgba(30,43,39,.5);">
+              <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.16em;text-transform:uppercase;color:#a63a1b;">Your sign-in link</p>
+              <h1 style="margin:0 0 12px;font-family:'Young Serif',Georgia,'Times New Roman',serif;font-weight:normal;font-size:28px;line-height:1.15;color:#1e2b27;">Let's find your missing skill.</h1>
+              <p style="margin:0 0 26px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.5;color:#566059;">Tap the button to sign in to Hopper. No password needed.</p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="border-radius:999px;background:#1e2b27;">
+                    <a href="{{ .ConfirmationURL }}" style="display:block;padding:16px 24px;font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:bold;color:#f4efe4;text-decoration:none;border-radius:999px;">Sign in to Hopper &rarr;</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:22px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#566059;">Open it on the same device and browser where you asked for it. The link works once and expires in an hour.</p>
+              <p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#566059;"><i>Pindutin ang button para mag-sign in. Walang password na kailangan.</i></p>
+            </td>
+          </tr>
+          <!-- footer -->
+          <tr>
+            <td style="padding:20px 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#8a8f86;">
+              Sent to {{ .Email }}. If you didn't ask to sign in, you can ignore this email; nothing will happen.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

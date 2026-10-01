@@ -103,3 +103,19 @@ def test_units():
     assert g.check_answer("2 kg * 3 m/s^2", "6 N", "units")["correct"]
     assert g.check_answer("100 m / 20 s", "5", "units")["reason"] == "wrong_units"
     assert not g.check_answer("100 m / 20 s", "6 m/s", "units")["correct"]
+
+
+def test_inequalities_compare_solution_sets():
+    assert g.check_answer("x^2-5x+6<0", "2<x<3", "solved")["correct"]
+    assert g.check_answer("x^2-9>0", "x<-3 or x>3", "solved")["correct"]
+    assert g.check_answer("x^2-2x-8<=0", "-2<=x<=4", "solved")["correct"]
+    assert g.check_answer("3-x>=1", "x≤2", "solved")["correct"]
+    assert not g.check_answer("x^2-5x+6<0", "2<=x<=3", "solved")["correct"]  # endpoints matter
+    assert not g.check_answer("2x+3>7", "x>3", "solved")["correct"]
+    assert g.check_answer("2x+3>7", "2x>4", "solved")["reason"] == "not_solved"
+
+
+def test_inequality_steps_are_checked():
+    ok = g.analyze("x^2-3x-4<0", ["(x+1)(x-4)<0", "-1<x<4"], "solve")
+    assert ok["errorIndex"] is None and all(s["status"] == "ok" for s in ok["steps"])
+    assert g.analyze("2x+3>7", ["2x>10", "x>5"], "solve")["errorIndex"] == 0

@@ -1,5 +1,7 @@
+import { normalizeLang } from "./locales";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { pushAttempt } from "./classroom";
 import type { Goal, SubjectId } from "./data/curriculum";
 import type { Attempt, Lang, SkillStatus } from "./types";
 
@@ -27,6 +29,22 @@ export interface AiLogEntry {
   actor: "student" | "teacher";
 }
 
+/** Where a starting-point check put the learner in one subject. `unitId` is a plan unit, `skillId` one of the built-in math skills (offline check). */
+export interface Placement {
+  at: number;
+  score: number;
+  total: number;
+  /** true when a foundation from an earlier grade was missed: start there. */
+  gap: boolean;
+  unitId?: string;
+  skillId?: string;
+}
+
+export interface PracticeResume {
+  qi: number;
+  results: (boolean | null)[];
+}
+
 export interface Onboarding {
   name: string;
   subjects: SubjectId[];
@@ -47,6 +65,13 @@ interface State {
   readableFont: boolean;
   reduceMotion: boolean;
   shareSkillMap: boolean;
+  /** Exam-prep switch: lessons generate with six practice items and an exam tip until it's turned off. */
+  examMode: boolean;
+  /** Voice input runs on the device's speech recognition and is 18+ only. null = age not attested yet. */
+  voiceAdult: boolean | null;
+  /** Voice input switched on. Only possible once voiceAdult === true. null = not asked yet. */
+  voiceAi: boolean | null;
+  placement: Partial<Record<SubjectId, Placement>>;
   progress: Record<string, SkillStatus>;
   attempts: Attempt[];
   trace: Trace | null;
@@ -54,11 +79,20 @@ interface State {
   aiLog: AiLogEntry[];
   gapsFixed: string[];
   activeDays: string[];
+  /** Points for right answers and finished skills. Earning any also marks today as practiced. */
+  xp: number;
+  /** Unfinished practice per lesson id, so leaving and coming back picks up at the same question. */
+  practiceResume: Record<string, PracticeResume>;
 
   set: (patch: Partial<State>) => void;
   setSkill: (id: string, status: SkillStatus) => void;
+  addXp: (n: number) => void;
+  /** Save (or with null, clear) a lesson's unfinished practice. */
+  saveResume: (id: string, r: PracticeResume | null) => void;
   addAttempt: (a: Attempt) => void;
   updateAttempt: (id: string, patch: Partial<Attempt>) => void;
+  /** The learner's "share with my teacher" switch. Also syncs the flag and progress to the server. */
+  setShareSkillMap: (on: boolean) => void;
   log: (e: Omit<AiLogEntry, "at">) => void;
   resetDemo: () => void;
 }
@@ -74,6 +108,10 @@ const initial = {
   readableFont: false,
   reduceMotion: false,
   shareSkillMap: false,
+  examMode: false,
+  voiceAdult: null as boolean | null,
+  voiceAi: null as boolean | null,
+  placement: {} as Partial<Record<SubjectId, Placement>>,
   progress: {},
   attempts: [],
   trace: null,
@@ -81,6 +119,8 @@ const initial = {
   aiLog: [],
   gapsFixed: [] as string[],
   activeDays: [] as string[],
+  xp: 0,
+  practiceResume: {} as Record<string, PracticeResume>,
 };
 
 export const useStore = create<State>()(
@@ -88,14 +128,29 @@ export const useStore = create<State>()(
     (set) => ({
       ...initial,
       set: (patch) => set(patch),
-      setSkill: (id, status) => set((s) => ({ progress: { ...s.progress, [id]: status } })),
-      addAttempt: (a) =>
+      setSkill: (id, status) => {
+        set((s) => ({ progress: { ...s.progress, [id]: status } }));
+      },
+      addXp: (n) => set((s) => {
+        const day = new Date().toDateString();
+        return { xp: s.xp + n, activeDays: s.activeDays.includes(day) ? s.activeDays : [...s.activeDays, day] };
+      }),
+      saveResume: (id, r) => set((s) => {
+        const { [id]: _drop, ...rest } = s.practiceResume;
+        return { practiceResume: r ? { ...rest, [id]: r } : rest };
+      }),
+      addAttempt: (a) => {
         set((s) => {
           const day = new Date(a.createdAt).toDateString();
           return { attempts: [...s.attempts, a], activeDays: s.activeDays.includes(day) ? s.activeDays : [...s.activeDays, day] };
-        }),
+        });
+        void pushAttempt(a);
+      },
       updateAttempt: (id, patch) =>
         set((s) => ({ attempts: s.attempts.map((a) => (a.id === id ? { ...a, ...patch } : a)) })),
+      setShareSkillMap: (on) => {
+        set({ shareSkillMap: on });
+      },
       log: (e) => set((s) => ({ aiLog: [...s.aiLog, { ...e, at: Date.now() }] })),
       resetDemo: () => set({ ...initial }),
     }),
@@ -104,7 +159,7 @@ export const useStore = create<State>()(
       // Saved state from older builds can lack newer fields (or whole objects). Merge nested objects so it never crashes.
       merge: (saved, current) => {
         const p = (saved ?? {}) as Partial<State>;
-        return { ...current, ...p, onboarding: { ...current.onboarding, ...(p.onboarding ?? {}) } };
+        return { ...current, ...p, lang: normalizeLang(p.lang ?? current.lang), onboarding: { ...current.onboarding, ...(p.onboarding ?? {}) } };
       },
     },
   ),

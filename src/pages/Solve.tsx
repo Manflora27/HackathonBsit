@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { classifyWithAi } from "../ai/client";
+import { classifyWithAi, readWork } from "../ai/client";
 import { Bilog } from "../components/Bilog";
-import { Keypad, type KeyAction } from "../components/Keypad";
 import { Math, RichText, quickTex } from "../components/Math";
 import { EngineBadge, Shell } from "../components/Shell";
 import { Icon } from "../components/Icon";
@@ -12,6 +11,8 @@ import { engine } from "../engine/client";
 import { useT } from "../i18n";
 import { uid, useStore } from "../store";
 import type { Analysis, Problem } from "../types";
+import { MicButton } from "../components/MicButton";
+import { photoToDataUrl } from "../ai/image";
 
 const DEMO_STEPS: Record<string, string[]> = {
   "p-kyla": ["x^2+9=49", "x^2=40", "x=±sqrt(40)"],
@@ -25,17 +26,15 @@ export default function Solve() {
   const retry = params.get("mode") === "retry";
   const assignmentId = params.get("assignment");
   const { lang, addAttempt, set, setSkill, log, trace, role } = useStore();
-  const fil = lang === "fil";
 
   const known = problemById[problemId];
   const [customGiven, setCustomGiven] = useState(params.get("given") ?? "");
   const problem: Problem =
     known ??
-    ({ id: "custom", prompt: fil ? "Ang problem mo" : "Your problem", given: customGiven, kind: customGiven.includes("=") ? "solve" : "simplify", skill: "lin_eq" } as Problem);
+    ({ id: "custom", prompt: t("solve.problem"), given: customGiven, kind: customGiven.includes("=") ? "solve" : "simplify", skill: "lin_eq" } as Problem);
 
   const [steps, setSteps] = useState<string[]>([""]);
   const [focus, setFocus] = useState<number | null>(known ? 0 : -1);
-  const [textMode, setTextMode] = useState(false);
   const [confirm, setConfirm] = useState<{ latex: (string | null)[] } | null>(null);
   const [result, setResult] = useState<Analysis | null>(null);
   const [aiMc, setAiMc] = useState<{ id: string | null; confidence: number } | null>(null);
@@ -43,6 +42,39 @@ export default function Solve() {
   const [problemTex, setProblemTex] = useState(quickTex(problem.given));
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
   const givenInput = useRef<HTMLInputElement | null>(null);
+  const photoInput = useRef<HTMLInputElement | null>(null);
+  const [snap, setSnap] = useState<"idle" | "reading" | "done" | "failed">("idle");
+
+  // A photo of the paper becomes the typed lines (mistakes kept as written), then the learner checks them.
+  async function onPhoto(file: File | undefined) {
+    if (!file) return;
+    setSnap("reading");
+    setResult(null);
+    const out = await readWork(await photoToDataUrl(file)).catch(() => null);
+    if (!out || (!out.problem && !out.steps.length)) return setSnap("failed");
+    if (known) {
+      const same = (a: string) => a.replace(/\s+/g, "") === problem.given.replace(/\s+/g, "");
+      const lines = [out.problem, ...out.steps].filter((l) => l && !same(l));
+      if (!lines.length) return setSnap("failed");
+      setSteps(lines);
+    } else {
+      setCustomGiven(out.problem);
+      setSteps(out.steps.length ? out.steps : [""]);
+    }
+    setFocus(null);
+    setSnap("done");
+  }
+
+  // A spoken step goes into the box in focus, else the first empty one, else a new one.
+  function onSpokenStep(text: string) {
+    setResult(null);
+    if (focus === -1) return setCustomGiven(text);
+    setSteps((prev) => {
+      const i = focus !== null && focus >= 0 ? focus : prev.findIndex((x) => !x.trim());
+      if (i === -1) return [...prev, text];
+      return prev.map((x, j) => (j === i ? text : x));
+    });
+  }
   const resultRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -63,37 +95,12 @@ export default function Solve() {
     else setSteps((prev) => prev.map((x, j) => (j === i ? value : x)));
   }
 
-  function onKey(a: KeyAction) {
-    if (focus === null) return;
-    const el = focus === -1 ? givenInput.current : inputs.current[focus];
-    const val = focus === -1 ? customGiven : steps[focus] ?? "";
-    const start = el?.selectionStart ?? val.length;
-    const end = el?.selectionEnd ?? val.length;
-    if ("enter" in a) {
-      const next = focus + 1;
-      if (next >= steps.length) setSteps((s) => [...s, ""]);
-      setFocus(next);
-      setTimeout(() => inputs.current[next]?.focus(), 0);
-      return;
-    }
-    let nextVal = val;
-    let caret = start;
-    if ("backspace" in a) {
-      if (start === end && start > 0) {
-        nextVal = val.slice(0, start - 1) + val.slice(end);
-        caret = start - 1;
-      } else {
-        nextVal = val.slice(0, start) + val.slice(end);
-      }
-    } else if ("insert" in a) {
-      nextVal = val.slice(0, start) + a.insert + val.slice(end);
-      caret = start + a.insert.length;
-    }
-    edit(focus, nextVal);
-    requestAnimationFrame(() => {
-      el?.focus();
-      el?.setSelectionRange(caret, caret);
-    });
+  // Enter on a step line opens the next one, like a new line in a notebook.
+  function nextLine(from: number) {
+    const next = from + 1;
+    if (next >= steps.length) setSteps((x) => [...x, ""]);
+    setFocus(next);
+    setTimeout(() => inputs.current[next]?.focus(), 0);
   }
 
   async function openConfirm() {
@@ -162,13 +169,11 @@ export default function Solve() {
     nav("/trace");
   }
 
-  const keypadOpen = focus !== null && !textMode && !confirm;
-
   return (
-    <Shell tabs={false} back={role === "guest" ? "/" : "/student"} title={retry ? (fil ? "Subukan ulit" : "Retry") : problem.prompt}>
+    <Shell tabs={false} back={role === "guest" ? "/" : "/student"} title={retry ? (t("solve.retry")) : problem.prompt}>
       {retry && (
         <div className="card-flat mb-3 flex items-center gap-2 !bg-gap-soft/70 !p-3 text-[15px] text-gap-dark">
-          {fil ? "Ngayon, ang problem na nagpahinto sa iyo." : "Now, the problem that stopped you."}
+          {t("solve.nowProblemStopped")}
         </div>
       )}
 
@@ -189,7 +194,12 @@ export default function Solve() {
               className="input mt-2"
               placeholder="e.g. 3(x-2)=12"
               value={customGiven}
-              inputMode={textMode ? "text" : "none"}
+              data-math
+              inputMode="text"
+              enterKeyHint="next"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
               onFocus={() => setFocus(-1)}
               onChange={(e) => edit(-1, e.target.value)}
               data-testid="custom-problem"
@@ -220,18 +230,20 @@ export default function Solve() {
                     }}
                     className={`w-full bg-transparent font-mono text-[18px] font-semibold outline-none placeholder:text-ink/30 ${focus === i ? "text-brand" : ""}`}
                     value={s}
-                    inputMode={textMode ? "text" : "none"}
+                    data-math
+                    inputMode="text"
+                    enterKeyHint="next"
                     autoCapitalize="off"
                     autoCorrect="off"
                     spellCheck={false}
-                    placeholder={i === 0 ? (fil ? "Unang step mo…" : "Your first step…") : fil ? "Susunod na step…" : "Next step…"}
+                    placeholder={i === 0 ? (t("solve.firstStep")) : t("solve.nextStep")}
                     data-testid={`step-${i}`}
                     onFocus={() => setFocus(i)}
                     onChange={(e) => edit(i, e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
-                        onKey({ enter: true });
+                        nextLine(i);
                       }
                     }}
                   />
@@ -256,56 +268,31 @@ export default function Solve() {
             setFocus(steps.length);
             setTimeout(() => inputs.current[steps.length]?.focus(), 0);
           }}>
-            + {t("addStep")}
+            + {t("common.addStep")}
           </button>
           {DEMO_STEPS[problem.id] && !retry && (
             <button className="btn-ghost btn-sm !text-muted" onClick={() => setSteps(DEMO_STEPS[problem.id])} data-testid="fill-demo">
-              {fil ? "Demo: gawa ni Kyla" : "Demo: Kyla's work"}
+              {t("solve.demoKylasWork")}
             </button>
           )}
-          {textMode && (
-            <button className="btn-ghost btn-sm" onClick={() => setTextMode(false)}>
-              <Icon name="keyboard" size={16} /> {fil ? "Math keypad" : "Math keypad"}
-            </button>
-          )}
+          <button className="btn-ghost btn-sm" onClick={() => photoInput.current?.click()} disabled={snap === "reading"} data-testid="snap">
+            <Icon name="camera" size={16} /> {snap === "reading" ? t("solve.reading") : t("solve.snap")}
+          </button>
+          <input ref={photoInput} type="file" accept="image/*" capture="environment" className="hidden"
+            onChange={(e) => { void onPhoto(e.target.files?.[0]); e.target.value = ""; }} data-testid="snap-input" />
+          <MicButton onText={onSpokenStep} label={t("solve.sayStep")} testId="say-step" />
+          {snap === "done" && <p className="w-full text-[13px] text-muted" role="status">{t("solve.snapDone")}</p>}
+          {snap === "failed" && <p className="w-full text-[13px] text-gap-dark" role="status">{t("solve.snapFailed")}</p>}
         </div>
       </section>
 
-      {!keypadOpen && (
-        <button className="btn-primary mt-4 w-full !text-lg" disabled={!ready || busy} onClick={openConfirm} data-testid="check">
-          {busy ? "…" : t("checkWork")}
-        </button>
-      )}
+      <button className="btn-primary mt-4 w-full !text-lg" disabled={!ready || busy} onClick={openConfirm} data-testid="check">
+        {busy ? "…" : t("common.checkWork")}
+      </button>
 
       <div ref={resultRef} className="scroll-mt-16">
         {result && <ResultPanel result={result} mc={mc} mcId={mcId} aiMc={aiMc} retry={retry} onTrace={startTrace} problem={problem} />}
       </div>
-
-      {keypadOpen && <div className="h-[430px]" />}
-      <AnimatePresence>
-        {keypadOpen && (
-          <motion.div
-            className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md px-3 pb-[max(env(safe-area-inset-bottom),10px)]"
-            initial={{ y: 320 }}
-            animate={{ y: 0 }}
-            exit={{ y: 320 }}
-            transition={{ type: "spring", stiffness: 400, damping: 34 }}
-          >
-            <div className="mb-2 flex gap-2">
-              <button className="btn-ghost btn-sm" onClick={() => setFocus(null)} aria-label="Hide keypad">⌄</button>
-              <button className="btn-primary btn-sm flex-1" disabled={!ready || busy} onClick={openConfirm} data-testid="check">
-                {t("checkWork")}
-              </button>
-            </div>
-            <Keypad value={focus === -1 ? customGiven : steps[focus ?? 0] ?? ""} onKey={onKey} onTextMode={() => {
-              setTextMode(true);
-              const el = focus === -1 ? givenInput.current : inputs.current[focus ?? 0];
-              el?.blur();
-              setTimeout(() => el?.focus(), 50);
-            }} />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {confirm && (
@@ -314,18 +301,18 @@ export default function Solve() {
             <motion.div className="card glass-strong w-full max-w-md !rounded-[28px]" initial={{ y: 300 }} animate={{ y: 0 }} exit={{ y: 300 }}
               transition={{ type: "spring", stiffness: 380, damping: 32 }}>
               <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-ink/20" />
-              <h2 className="font-display text-2xl font-semibold">{t("isThisWhatYouWrote")}</h2>
+              <h2 className="font-display text-2xl font-semibold">{t("common.isThisWhatYouWrote")}</h2>
               <ol className="mt-3 space-y-2">
                 {confirm.latex.map((l, i) => (
                   <li key={i} className="flex items-center gap-3 rounded-2xl bg-soft px-3 py-2 text-[21px]">
                     <span className="font-display text-sm text-muted">{i + 1}</span>
-                    {l ? <Math tex={l} /> : <span className="text-base text-gap-dark">{fil ? `Hindi mabasa ang step ${i + 1}. Pakiulit.` : `We couldn't read step ${i + 1}. Can you retype it?`}</span>}
+                    {l ? <Math tex={l} /> : <span className="text-base text-gap-dark">{t("solve.couldntReadStep", { n: i + 1 })}</span>}
                   </li>
                 ))}
               </ol>
               <div className="mt-5 grid grid-cols-2 gap-3">
-                <button className="btn-ghost" onClick={() => setConfirm(null)}>{t("edit")}</button>
-                <button className="btn-primary" disabled={confirm.latex.some((l) => !l)} onClick={check} data-testid="confirm">{t("yesCheck")}</button>
+                <button className="btn-ghost" onClick={() => setConfirm(null)}>{t("common.edit")}</button>
+                <button className="btn-primary" disabled={confirm.latex.some((l) => !l)} onClick={check} data-testid="confirm">{t("common.yesCheck")}</button>
               </div>
             </motion.div>
           </motion.div>
@@ -355,30 +342,29 @@ function ResultPanel({
   const t = useT();
   const nav = useNavigate();
   const { lang, log, role } = useStore();
-  const fil = lang === "fil";
   const [flagged, setFlagged] = useState(false);
   const markRef = useRef<HTMLDivElement | null>(null);
 
-  if (result.error) return <div className="card mt-5">{fil ? "Hindi mabasa ang problem. Pakiulit." : "We couldn't read the problem. Can you retype it?"}</div>;
+  if (result.error) return <div className="card mt-5">{t("solve.couldntReadProblemCan")}</div>;
 
   if (result.errorIndex === null) {
     if (!result.complete)
-      return <div className="card mt-5 !bg-ok-soft/70 text-ok-dark">{t("notDoneYet")}</div>;
+      return <div className="card mt-5 !bg-ok-soft/70 text-ok-dark">{t("common.notDoneYet")}</div>;
     return (
       <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
         className="card relative mt-5 !bg-ok-soft/70 text-center" data-testid="success">
         <div className="flex justify-center"><Bilog size={76} mood={retry ? "cheer" : "happy"} /></div>
         <div className="mt-2 font-display text-[28px] leading-tight">
-          {retry ? (fil ? "Ang problem na nagpahinto sa iyo — nasagot mo!" : "The problem that stopped you — solved.") : t("allCorrect")}
+          {retry ? (t("solve.problemStoppedSolved")) : t("common.allCorrect")}
         </div>
-        {retry && <div className="mt-2 flex items-center justify-center gap-1.5 text-ok-dark"><Icon name="sprout" size={16} /> +1 {fil ? "gap na naayos" : "gap fixed"}</div>}
+        {retry && <div className="mt-2 flex items-center justify-center gap-1.5 text-ok-dark"><Icon name="sprout" size={16} /> {t("solve.plusOneGapFixed")}</div>}
         {retry && (
           <button className="btn-ok mt-4 w-full" onClick={() => nav("/map")}>
-            {fil ? "Tingnan ang skill map ko" : "See my skill map"} →
+            {t("solve.seeMySkillMap")} →
           </button>
         )}
         {!retry && role !== "guest" && (
-          <button className="btn-ghost mt-4 w-full" onClick={() => nav("/student")}>{fil ? "Bumalik" : "Back home"}</button>
+          <button className="btn-ghost mt-4 w-full" onClick={() => nav("/student")}>{t("solve.backHome")}</button>
         )}
       </motion.div>
     );
@@ -391,25 +377,25 @@ function ResultPanel({
       className="card mt-5 !p-0" data-testid="diagnosis">
       <div className="flex items-start gap-3 px-5 pt-5">
         <div className="min-w-0 flex-1">
-          <div className="kicker text-gap-dark">{t("foundIt")}</div>
-          <div className="mt-1 font-display text-[26px] leading-tight">{fil ? `Nagkamali sa step ${i + 1}` : `It broke at step ${i + 1}`}</div>
+          <div className="kicker text-gap-dark">{t("common.foundIt")}</div>
+          <div className="mt-1 font-display text-[26px] leading-tight">{t("solve.brokeAtStep", { n: i + 1 })}</div>
         </div>
         <div className="-mr-1 -mt-2"><Bilog size={54} mood="found" lookAt={markRef} /></div>
       </div>
       <div className="p-5">
         {result.steps[i]?.status === "unparsed" ? (
-          <p>{fil ? `Hindi mabasa ang step ${i + 1}. Pakiulit.` : `We couldn't read step ${i + 1}. Can you retype it?`}</p>
+          <p>{t("solve.couldntReadStep", { n: i + 1 })}</p>
         ) : (
           <div className="space-y-2">
             <div className="rounded-2xl border-2 border-line px-4 py-3">
-              <div className="kicker text-muted">{fil ? "Isinulat mo" : "You wrote"}</div>
+              <div className="kicker text-muted">{t("solve.wrote")}</div>
               <div className="mt-1 text-[22px]" data-testid="student-line">
                 <Math tex={result.studentLatex ?? result.steps[i].latex ?? ""} />
               </div>
             </div>
             <div className="flex justify-center text-muted"><Icon name="arrow" size={16} className="rotate-90" /></div>
             <div ref={markRef} className="rounded-2xl bg-ok-soft/70 px-4 py-3">
-              <div className="kicker text-ok-dark">{result.expectedLatex ? (fil ? "Dapat ay" : "It should be") : fil ? "Kulang" : "Missing"}</div>
+              <div className="kicker text-ok-dark">{result.expectedLatex ? (t("solve.should")) : t("solve.missing")}</div>
               <div className="mt-1 text-[22px]" data-testid="expected-line">
                 {result.expectedLatex ? (
                   <Math tex={result.expectedLatex} />
@@ -432,19 +418,19 @@ function ResultPanel({
             <p className="mt-4 border-l-2 border-line pl-3 text-[13px] leading-relaxed text-muted">
                             <span>
                 {source === "rule"
-                  ? fil ? "Tumugma sa kilalang pattern ng pagkakamali (sigurado). Ang tama at mali ay sinuri ng SymPy, hindi ng AI." : "Matched a known mistake pattern exactly (certain). Right and wrong are checked by SymPy, not by AI."
-                  : fil ? `Hula ng AI (${globalThis.Math.round((aiMc?.confidence ?? 0) * 100)}%). Ang tama at mali ay sinuri ng SymPy.` : `AI suggestion (${globalThis.Math.round((aiMc?.confidence ?? 0) * 100)}% confident). Right and wrong are checked by SymPy.`}
+                  ? t("solve.matchedKnownMistakePattern")
+                  : t("solve.aiSuggestion", { pct: globalThis.Math.round((aiMc?.confidence ?? 0) * 100) })}
               </span>
             </p>
           </div>
         ) : (
           <p className="mt-5 text-[16px]">
-            {fil ? "Nahanap namin ang step, pero hindi pa kilala ang pattern. Hanapin natin ang gap sa ilang mabilis na tanong." : "We found the step, but not a known pattern yet. Let's find the gap with a few quick questions."}
+            {t("solve.foundStepButNot")}
           </p>
         )}
 
         <button className="btn-gap mt-5 w-full !text-lg" onClick={onTrace} data-testid="find-root">
-          <Icon name="search" size={18} /> {t("findRoot")}
+          <Icon name="search" size={18} /> {t("common.findRoot")}
         </button>
         <button
           className="mt-3 w-full py-2 text-sm text-muted underline decoration-dotted underline-offset-4"
@@ -454,11 +440,11 @@ function ResultPanel({
             log({ action: "diagnosis", suggestion: mcId ?? "none", decision: "student flagged as wrong", actor: "student" });
           }}
         >
-          {flagged ? (fil ? "Salamat — makikita ito ng teacher mo" : "Thanks — your teacher will see this") : fil ? "Mukhang mali ang diagnosis?" : "Diagnosis doesn't seem right?"}
+          {flagged ? (t("solve.thanksTeacherWillSee")) : t("solve.diagnosisDoesntSeemRight")}
         </button>
         {skillById[problem.skill] && (
           <p className="mt-1 text-center text-xs text-muted">
-            {skillTitle(problem.skill, lang)} · Grade {skillById[problem.skill].grade}
+            {skillTitle(problem.skill, lang)} · {t("common.gradeN", { n: skillById[problem.skill].grade })}
           </p>
         )}
       </div>

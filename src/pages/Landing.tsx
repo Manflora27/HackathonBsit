@@ -4,18 +4,18 @@ import { AnimatePresence, motion } from "motion/react";
 import { Bilog } from "../components/Bilog";
 import { Icon } from "../components/Icon";
 import { Shell } from "../components/Shell";
-import { useAuth } from "../auth";
-import { authConfigured } from "../lib/supabase";
+import { MOCK_AUTH, useAuth } from "../auth";
+import { signInAvailable } from "../lib/supabase";
 import { useStore } from "../store";
+import { useT } from "../i18n";
 
+type StoryId = "math" | "physics" | "chemistry";
 type Story = {
-  word: { en: string; fil: string };
-  /** foundation → gap → where the student is stuck, top-left to bottom */
+  /** catalog keys live under landing.stories.<id> */
+  id: StoryId;
+  /** symbols on the foundation → gap → current-skill nodes, top-left to bottom */
   nodes: [string, string, string];
-  labels: { en: [string, string, string]; fil: [string, string, string] };
   shape: Shape;
-  /** the headline: "You're not bad at {end}. You're missing {gap}." */
-  say: { en: { end: string; gap: string }; fil: { end: string; gap: string } };
 };
 
 type Pt = [number, number];
@@ -30,8 +30,8 @@ const SHAPES: Record<"tree" | "stairs" | "molecule", Shape> = {
   },
   stairs: {
     top: [19, 34], gap: [120, 96], end: [228, 176],
-    extras: [{ at: [250, 34] }, { at: [284, 118], done: true }, { at: [56, 186], done: true }, { at: [112, 206], done: true }],
-    edges: ["M36 34 C100 20 200 22 250 34", "M250 34 C272 60 284 90 284 118", "M120 96 C96 130 64 150 56 186", "M228 176 C190 200 140 210 112 206"],
+    extras: [{ at: [236, 58] }, { at: [284, 128], done: true }, { at: [56, 186], done: true }, { at: [112, 206], done: true }],
+    edges: ["M36 34 C100 26 190 40 236 58", "M236 58 C262 76 280 100 284 128", "M120 96 C96 130 64 150 56 186", "M228 176 C190 200 140 210 112 206"],
   },
   molecule: {
     top: [19, 34], gap: [62, 128], end: [176, 166],
@@ -41,36 +41,9 @@ const SHAPES: Record<"tree" | "stairs" | "molecule", Shape> = {
 };
 
 const STORIES: Story[] = [
-  {
-    word: { en: "math", fil: "math" },
-    nodes: ["x", "x,y", "∫"],
-    labels: {
-      en: ["Algebra", "Systems of equations", "Integrals (calculus)"],
-      fil: ["Algebra", "Sistema ng mga equation", "Integral (calculus)"],
-    },
-    shape: SHAPES.tree,
-    say: { en: { end: "integrals", gap: "systems of equations" }, fil: { end: "integral", gap: "sistema ng equation" } },
-  },
-  {
-    word: { en: "physics", fil: "physics" },
-    nodes: ["a/b", "v=", "→"],
-    labels: {
-      en: ["Fractions", "Rearranging formulas", "Kinematics (physics)"],
-      fil: ["Fractions", "Pag-ayos ng formula", "Kinematics (physics)"],
-    },
-    shape: SHAPES.stairs,
-    say: { en: { end: "kinematics", gap: "rearranging formulas" }, fil: { end: "kinematics", gap: "pag-ayos ng formula" } },
-  },
-  {
-    word: { en: "chemistry", fil: "chemistry" },
-    nodes: ["H", "2H", "⇌"],
-    labels: {
-      en: ["Atoms", "Balancing equations", "Reactions (chemistry)"],
-      fil: ["Atom", "Pag-balance ng equation", "Reaksyon (chemistry)"],
-    },
-    shape: SHAPES.molecule,
-    say: { en: { end: "reactions", gap: "balancing equations" }, fil: { end: "reaksyon", gap: "pag-balance ng equation" } },
-  },
+  { id: "math", nodes: ["x", "sin", "∫"], shape: SHAPES.tree },
+  { id: "physics", nodes: ["a/b", "v=", "→"], shape: SHAPES.stairs },
+  { id: "chemistry", nodes: ["H", "2H", "⇌"], shape: SHAPES.molecule },
 ];
 
 const STORY_MS = 6500; // ~2.5s to draw and circle the gap, then a hold
@@ -98,14 +71,14 @@ function HeroDrawing({ story }: { story: Story }) {
   return (
     <div className="relative min-h-[150px] flex-1"
       style={{
-        background: `radial-gradient(40% 40% at ${gapX}% ${gapY}%, color-mix(in oklab, var(--color-gap) 22%, transparent), transparent 70%), radial-gradient(60% 55% at 50% 50%, rgb(255 253 247 / .75), transparent 72%)`,
+        background: `radial-gradient(40% 40% at ${gapX}% ${gapY}%, color-mix(in oklab, var(--color-gap) 14%, transparent), transparent 70%), radial-gradient(60% 55% at 50% 50%, rgb(255 253 247 / .75), transparent 72%)`,
         transition: "background .6s",
       }}>
-      <RootDrawing key={story.word.en} story={story} />
+      <RootDrawing key={story.id} story={story} />
       {/* invisible anchor over the gap node, for Bilog's eyes */}
       <span ref={rootRef} className="absolute h-2 w-2" style={{ left: `${gapX}%`, top: `${gapY}%` }} aria-hidden />
-      <div className="pointer-events-none absolute right-2 top-[12%]">
-        <Bilog size={46} mood={drawn ? "found" : "watch"} lookAt={rootRef} />
+      <div className="pointer-events-none absolute -top-1 right-0">
+        <Bilog size={40} mood={drawn ? "found" : "watch"} lookAt={rootRef} />
       </div>
     </div>
   );
@@ -113,11 +86,11 @@ function HeroDrawing({ story }: { story: Story }) {
 
 /** Thin-line drawing of a skill graph, traced from the foundation to the gap. */
 function RootDrawing({ story }: { story: Story }) {
-  const fil = useStore((s) => s.lang) === "fil";
-  const labels = fil ? story.labels.fil : story.labels.en;
+  const t = useT();
+  const labels = [t(`landing.stories.${story.id}.top`), t(`landing.stories.${story.id}.gap`), t(`landing.stories.${story.id}.end`)];
   const [top, gap, end] = story.nodes;
   const { top: [tx, ty], gap: [gx, gy], end: [ex, ey], extras, edges } = story.shape;
-  const t = (d: number) => ({ duration: 0.9, delay: d, ease: "easeInOut" as const });
+  const tr = (d: number) => ({ duration: 0.9, delay: d, ease: "easeInOut" as const });
   const sym = (label: string) => (label.length === 1 ? 18 : label.length === 2 ? 14 : 12);
   const traced = `M${tx} ${ty} C${tx} ${ty + 46} ${gx - 34} ${gy - 18} ${gx} ${gy}`;
   return (
@@ -129,7 +102,7 @@ function RootDrawing({ story }: { story: Story }) {
         {edges.map((d) => <path key={d} d={d} />)}
       </g>
       <motion.path d={traced} fill="none" stroke="var(--color-gap)" strokeWidth="2.4"
-        strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={t(0.3)} />
+        strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={tr(0.3)} />
       {extras.map(({ at: [x, y], done }) => (
         <circle key={`${x},${y}`} cx={x} cy={y} r={9} fill={done ? "var(--color-ok)" : "var(--color-card)"} stroke="var(--color-ink)" strokeOpacity=".3" strokeWidth="1.3" />
       ))}
@@ -140,17 +113,17 @@ function RootDrawing({ story }: { story: Story }) {
         </g>
       ))}
       <g transform={`translate(${gx - 150} ${gy - 182})`}>
-        <motion.g initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={t(1.1)} style={{ transformOrigin: "150px 182px" }}>
+        <motion.g initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={tr(1.1)} style={{ transformOrigin: "150px 182px" }}>
           <circle cx="150" cy="182" r="17" fill="var(--color-gap)" />
           <text x="150" y={182 + sym(gap) / 3} textAnchor="middle" fontFamily="Young Serif" fontSize={sym(gap)} fill="#fff">{gap}</text>
         </motion.g>
         <motion.path d="M128 172 C 132 152, 172 150, 176 176 C 180 202, 136 210, 126 190 C 122 180, 128 168, 140 163" fill="none" stroke="var(--color-gap)"
-          strokeWidth="1.8" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={t(1.5)} />
+          strokeWidth="1.8" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={tr(1.5)} />
       </g>
       <g fontFamily="inherit" fontSize="11" letterSpacing=".04em">
         <text x={tx + 25} y={ty + 4} fill="var(--color-muted)">{labels[0]}</text>
         <motion.text x={gx + 36} y={gy + 5} fill="var(--color-gap-dark)" fontWeight="600"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={t(2.2)}>{labels[1]}</motion.text>
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={tr(2.2)}>{labels[1]}</motion.text>
         <text x={ex} y={ey + 34} textAnchor="middle" fill="var(--color-muted)">{labels[2]}</text>
       </g>
     </motion.svg>
@@ -201,12 +174,13 @@ function GoogleMark() {
 
 export default function Landing() {
   const nav = useNavigate();
-  const { consent, set, lang } = useStore();
+  const { consent, set } = useStore();
   const by = "school" as const;
-  const [agree, setAgree] = useState(false);
-  const fil = lang === "fil";
+  // Continuing is the consent: the line under the buttons says so, and tapping one records it.
+  const agreeNow = () => { if (!consent) set({ consent: { by, at: Date.now() } }); };
+  const t = useT();
   const story = useStory();
-  const say = fil ? story.say.fil : story.say.en;
+  const say = { end: t(`landing.stories.${story.id}.endShort`), gap: t(`landing.stories.${story.id}.gapShort`) };
   const swap = (text: string, key = text) => (
     <AnimatePresence mode="wait" initial={false}>
       <motion.span key={key} className="inline-block" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.3 }}>
@@ -214,9 +188,19 @@ export default function Landing() {
       </motion.span>
     </AnimatePresence>
   );
-  const word = swap(fil ? story.word.fil : story.word.en);
+  const word = swap(t(`landing.stories.${story.id}.word`));
 
-  const { user, profile, ready, error, signInGoogle } = useAuth();
+  const { user, profile, ready, error, signInGoogle, signInEmail } = useAuth();
+  const [showEmail, setShowEmail] = useState(false);
+  const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const sendLink = async () => {
+    agreeNow();
+    setSending(true);
+    if (await signInEmail(email)) setSentTo(email.trim());
+    setSending(false);
+  };
 
   useEffect(() => {
     if (!consent || !ready || !user) return;
@@ -233,53 +217,70 @@ export default function Landing() {
           <span className="font-display text-[18px]">Hopper</span>
         </div>
 
-        <div className="mt-3 flex flex-1 flex-col"><HeroDrawing story={story} /></div>
+        <div className="mt-4 flex flex-col" style={{ height: "clamp(140px, min(calc((min(100vw, 448px) - 2rem) * 0.76), calc(100dvh - 500px)), 380px)" }}>
+          <HeroDrawing story={story} />
+        </div>
 
-        <section className="mt-6">
-          <div className="kicker text-gap-dark">{fil ? <>Para sa {word} na nakakalito</> : <>A diagnostic for {word}</>}</div>
+        <div className="min-h-4 flex-[2]" />
+
+        <section>
+          <div className="kicker text-gap-dark">{t.rich("landing.stuckOn", { subject: word })}</div>
           <h1 className="mt-2 whitespace-nowrap text-[clamp(20px,min(3.8dvh,5.6vw),32px)] leading-[1.15]">
-            {fil ? "Hindi ka mahina sa " : "You're not bad at "}{swap(say.end)}.
+            {t.rich("landing.notBadAt", { skill: swap(say.end) })}
             <br />
-            {fil ? "Kulang ka lang sa" : "You're missing"}
+            {t("landing.missing")}
             <span className="mt-2 block pl-1">
-              <PenBox key={story.word.en} className="px-3 pb-1.5 pt-1 text-gap">{say.gap}</PenBox>
+              <PenBox key={story.id} className="px-3 pb-1.5 pt-1 text-gap">{say.gap}</PenBox>
             </span>
           </h1>
           <p className="mt-3 text-[clamp(15px,2dvh,17px)] leading-snug text-muted">
-            {fil
-              ? "Ipakita ang sagot mo. Hahanapin namin kung saan ka nagkamali, at ang naunang skill na kulang sa iyo."
-              : "Show us your work. We find where it went wrong, and the earlier skill you're missing."}
+            {t("landing.subtext")}
           </p>
         </section>
 
-        {!consent ? (
-          <section className="mt-7">
-            <label className="flex items-start gap-3 text-[13px] leading-snug text-muted">
-              <input type="checkbox" className="mt-0.5 h-4 w-4 shrink-0 accent-[#1e2b27]" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
-              <span>
-                {fil
-                  ? "Pumapayag ako na gamitin ang work ko para hanapin ang gaps ko. Hindi nakikita ng AI ang pangalan ko, at mabubura ko ang data ko anumang oras. (RA\u00a010173)"
-                  : "I agree to my work being used to find my gaps. The AI never sees my name, and I can delete my data anytime. (RA\u00a010173)"}
-              </span>
-            </label>
-            <button className="btn-primary mt-4 w-full !py-4 text-[17px]" disabled={!agree} onClick={() => set({ consent: { by, at: Date.now() } })}>
-              {fil ? "Tara na" : "Let's go"} <Icon name="arrow" size={18} />
-            </button>
-          </section>
-        ) : (
-          <section className="mt-7">
-            {authConfigured ? (
-              <button className="btn-primary w-full !py-4 text-[17px]" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
-                <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
-              </button>
+        <div className="min-h-6 flex-[3]" />
+
+        <section>
+            {signInAvailable ? (
+              <>
+                <button className="btn-primary w-full !py-4 text-[17px]" onClick={() => { agreeNow(); void signInGoogle(); }} disabled={!ready} data-testid="google-signin">
+                  <GoogleMark /> {t("landing.continueGoogle")}
+                </button>
+                {sentTo ? (
+                  <p className="mt-3 text-center text-[14px] leading-snug text-muted" data-testid="email-sent">
+                    {t.rich("landing.checkInbox", { email: <span className="font-semibold text-ink">{sentTo}</span> })}{" "}
+                    <button className="underline decoration-dotted underline-offset-4" onClick={() => setSentTo(null)}>{t("landing.useAnotherEmail")}</button>
+                  </p>
+                ) : showEmail ? (
+                  <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); void sendLink(); }}>
+                    <input type="email" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("landing.emailPlaceholder")}
+                      autoComplete="email" inputMode="email" data-testid="email-input"
+                      className="min-w-0 flex-1 rounded-full border border-white/65 bg-white/60 px-5 text-[16px] outline-none transition focus:border-ink/40" />
+                    <button className="btn-ghost shrink-0" disabled={sending || !email.includes("@")} data-testid="email-send">
+                      {sending ? (t("landing.sending")) : t("landing.sendLink")}
+                    </button>
+                  </form>
+                ) : (
+                  <button className="mx-auto mt-3 flex min-h-10 items-center gap-1.5 text-[14.5px] text-muted underline decoration-dotted underline-offset-4 disabled:opacity-40"
+                    onClick={() => { agreeNow(); setShowEmail(true); }} disabled={!ready} data-testid="email-signin">
+                    <Icon name="mail" size={16} /> {t("landing.continueEmail")}
+                  </button>
+                )}
+              </>
             ) : (
               <p className="rounded-2xl bg-gap-soft/70 px-3 py-2 text-[13px] text-gap-dark" data-testid="auth-unconfigured">
-                {fil ? "Hindi pa nakakonekta ang sign-in." : "Sign-in isn't connected yet (add the Supabase keys)."}
+                {t("landing.signIsntConnectedYet")}
               </p>
             )}
             {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
+            <p className="mt-4 text-center text-[12px] leading-snug text-muted" data-testid="consent-note">{t("landing.consent")}</p>
+            {MOCK_AUTH && (
+              <p className="mt-2 text-center text-[11px] text-muted" data-testid="test-mode">
+                <span className="mr-1.5 rounded-full border border-dashed border-ink/30 px-2 py-0.5 font-semibold text-ink/70">DEV</span>
+                {t("landing.testMode")}
+              </p>
+            )}
           </section>
-        )}
       </div>
     </Shell>
   );

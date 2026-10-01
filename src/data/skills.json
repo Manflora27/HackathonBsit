@@ -1,65 +1,279 @@
 {
   "_note": "Grade levels follow the DepEd K-12 Math curriculum guide. MATATAG competency codes are left null until verified against the official MATATAG guide; do not invent codes.",
   "skills": [
-    {"id": "quad_sqrt", "grade": 9, "x": 0, "y": 0, "matatag": null,
-     "title": "Solving quadratics by extracting square roots", "titleFil": "Paglutas ng quadratic sa pagkuha ng square root",
-     "prereqs": ["special_products", "sqrt_roots", "lin_eq"],
-     "probes": [{"prompt": "Solve", "given": "x^2=25", "expected": "x=5 or x=-5", "form": "solved"}]},
-    {"id": "quad_factor", "grade": 9, "x": 1, "y": 0, "matatag": null,
-     "title": "Solving quadratics by factoring", "titleFil": "Paglutas ng quadratic sa factoring",
-     "prereqs": ["factoring", "lin_eq"],
-     "probes": [{"prompt": "Solve", "given": "x^2-5x+6=0", "expected": "x=2 or x=3", "form": "solved"}]},
-    {"id": "quad_formula", "grade": 9, "x": 2, "y": 0, "matatag": null,
-     "title": "The quadratic formula", "titleFil": "Ang quadratic formula",
-     "prereqs": ["sqrt_roots", "frac_ops"],
-     "probes": [{"prompt": "Solve", "given": "x^2+4x+3=0", "expected": "x=-1 or x=-3", "form": "solved"}]},
-
-    {"id": "special_products", "grade": 8, "x": 0, "y": 1, "matatag": null,
-     "title": "Special products: squaring a binomial", "titleFil": "Special products: pag-square ng binomial",
-     "prereqs": ["poly_mult"],
-     "probes": [{"prompt": "Expand", "given": "(x+4)^2", "expected": "x^2+8x+16", "form": "expanded"}]},
-    {"id": "factoring", "grade": 8, "x": 1, "y": 1, "matatag": null,
-     "title": "Factoring trinomials", "titleFil": "Pag-factor ng trinomial",
-     "prereqs": ["special_products", "poly_mult"],
-     "probes": [{"prompt": "Factor", "given": "x^2+5x+6", "expected": "(x+2)(x+3)", "form": "factored"}]},
-    {"id": "rational_expr", "grade": 8, "x": 2, "y": 1, "matatag": null,
-     "title": "Rational algebraic expressions", "titleFil": "Rational algebraic expressions",
-     "prereqs": ["factoring", "frac_ops"],
-     "probes": [{"prompt": "Simplify", "given": "(x^2-9)/(x+3)", "expected": "x-3", "form": "any"}]},
-
-    {"id": "poly_mult", "grade": 7, "x": 0, "y": 2, "matatag": null,
-     "title": "Multiplying binomials", "titleFil": "Pag-multiply ng binomial",
-     "prereqs": ["distributive", "exponents", "like_terms"],
-     "probes": [{"prompt": "Expand", "given": "(x+2)(x+5)", "expected": "x^2+7x+10", "form": "expanded"}]},
-    {"id": "lin_eq", "grade": 7, "x": 1, "y": 2, "matatag": null,
-     "title": "Solving linear equations", "titleFil": "Paglutas ng linear equation",
-     "prereqs": ["distributive", "like_terms", "int_ops"],
-     "probes": [{"prompt": "Solve", "given": "2x+3=11", "expected": "x=4", "form": "solved"}]},
-    {"id": "sqrt_roots", "grade": 7, "x": 2, "y": 2, "matatag": null,
-     "title": "Square roots", "titleFil": "Square roots",
-     "prereqs": ["exponents"],
-     "probes": [{"prompt": "Simplify", "given": "sqrt(81)", "expected": "9", "form": "any"}]},
-
-    {"id": "distributive", "grade": 7, "x": 0, "y": 3, "matatag": null,
-     "title": "The distributive property", "titleFil": "Ang distributive property",
-     "prereqs": ["int_ops"],
-     "probes": [{"prompt": "Expand", "given": "-2(x-5)", "expected": "-2x+10", "form": "expanded"}]},
-    {"id": "exponents", "grade": 7, "x": 1, "y": 3, "matatag": null,
-     "title": "Laws of exponents", "titleFil": "Mga batas ng exponent",
-     "prereqs": ["int_ops"],
-     "probes": [{"prompt": "Simplify", "given": "x^3*x^2", "expected": "x^5", "form": "any"}]},
-    {"id": "like_terms", "grade": 7, "x": 2, "y": 3, "matatag": null,
-     "title": "Combining like terms", "titleFil": "Pagsasama ng like terms",
-     "prereqs": ["int_ops"],
-     "probes": [{"prompt": "Simplify", "given": "4x+3x+2", "expected": "7x+2", "form": "expanded"}]},
-    {"id": "frac_ops", "grade": 7, "x": 3, "y": 3, "matatag": null,
-     "title": "Operations on fractions", "titleFil": "Operasyon sa fractions",
-     "prereqs": ["int_ops"],
-     "probes": [{"prompt": "Simplify", "given": "-3/4+1/2", "expected": "-1/4", "form": "any"}]},
-
-    {"id": "int_ops", "grade": 7, "x": 1.5, "y": 4, "matatag": null,
-     "title": "Operations on integers", "titleFil": "Operasyon sa integers",
-     "prereqs": [],
-     "probes": [{"prompt": "Simplify", "given": "(-4)(-6)+(-7)", "expected": "17", "form": "any"}]}
+    {
+      "id": "quad_sqrt",
+      "grade": 9,
+      "x": 0,
+      "y": 0,
+      "matatag": null,
+      "title": "Solving quadratics by extracting square roots",
+      "prereqs": [
+        "special_products",
+        "sqrt_roots",
+        "lin_eq"
+      ],
+      "probes": [
+        {
+          "prompt": "Solve",
+          "given": "x^2=25",
+          "expected": "x=5 or x=-5",
+          "form": "solved"
+        }
+      ]
+    },
+    {
+      "id": "quad_factor",
+      "grade": 9,
+      "x": 1,
+      "y": 0,
+      "matatag": null,
+      "title": "Solving quadratics by factoring",
+      "prereqs": [
+        "factoring",
+        "lin_eq"
+      ],
+      "probes": [
+        {
+          "prompt": "Solve",
+          "given": "x^2-5x+6=0",
+          "expected": "x=2 or x=3",
+          "form": "solved"
+        }
+      ]
+    },
+    {
+      "id": "quad_formula",
+      "grade": 9,
+      "x": 2,
+      "y": 0,
+      "matatag": null,
+      "title": "The quadratic formula",
+      "prereqs": [
+        "sqrt_roots",
+        "frac_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Solve",
+          "given": "x^2+4x+3=0",
+          "expected": "x=-1 or x=-3",
+          "form": "solved"
+        }
+      ]
+    },
+    {
+      "id": "special_products",
+      "grade": 8,
+      "x": 0,
+      "y": 1,
+      "matatag": null,
+      "title": "Special products: squaring a binomial",
+      "prereqs": [
+        "poly_mult"
+      ],
+      "probes": [
+        {
+          "prompt": "Expand",
+          "given": "(x+4)^2",
+          "expected": "x^2+8x+16",
+          "form": "expanded"
+        }
+      ]
+    },
+    {
+      "id": "factoring",
+      "grade": 8,
+      "x": 1,
+      "y": 1,
+      "matatag": null,
+      "title": "Factoring trinomials",
+      "prereqs": [
+        "special_products",
+        "poly_mult"
+      ],
+      "probes": [
+        {
+          "prompt": "Factor",
+          "given": "x^2+5x+6",
+          "expected": "(x+2)(x+3)",
+          "form": "factored"
+        }
+      ]
+    },
+    {
+      "id": "rational_expr",
+      "grade": 8,
+      "x": 2,
+      "y": 1,
+      "matatag": null,
+      "title": "Rational algebraic expressions",
+      "prereqs": [
+        "factoring",
+        "frac_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Simplify",
+          "given": "(x^2-9)/(x+3)",
+          "expected": "x-3",
+          "form": "any"
+        }
+      ]
+    },
+    {
+      "id": "poly_mult",
+      "grade": 7,
+      "x": 0,
+      "y": 2,
+      "matatag": null,
+      "title": "Multiplying binomials",
+      "prereqs": [
+        "distributive",
+        "exponents",
+        "like_terms"
+      ],
+      "probes": [
+        {
+          "prompt": "Expand",
+          "given": "(x+2)(x+5)",
+          "expected": "x^2+7x+10",
+          "form": "expanded"
+        }
+      ]
+    },
+    {
+      "id": "lin_eq",
+      "grade": 7,
+      "x": 1,
+      "y": 2,
+      "matatag": null,
+      "title": "Solving linear equations",
+      "prereqs": [
+        "distributive",
+        "like_terms",
+        "int_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Solve",
+          "given": "2x+3=11",
+          "expected": "x=4",
+          "form": "solved"
+        }
+      ]
+    },
+    {
+      "id": "sqrt_roots",
+      "grade": 7,
+      "x": 2,
+      "y": 2,
+      "matatag": null,
+      "title": "Square roots",
+      "prereqs": [
+        "exponents"
+      ],
+      "probes": [
+        {
+          "prompt": "Simplify",
+          "given": "sqrt(81)",
+          "expected": "9",
+          "form": "any"
+        }
+      ]
+    },
+    {
+      "id": "distributive",
+      "grade": 7,
+      "x": 0,
+      "y": 3,
+      "matatag": null,
+      "title": "The distributive property",
+      "prereqs": [
+        "int_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Expand",
+          "given": "-2(x-5)",
+          "expected": "-2x+10",
+          "form": "expanded"
+        }
+      ]
+    },
+    {
+      "id": "exponents",
+      "grade": 7,
+      "x": 1,
+      "y": 3,
+      "matatag": null,
+      "title": "Laws of exponents",
+      "prereqs": [
+        "int_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Simplify",
+          "given": "x^3*x^2",
+          "expected": "x^5",
+          "form": "any"
+        }
+      ]
+    },
+    {
+      "id": "like_terms",
+      "grade": 7,
+      "x": 2,
+      "y": 3,
+      "matatag": null,
+      "title": "Combining like terms",
+      "prereqs": [
+        "int_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Simplify",
+          "given": "4x+3x+2",
+          "expected": "7x+2",
+          "form": "expanded"
+        }
+      ]
+    },
+    {
+      "id": "frac_ops",
+      "grade": 7,
+      "x": 3,
+      "y": 3,
+      "matatag": null,
+      "title": "Operations on fractions",
+      "prereqs": [
+        "int_ops"
+      ],
+      "probes": [
+        {
+          "prompt": "Simplify",
+          "given": "-3/4+1/2",
+          "expected": "-1/4",
+          "form": "any"
+        }
+      ]
+    },
+    {
+      "id": "int_ops",
+      "grade": 7,
+      "x": 1.5,
+      "y": 4,
+      "matatag": null,
+      "title": "Operations on integers",
+      "prereqs": [],
+      "probes": [
+        {
+          "prompt": "Simplify",
+          "given": "(-4)(-6)+(-7)",
+          "expected": "17",
+          "form": "any"
+        }
+      ]
+    }
   ]
 }

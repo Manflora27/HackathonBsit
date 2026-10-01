@@ -20,7 +20,7 @@ export function resolve(id: unknown): Target | null {
     return k ? { id, subject: "math", grade: k.grade, quarter: 1, domain: k.id, title: k.title, verifier: "sympy" } : null;
   }
   const u = unitById(id);
-  return u ? { id, subject: u.subject, grade: u.grade, quarter: u.quarter, domain: u.domain, title: u.title.en, verifier: u.verifier } : null;
+  return u ? { id, subject: u.subject, grade: u.grade, quarter: u.quarter, domain: u.domain, title: u.title, verifier: u.verifier } : null;
 }
 
 /** Verifier tags the engine can check. Others are published unverified ("AI-checked"). */
