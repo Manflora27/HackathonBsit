@@ -1,0 +1,18 @@
+{
+  "problems": [
+    {"id": "p-kyla", "prompt": "Solve for x", "given": "(x+3)^2=49", "kind": "solve", "skill": "quad_sqrt"},
+    {"id": "p-dist", "prompt": "Solve for x", "given": "2(x+3)=14", "kind": "solve", "skill": "lin_eq"},
+    {"id": "p-frac", "prompt": "Solve for x", "given": "x/2+x/3=5", "kind": "solve", "skill": "lin_eq"},
+    {"id": "p-factor", "prompt": "Solve for x", "given": "x^2-5x+6=0", "kind": "solve", "skill": "quad_factor"},
+    {"id": "p-try-1", "prompt": "Solve for x", "given": "3(x-2)=12", "kind": "solve", "skill": "lin_eq"},
+    {"id": "p-try-2", "prompt": "Expand", "given": "(x+5)^2", "kind": "simplify", "skill": "special_products"},
+    {"id": "p-try-3", "prompt": "Solve for x", "given": "(x-2)^2=16", "kind": "solve", "skill": "quad_sqrt"}
+  ],
+  "assignment": {
+    "id": "a-algebra-check",
+    "title": "Algebra check",
+    "teacher": "Ms. Santos",
+    "due": "Friday",
+    "problemIds": ["p-kyla", "p-dist", "p-frac"]
+  }
+}
