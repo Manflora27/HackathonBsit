@@ -99,7 +99,14 @@ export const useStore = create<State>()(
       log: (e) => set((s) => ({ aiLog: [...s.aiLog, { ...e, at: Date.now() }] })),
       resetDemo: () => set({ ...initial }),
     }),
-    { name: "gapfinder-v1" },
+    {
+      name: "gapfinder-v1",
+      // Saved state from older builds can lack newer fields (or whole objects). Merge nested objects so it never crashes.
+      merge: (saved, current) => {
+        const p = (saved ?? {}) as Partial<State>;
+        return { ...current, ...p, onboarding: { ...current.onboarding, ...(p.onboarding ?? {}) } };
+      },
+    },
   ),
 );
 

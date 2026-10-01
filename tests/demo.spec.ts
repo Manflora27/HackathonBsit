@@ -258,3 +258,15 @@ test("offline pack: download the plan, then open a lesson with no connection", a
   await page.getByTestId("unit-math").click();
   await expect(page.getByTestId("lesson-body")).toBeVisible();
 });
+
+test("old saved state without newer fields still opens onboarding", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.goto("/");
+  await page.evaluate(() =>
+    localStorage.setItem("gapfinder-v1", JSON.stringify({ state: { consent: { by: "self", at: 1 }, role: "guest", onboarding: { subjects: [], grade: null, goal: null, done: false } }, version: 0 })),
+  );
+  await page.goto("/welcome");
+  await expect(page.getByTestId("name")).toBeVisible();
+  expect(errors).toEqual([]);
+});
