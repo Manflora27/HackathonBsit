@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { teacherInsight } from "../ai/client";
+import { useAuth } from "../auth";
 import { Math } from "../components/Math";
 import { Shell } from "../components/Shell";
 import { misconceptionById, misconceptionText, misconceptions, problemById, skills as allSkills, skillTitle } from "../data";
@@ -12,7 +13,7 @@ import type { SkillStatus, Student } from "../types";
 
 const CLASS_CODE = "SAMP-924";
 
-export default function Teacher() {
+function TeacherDashboard({ sample = false, header }: { sample?: boolean; header?: React.ReactNode }) {
   const { lang, progress, attempts, shareSkillMap, practiceAssignments, set, updateAttempt, log } = useStore();
   const fil = lang === "fil";
   const seed = useMemo(buildSeedClass, []);
@@ -81,8 +82,9 @@ export default function Teacher() {
   const sel = students.find((s) => s.id === selected);
 
   return (
-    <Shell wide title={fil ? "Klase ko" : "My class"}>
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <Shell wide title={sample ? undefined : fil ? "Klase ko" : "My class"}>
+      {header}
+      <div className={`${sample ? "hidden " : ""}flex flex-wrap items-end justify-between gap-3`}>
         <div>
           <div className="kicker text-muted">Ms. Santos</div>
           <h1 className="font-display text-[30px] font-bold leading-tight">Grade 9 – Sampaguita</h1>
@@ -99,7 +101,7 @@ export default function Teacher() {
           const still = list.filter((s) => s.skills[sid] !== "mastered");
           const fixed = list.length - still.length;
           return (
-          <div key={sid} className={`card ${i === 0 ? "!bg-gap-soft" : ""}`} data-testid={`gap-group-${sid}`}>
+          <div key={sid} className={`card ${i === 0 ? "!bg-gap-soft/70" : ""}`} data-testid={`gap-group-${sid}`}>
             <div className="flex items-center gap-3">
               <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-line font-display text-[32px] font-bold ${i === 0 ? "bg-gap" : "bg-card"}`}
                 data-testid={i === 0 ? "top-gap-count" : undefined}>{list.length}</div>
@@ -126,7 +128,7 @@ export default function Teacher() {
       </section>
 
       {insight && (
-        <div className="card mt-4 !bg-brand-soft text-[15px]">
+        <div className="card mt-4 !bg-brand-soft/70 text-[15px]">
           <span className="chip mr-2 bg-brand text-white">{insight.ai ? "AI " : ""}{fil ? "mungkahi" : "suggestion"}</span>
           {insight.text}
           <div className="mt-1 text-xs text-muted">
@@ -162,7 +164,7 @@ export default function Teacher() {
         <table className="w-full min-w-[820px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-line text-left">
-              <th className="sticky left-0 bg-card p-2 pl-4">{fil ? "Student" : "Student"}</th>
+              <th className="sticky left-0 bg-white/60 p-2 pl-4">{fil ? "Student" : "Student"}</th>
               {skills.map((s) => (
                 <th key={s.id} className="p-1 text-center text-[11px] font-medium text-muted" title={skillTitle(s.id, lang)}>
                   G{s.grade}
@@ -190,8 +192,8 @@ export default function Teacher() {
       </section>
 
       {sel && (
-        <div className="fixed inset-0 z-30 flex justify-end bg-black/30" onClick={() => setSelected(null)}>
-          <aside className="h-full w-full max-w-md overflow-y-auto border-l border-line bg-paper p-5" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-30 flex justify-end bg-ink/30 backdrop-blur-sm" onClick={() => setSelected(null)}>
+          <aside className="h-full w-full max-w-md overflow-y-auto glass-strong !rounded-none p-5" onClick={(e) => e.stopPropagation()}>
             <button className="text-sm text-muted" onClick={() => setSelected(null)}>✕ {fil ? "Isara" : "Close"}</button>
             <h2 className="mt-2 text-xl font-bold">{sel.name}</h2>
             <div className="text-sm text-muted">{fil ? "Nakikita ng AI bilang" : "Seen by the AI as"} “{sel.anonId}”</div>
@@ -250,7 +252,7 @@ export default function Teacher() {
       )}
 
       {confirm && (
-        <div className="fixed inset-0 z-30 flex items-end justify-center bg-ink/40 p-3 sm:items-center" role="dialog" aria-modal>
+        <div className="fixed inset-0 z-30 flex items-end justify-center bg-ink/30 p-3 backdrop-blur-sm sm:items-center" role="dialog" aria-modal>
           <div className="card w-full max-w-md">
             <h2 className="font-display text-2xl font-semibold">{fil ? "Ipadala ang practice?" : "Send practice?"}</h2>
             <p className="mt-2 text-[15px]">
@@ -278,4 +280,63 @@ function Cell({ status }: { status: SkillStatus }) {
   if (status === "gap") return <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-gap text-xs font-bold text-white" aria-label="gap">!</span>;
   if (status === "mastered") return <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-ok-soft text-xs text-ok" aria-label="mastered">✓</span>;
   return <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-paper text-xs text-muted" aria-label="not checked">·</span>;
+}
+
+export default function Teacher() {
+  const demo = useStore((x) => x.demo);
+  const lang = useStore((x) => x.lang);
+  const fil = lang === "fil";
+  const { profile, classes, roster, createClass, error } = useAuth();
+  const [name, setName] = useState("");
+  const [section, setSection] = useState("");
+  const [busy, setBusy] = useState(false);
+  const cls = classes[0];
+
+  if (demo) return <TeacherDashboard />;
+
+  if (!cls)
+    return (
+      <Shell title={fil ? "Gumawa ng klase" : "Create a class"}>
+        <div className="kicker mt-3 text-gap-dark">{fil ? "Isang hakbang" : "One step"}</div>
+        <h1 className="mt-1 text-[34px] leading-tight">{fil ? `Hi, ${profile?.display_name ?? "teacher"}. Gumawa ng klase.` : `Hi, ${profile?.display_name ?? "teacher"}. Make your first class.`}</h1>
+        <form className="card mt-5" onSubmit={async (e) => { e.preventDefault(); setBusy(true); await createClass(name, section); setBusy(false); }}>
+          <label className="kicker text-muted" htmlFor="cn">{fil ? "Pangalan ng klase" : "Class name"}</label>
+          <input id="cn" className="input mt-2 !font-sans" value={name} onChange={(e) => setName(e.target.value)} placeholder="Grade 9 Math" data-testid="class-name" />
+          <label className="kicker mt-4 block text-muted" htmlFor="cs">{fil ? "Section (opsyonal)" : "Section (optional)"}</label>
+          <input id="cs" className="input mt-2 !font-sans" value={section} onChange={(e) => setSection(e.target.value)} placeholder="Sampaguita" />
+          {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
+          <button className="btn-primary mt-5 w-full" disabled={!name.trim() || busy} data-testid="create-class">{fil ? "Gumawa" : "Create class"}</button>
+          <p className="mt-2 text-center text-[13px] text-muted">{fil ? "Bibigyan ka ng code na ibabahagi sa mga student." : "You'll get a code to share with your students."}</p>
+        </form>
+      </Shell>
+    );
+
+  return (
+    <TeacherDashboard
+      sample
+      header={
+        <>
+      <section className="card mt-2">
+        <div className="kicker text-muted">{fil ? "Iyong klase" : "Your class"}</div>
+        <div className="mt-1 font-display text-[28px] leading-tight">{cls.name}{cls.section ? ` · ${cls.section}` : ""}</div>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <span className="rounded-2xl bg-white/60 px-4 py-2 font-mono text-[22px] tracking-widest" data-testid="class-code-display">{cls.class_code}</span>
+          <button className="btn-ghost btn-sm" onClick={() => navigator.clipboard?.writeText(cls.class_code)}>{fil ? "Kopyahin" : "Copy"}</button>
+        </div>
+        <p className="mt-2 text-[13px] text-muted">{fil ? "Ipasok ito ng mga student sa Home nila para sumali." : "Students enter this on their home screen to join."}</p>
+        <div className="kicker mt-5 text-muted">{roster.length} {fil ? "student ang sumali" : roster.length === 1 ? "student joined" : "students joined"}</div>
+        {roster.length === 0 ? (
+          <p className="mt-2 text-[15px] text-muted">{fil ? "Wala pa. Ibahagi ang code." : "No one yet. Share the code."}</p>
+        ) : (
+          <ul className="mt-2 divide-y divide-line">{roster.map((r) => <li key={r.user_id} className="py-2 text-[16px]">{r.display_name}</li>)}</ul>
+        )}
+      </section>
+      <div className="mt-6 flex items-center gap-3">
+        <span className="chip bg-gap-soft text-gap-dark">Sample data</span>
+        <span className="text-[14px] text-muted">{fil ? "Ganito ang magiging itsura ng dashboard kapag may nag-submit na." : "This is how your dashboard fills in once students submit work."}</span>
+      </div>
+        </>
+      }
+    />
+  );
 }

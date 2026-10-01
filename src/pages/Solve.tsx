@@ -167,7 +167,7 @@ export default function Solve() {
   return (
     <Shell tabs={false} back={role === "guest" ? "/" : "/student"} title={retry ? (fil ? "Subukan ulit" : "Retry") : problem.prompt}>
       {retry && (
-        <div className="card-flat mb-3 flex items-center gap-2 !bg-gap-soft !p-3 text-[15px] text-gap-dark">
+        <div className="card-flat mb-3 flex items-center gap-2 !bg-gap-soft/70 !p-3 text-[15px] text-gap-dark">
           {fil ? "Ngayon, ang problem na nagpahinto sa iyo." : "Now, the problem that stopped you."}
         </div>
       )}
@@ -276,7 +276,7 @@ export default function Solve() {
         {result && <ResultPanel result={result} mc={mc} mcId={mcId} aiMc={aiMc} retry={retry} onTrace={startTrace} problem={problem} />}
       </div>
 
-      {keypadOpen && <div className="h-[300px]" />}
+      {keypadOpen && <div className="h-[430px]" />}
       <AnimatePresence>
         {keypadOpen && (
           <motion.div
@@ -292,7 +292,7 @@ export default function Solve() {
                 {t("checkWork")}
               </button>
             </div>
-            <Keypad onKey={onKey} onTextMode={() => {
+            <Keypad value={focus === -1 ? customGiven : steps[focus ?? 0] ?? ""} onKey={onKey} onTextMode={() => {
               setTextMode(true);
               const el = focus === -1 ? givenInput.current : inputs.current[focus ?? 0];
               el?.blur();
@@ -304,9 +304,9 @@ export default function Solve() {
 
       <AnimatePresence>
         {confirm && (
-          <motion.div className="fixed inset-0 z-40 flex items-end justify-center bg-ink/40 p-3" role="dialog" aria-modal
+          <motion.div className="fixed inset-0 z-40 flex items-end justify-center bg-ink/30 p-3 backdrop-blur-sm" role="dialog" aria-modal
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="card w-full max-w-md !rounded-[28px]" initial={{ y: 300 }} animate={{ y: 0 }} exit={{ y: 300 }}
+            <motion.div className="card glass-strong w-full max-w-md !rounded-[28px]" initial={{ y: 300 }} animate={{ y: 0 }} exit={{ y: 300 }}
               transition={{ type: "spring", stiffness: 380, damping: 32 }}>
               <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-ink/20" />
               <h2 className="font-display text-2xl font-semibold">{t("isThisWhatYouWrote")}</h2>
@@ -357,10 +357,10 @@ function ResultPanel({
 
   if (result.errorIndex === null) {
     if (!result.complete)
-      return <div className="card mt-5 !bg-ok-soft text-ok-dark">{t("notDoneYet")}</div>;
+      return <div className="card mt-5 !bg-ok-soft/70 text-ok-dark">{t("notDoneYet")}</div>;
     return (
       <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
-        className="card relative mt-5 !bg-ok-soft text-center" data-testid="success">
+        className="card relative mt-5 !bg-ok-soft/70 text-center" data-testid="success">
         <Confetti />
         <InkCircle color="var(--color-ok)" className="mx-auto mt-2 h-16 w-16 rounded-full bg-ok text-white"><Icon name="check" size={30} strokeWidth={2.4} /></InkCircle>
         <div className="mt-5 font-display text-[28px] leading-tight">

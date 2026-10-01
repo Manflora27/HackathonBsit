@@ -1,4 +1,8 @@
+import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import { useAuth } from "./auth";
+import { authConfigured } from "./lib/supabase";
+import Demo from "./pages/Demo";
 import Landing from "./pages/Landing";
 import Learn from "./pages/Learn";
 import MapPage from "./pages/MapPage";
@@ -7,24 +11,40 @@ import Solve from "./pages/Solve";
 import StudentHome from "./pages/StudentHome";
 import Teacher from "./pages/Teacher";
 import Trace from "./pages/Trace";
+import Welcome from "./pages/Welcome";
 import { useStore } from "./store";
 
-function NeedsConsent({ children }: { children: React.ReactNode }) {
-  const consent = useStore((s) => s.consent);
-  return consent ? <>{children}</> : <Navigate to="/" replace />;
+/** Signed in, or a demo/guest session. Teachers are never guests. */
+function Gate({ children, teacher = false }: { children: React.ReactNode; teacher?: boolean }) {
+  const { consent, role, demo } = useStore();
+  const { user, profile, ready } = useAuth();
+  if (!consent) return <Navigate to="/" replace />;
+  if (demo) return <>{children}</>;
+  if (authConfigured && !ready) return null;
+  if (user) {
+    if (!profile?.account_type || !profile.onboarded_at) return <Navigate to="/welcome" replace />;
+    if (teacher && profile.account_type !== "teacher") return <Navigate to="/student" replace />;
+    return <>{children}</>;
+  }
+  if (role === "guest" && !teacher) return <>{children}</>;
+  return <Navigate to="/" replace />;
 }
 
 export default function App() {
+  const init = useAuth((s) => s.init);
+  useEffect(() => init(), [init]);
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/student" element={<NeedsConsent><StudentHome /></NeedsConsent>} />
-        <Route path="/map" element={<NeedsConsent><MapPage /></NeedsConsent>} />
-        <Route path="/solve/:problemId" element={<NeedsConsent><Solve /></NeedsConsent>} />
-        <Route path="/trace" element={<NeedsConsent><Trace /></NeedsConsent>} />
-        <Route path="/learn/:skillId" element={<NeedsConsent><Learn /></NeedsConsent>} />
-        <Route path="/teacher" element={<NeedsConsent><Teacher /></NeedsConsent>} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/demo" element={<Demo />} />
+        <Route path="/student" element={<Gate><StudentHome /></Gate>} />
+        <Route path="/map" element={<Gate><MapPage /></Gate>} />
+        <Route path="/solve/:problemId" element={<Gate><Solve /></Gate>} />
+        <Route path="/trace" element={<Gate><Trace /></Gate>} />
+        <Route path="/learn/:skillId" element={<Gate><Learn /></Gate>} />
+        <Route path="/teacher" element={<Gate teacher><Teacher /></Gate>} />
         <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

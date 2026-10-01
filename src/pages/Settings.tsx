@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { useAuth } from "../auth";
 import { Shell } from "../components/Shell";
 import { useStore } from "../store";
 
@@ -6,6 +7,7 @@ export default function Settings() {
   const nav = useNavigate();
   const s = useStore();
   const fil = s.lang === "fil";
+  const { user, profile, signOut } = useAuth();
 
   function download() {
     const { progress, attempts, consent, aiLog, shareSkillMap } = useStore.getState();
@@ -19,6 +21,7 @@ export default function Settings() {
   return (
     <Shell title={fil ? "Ako" : "Me"}>
       <h1 className="font-display text-[30px] font-bold">{fil ? "Settings" : "Settings"}</h1>
+      {user && <p className="mt-1 text-[14px] text-muted">{profile?.display_name} · {user.email} · {profile?.account_type}</p>}
 
       <section className="card mt-4 space-y-4">
         <h2 className="font-display text-xl font-semibold">{fil ? "Pagbasa" : "Reading"}</h2>
@@ -90,8 +93,13 @@ export default function Settings() {
       </section>
 
       <section className="mt-6 flex flex-wrap gap-2">
-        <button className="btn-ghost" onClick={() => { s.set({ role: null }); nav("/"); }}>
-          {fil ? "Lumipat ng demo account" : "Switch demo account"}
+        {user && (
+          <button className="btn-primary" data-testid="signout" onClick={async () => { await signOut(); s.set({ role: null, demo: false }); nav("/"); }}>
+            {fil ? "Mag-sign out" : "Sign out"}
+          </button>
+        )}
+        <button className="btn-ghost" onClick={() => { s.set({ role: null, demo: false }); nav(user ? "/" : "/demo"); }}>
+          {user ? (fil ? "Bumalik sa simula" : "Back to start") : fil ? "Lumipat ng demo account" : "Switch demo account"}
         </button>
         <button className="btn-ghost" data-testid="reset-demo" onClick={() => { s.resetDemo(); nav("/"); }}>
           ↺ {fil ? "I-reset ang demo" : "Reset demo data"}

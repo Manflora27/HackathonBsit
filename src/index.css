@@ -2,6 +2,8 @@
 @import "katex/dist/katex.min.css";
 @import "@fontsource/young-serif/400.css";
 @import "@fontsource-variable/atkinson-hyperlegible-next/wght.css";
+@import "./assets/ambient.css";
+@import "./assets/braun.css";
 
 /*
  * Gap Finder — "find the root".
@@ -10,7 +12,7 @@
  */
 @theme {
   --color-ink: #1e2b27;
-  --color-muted: #69716b;
+  --color-muted: #566059;
   --color-paper: #f4efe4;
   --color-card: #fbf8f1;
   --color-line: rgb(30 43 39 / 0.13);
@@ -37,7 +39,6 @@ html {
 body {
   @apply bg-paper font-sans text-ink antialiased;
   font-weight: 450;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .17 0 0 0 0 .15 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   overscroll-behavior-y: none;
 }
 h1, h2, h3, .font-display {
@@ -114,16 +115,27 @@ h1, h2, h3, .font-display {
     @apply bg-ok text-white;
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 10px 22px -12px rgb(62 92 54 / 0.7);
   }
-  .btn-ghost { @apply border border-line bg-card/70 text-ink; }
+  .btn-ghost { @apply text-ink; background-color: rgb(255 253 247 / .55); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border: 1px solid rgb(255 255 255 / .65); box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 8px 18px -12px rgb(30 43 39 / .45); }
   .btn-sm { @apply min-h-10 px-4 py-1.5 text-[14.5px]; }
 
   .card {
-    @apply rounded-[28px] border border-line/70 bg-card p-5;
-    box-shadow: 0 1px 2px rgb(30 43 39 / 0.05), 0 18px 40px -26px rgb(30 43 39 / 0.38);
+    @apply rounded-[28px] p-5;
+    background-color: rgb(255 253 247 / .55);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    backdrop-filter: blur(22px) saturate(1.5);
+    border: 1px solid rgb(255 255 255 / .6);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), inset 0 -1px 0 rgb(30 43 39 / .05), 0 1px 2px rgb(30 43 39 / .06), 0 26px 50px -30px rgb(30 43 39 / .5);
   }
-  .card-flat { @apply rounded-[24px] border border-line bg-card p-4; }
+  .card-flat {
+    @apply rounded-[24px] p-4;
+    background-color: rgb(255 253 247 / .5);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid rgb(255 255 255 / .55);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .8), 0 14px 30px -22px rgb(30 43 39 / .4);
+  }
   .input {
-    @apply w-full rounded-2xl border border-line bg-card px-4 py-3 font-mono text-[17px] outline-none transition placeholder:text-ink/30 focus:border-ink/40 focus:ring-4 focus:ring-ink/8;
+    @apply w-full rounded-2xl border border-white/70 bg-white/55 px-4 py-3 font-mono text-[17px] outline-none transition placeholder:text-ink/30 focus:border-ink/40 focus:ring-4 focus:ring-ink/8;
   }
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-full bg-soft px-2.5 py-1 text-[12px] font-semibold;
@@ -132,8 +144,11 @@ h1, h2, h3, .font-display {
     @apply text-[11.5px] font-bold uppercase tracking-[0.16em];
   }
   .key {
-    @apply flex h-[50px] select-none items-center justify-center rounded-2xl border border-line bg-card font-display text-[21px] transition duration-75 active:scale-95 active:bg-soft;
+    @apply flex h-[50px] select-none items-center justify-center rounded-2xl font-display text-[21px] transition duration-75 active:scale-95;
+    background-color: rgb(255 253 247 / .6); border: 1px solid rgb(255 255 255 / .7);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / .9), 0 5px 10px -7px rgb(30 43 39 / .5);
   }
   .rule { @apply h-px w-full bg-line; }
+  .btn-ghost:active:not(:disabled), .key:active { background-color: rgb(236 229 214 / .8); }
 }
 @keyframes gf-ring { to { stroke-dashoffset: 0; } }

@@ -1,0 +1,60 @@
+/* ---- Backdrop ------------------------------------------------------------ */
+.ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #f1ebde; pointer-events: none; }
+.ambient .wash { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; will-change: transform; }
+.wash-a { width: 420px; height: 420px; left: -190px; top: -170px; background: radial-gradient(circle at 40% 40%, #f0a07a, #e8845a 55%, transparent 72%); }
+.wash-b { width: 520px; height: 520px; right: -230px; top: 28%; background: radial-gradient(circle at 50% 50%, #a9bf8f, #86a56e 55%, transparent 72%); }
+.wash-c { width: 440px; height: 440px; left: -120px; bottom: -140px; background: radial-gradient(circle at 50% 50%, #e9c87f, #d9ad55 55%, transparent 72%); }
+.ambient .contour { position: absolute; inset: 0; background-image: var(--tex-contour); background-size: 420px; opacity: .9; mix-blend-mode: multiply; }
+.ambient .fiber { position: absolute; inset: 0; background-image: var(--tex-fiber); background-size: 400px; mix-blend-mode: multiply; opacity: .55; }
+.ambient .grain { position: absolute; inset: 0; background-image: var(--tex-grain); background-size: 220px; mix-blend-mode: multiply; }
+@keyframes drift-a { 0%,100% { transform: translate(0,0) } 50% { transform: translate(40px,30px) } }
+@keyframes drift-b { 0%,100% { transform: translate(0,0) } 50% { transform: translate(-36px,24px) } }
+@keyframes drift-c { 0%,100% { transform: translate(0,0) } 50% { transform: translate(30px,-34px) } }
+.drift-a { animation: drift-a 26s ease-in-out infinite; }
+.drift-b { animation: drift-b 32s ease-in-out infinite; }
+.drift-c { animation: drift-c 29s ease-in-out infinite; }
+
+/* ---- Glass --------------------------------------------------------------- */
+/* Frosted, with a bright top edge, a faint bottom shade, and a soft long shadow. */
+.glass {
+  background: linear-gradient(160deg, rgb(255 253 247 / .66), rgb(255 253 247 / .38));
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid rgb(255 255 255 / .55);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .85),
+    inset 0 -1px 0 rgb(30 43 39 / .05),
+    0 1px 2px rgb(30 43 39 / .06),
+    0 24px 48px -28px rgb(30 43 39 / .45);
+}
+.glass-strong {
+  background: linear-gradient(160deg, rgb(255 253 247 / .84), rgb(255 253 247 / .62));
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  backdrop-filter: blur(30px) saturate(1.6);
+  border: 1px solid rgb(255 255 255 / .7);
+  box-shadow: inset 0 1px 0 #fff, 0 30px 60px -30px rgb(30 43 39 / .55);
+}
+.glass-dark {
+  background: linear-gradient(160deg, rgb(30 43 39 / .78), rgb(22 33 30 / .86));
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid rgb(255 255 255 / .14);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .16), 0 22px 44px -18px rgb(30 43 39 / .75);
+}
+.glass-tint-gap { background: linear-gradient(160deg, rgb(247 221 207 / .78), rgb(247 221 207 / .46)); }
+.glass-tint-ok { background: linear-gradient(160deg, rgb(223 231 210 / .8), rgb(223 231 210 / .48)); }
+@supports not (backdrop-filter: blur(1px)) {
+  .glass, .glass-strong { background: rgb(251 248 241 / .94); }
+  .glass-dark { background: rgb(30 43 39 / .96); }
+}
+
+/* Dry-brush underline under a word */
+.brush { background-image: var(--tex-brush); background-repeat: no-repeat; background-position: 0 100%; background-size: 100% .42em; padding-bottom: .12em; }
+
+/* Washi-style tape strip */
+.tape { position: relative; }
+.tape::before {
+  content: ""; position: absolute; top: -9px; left: 50%; width: 74px; height: 20px; transform: translateX(-50%) rotate(-2deg);
+  background: linear-gradient(90deg, rgb(217 83 43 / .32), rgb(233 200 127 / .5)); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  box-shadow: 0 1px 2px rgb(30 43 39 / .15); clip-path: polygon(0 12%, 4% 0, 8% 14%, 12% 0, 92% 0, 96% 14%, 100% 0, 100% 88%, 96% 100%, 92% 86%, 88% 100%, 4% 100%, 0 88%);
+}

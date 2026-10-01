@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { Goal, SubjectId } from "./data/curriculum";
 import type { Attempt, Lang, SkillStatus } from "./types";
 
 export interface Trace {
@@ -26,9 +27,18 @@ export interface AiLogEntry {
   actor: "student" | "teacher";
 }
 
+export interface Onboarding {
+  subjects: SubjectId[];
+  grade: number | null; // self-reported baseline, not a verified level
+  goal: Goal | null;
+  done: boolean;
+}
+
 interface State {
   consent: { by: "self" | "guardian" | "school"; at: number } | null;
   role: "student" | "teacher" | "guest" | null;
+  demo: boolean;
+  onboarding: Onboarding;
   lang: Lang;
   textScale: number;
   readableFont: boolean;
@@ -53,6 +63,8 @@ interface State {
 const initial = {
   consent: null,
   role: null,
+  demo: false,
+  onboarding: { subjects: [], grade: null, goal: null, done: false } as Onboarding,
   lang: "en" as Lang,
   textScale: 1,
   readableFont: false,

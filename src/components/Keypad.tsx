@@ -1,45 +1,55 @@
-// Calculator-style math keypad, so phones don't need the text keyboard for math.
-const ROWS = [
-  ["7", "8", "9", "(", ")", "⌫"],
-  ["4", "5", "6", "x", "^", "²"],
-  ["1", "2", "3", "+", "−", "="],
-  ["0", ".", "/", "√", "±", "↵"],
-];
-
+// A Braun-style calculator keypad (after Dieter Rams' ET 66): matte grey body,
+// round concave keys, dark digits, light-grey functions, one green key, one orange.
 export type KeyAction = { insert: string } | { backspace: true } | { enter: true } | { text: true };
 
-const LABEL: Record<string, string> = { "↵": "↵", "⌫": "⌫" };
+type Kind = "num" | "fn" | "op" | "go" | "del";
+type Key = { label: string; kind: Kind; aria?: string };
 
-export function Keypad({ onKey, onTextMode }: { onKey: (a: KeyAction) => void; onTextMode: () => void }) {
+const LAYOUT: Key[][] = [
+  [{ label: "√", kind: "fn" }, { label: "^", kind: "fn" }, { label: "²", kind: "fn" }, { label: "(", kind: "fn" }, { label: ")", kind: "fn" }],
+  [{ label: "7", kind: "num" }, { label: "8", kind: "num" }, { label: "9", kind: "num" }, { label: "±", kind: "fn" }, { label: "⌫", kind: "del", aria: "Backspace" }],
+  [{ label: "4", kind: "num" }, { label: "5", kind: "num" }, { label: "6", kind: "num" }, { label: "÷", kind: "op", aria: "divide" }, { label: "x", kind: "fn" }],
+  [{ label: "1", kind: "num" }, { label: "2", kind: "num" }, { label: "3", kind: "num" }, { label: "−", kind: "op", aria: "minus" }, { label: "+", kind: "op" }],
+  [{ label: "0", kind: "num" }, { label: ".", kind: "num" }, { label: "=", kind: "op" }, { label: "or", kind: "fn" }, { label: "↵", kind: "go", aria: "Next line" }],
+];
+
+const INSERT: Record<string, string> = { "²": "^2", "−": "-", "÷": "/", "√": "sqrt(", or: " or " };
+
+export function Keypad({ onKey, onTextMode, value = "", dark = true }: { onKey: (a: KeyAction) => void; onTextMode: () => void; value?: string; dark?: boolean }) {
   const press = (k: string) => {
     if (k === "⌫") return onKey({ backspace: true });
     if (k === "↵") return onKey({ enter: true });
-    const ins = k === "²" ? "^2" : k === "−" ? "-" : k === "√" ? "sqrt(" : k;
-    onKey({ insert: ins });
+    onKey({ insert: INSERT[k] ?? k });
   };
+
   return (
-    <div className="card-flat !rounded-[26px] !p-2" aria-label="Math keypad">
-      <div className="grid grid-cols-6 gap-1.5">
-        {ROWS.flat().map((k) => (
+    <div className={`braun ${dark ? "braun-dark" : ""}`} aria-label="Math keypad">
+      <div className="braun-top">
+        <div className="braun-grille" aria-hidden>
+          {Array.from({ length: 12 }, (_, i) => (
+            <span key={i} />
+          ))}
+        </div>
+        <div className="braun-display" aria-live="polite" data-testid="braun-display">
+          <span>{value || "0"}</span>
+        </div>
+        <button type="button" className="braun-abc" onMouseDown={(e) => e.preventDefault()} onClick={onTextMode} aria-label="Switch to text keyboard">
+          ABC
+        </button>
+      </div>
+      <div className="braun-keys">
+        {LAYOUT.flat().map((k) => (
           <button
-            key={k}
+            key={k.label}
             type="button"
-            className={`key ${/[0-9.]/.test(k) ? "" : k === "↵" ? "!bg-brand !text-white" : k === "⌫" ? "!bg-gap-soft" : "!bg-soft"}`}
+            className={`bk bk-${k.kind}`}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => press(k)}
-            aria-label={k === "⌫" ? "Backspace" : k === "↵" ? "Next line" : k}
+            onClick={() => press(k.label)}
+            aria-label={k.aria ?? k.label}
           >
-            {LABEL[k] ?? k}
+            <span>{k.label}</span>
           </button>
         ))}
-      </div>
-      <div className="mt-1.5 flex gap-1.5">
-        <button type="button" className="key flex-1 !text-[15px]" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey({ insert: " or " })}>
-          or
-        </button>
-        <button type="button" className="key flex-1 !text-[15px]" onMouseDown={(e) => e.preventDefault()} onClick={onTextMode}>
-          ABC ⌨
-        </button>
       </div>
     </div>
   );

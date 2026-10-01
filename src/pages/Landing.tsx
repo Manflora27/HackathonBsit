@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Icon, InkCircle } from "../components/Icon";
 import { EngineBadge, Shell } from "../components/Shell";
+import { useAuth } from "../auth";
+import { authConfigured } from "../lib/supabase";
 import { useStore } from "../store";
 
 /** Thin-line drawing of a mistake being traced down to its root. */
@@ -42,6 +44,14 @@ function RootDrawing() {
   );
 }
 
+function GoogleMark() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
+      <path fill="#fff" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3zM12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.600 0-4.800-1.800-5.600-4.100H3.100v2.600A10 10 0 0 0 12 22zM6.400 13.900a6 6 0 0 1 0-3.800V7.500H3.100a10 10 0 0 0 0 9zM12 5.900c1.500 0 2.800.5 3.800 1.500l2.900-2.900A10 10 0 0 0 3.100 7.500l3.300 2.600C7.200 7.700 9.400 5.900 12 5.900z"/>
+    </svg>
+  );
+}
+
 export default function Landing() {
   const nav = useNavigate();
   const { consent, set, lang } = useStore();
@@ -49,9 +59,18 @@ export default function Landing() {
   const [agree, setAgree] = useState(false);
   const fil = lang === "fil";
 
-  const enter = (role: "student" | "teacher" | "guest") => {
-    set({ role });
-    nav(role === "teacher" ? "/teacher" : role === "guest" ? "/solve/p-try-1" : "/student");
+  const { user, profile, ready, error, signInGoogle } = useAuth();
+
+  useEffect(() => {
+    if (!consent || !ready || !user) return;
+    if (!profile) return void nav("/welcome", { replace: true });
+    set({ role: profile.account_type === "teacher" ? "teacher" : "student", demo: false });
+    nav(profile.account_type === "teacher" ? "/teacher" : "/student", { replace: true });
+  }, [consent, ready, user, profile]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const guest = () => {
+    set({ role: "guest", demo: false });
+    nav("/solve/p-try-1");
   };
 
   return (
@@ -118,27 +137,38 @@ export default function Landing() {
           </button>
         </section>
       ) : (
-        <section className="card mt-7 !p-2">
-          {(
-            [
-              ["student", "demo-student", "Kyla", fil ? "Student, Grade 9" : "Student, Grade 9", "bg-gap-soft text-gap-dark"],
-              ["teacher", "demo-teacher", "Ms. Santos", fil ? "Teacher, 9-Sampaguita" : "Teacher, 9-Sampaguita", "bg-ok-soft text-ok-dark"],
-              ["guest", "try-it", fil ? "Subukan lang" : "Just try it", fil ? "Walang account, ikaw lang ang makakakita" : "No account, only you can see it", "bg-soft text-ink"],
-            ] as const
-          ).map(([role, tid, title, sub, tone], i) => (
-            <button key={role} className={`flex w-full items-center gap-4 rounded-[22px] px-3 py-3.5 text-left transition hover:bg-paper ${i ? "border-t border-line" : ""}`}
-              onClick={() => enter(role)} data-testid={tid}>
-              <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-[19px] ${tone}`}>{title[0]}</span>
-              <span className="flex-1">
-                <span className="block font-display text-[21px] leading-tight">{title}</span>
-                <span className="block text-[14px] text-muted">{sub}</span>
-              </span>
-              <Icon name="arrow" size={20} className="text-muted" />
+        <section className="card mt-7">
+          <h2 className="text-[24px]">{fil ? "Mag-sign in" : "Sign in to save your roots"}</h2>
+          <p className="mt-1 text-[15px] text-muted">
+            {fil ? "Para ma-save ang skill map mo at makasali sa klase." : "Keep your skill map, and join your class with a code."}
+          </p>
+          {authConfigured ? (
+            <button className="btn-primary mt-5 w-full" onClick={signInGoogle} disabled={!ready} data-testid="google-signin">
+              <GoogleMark /> {fil ? "Magpatuloy gamit ang Google" : "Continue with Google"}
             </button>
-          ))}
+          ) : (
+            <p className="mt-4 rounded-2xl bg-gap-soft/70 p-3 text-[14px] text-gap-dark" data-testid="auth-unconfigured">
+              {fil ? "Hindi pa nakakonekta ang sign-in. Idagdag ang Supabase keys sa .env." : "Sign-in isn't connected yet. Add the Supabase keys to .env (see .env.example)."}
+            </p>
+          )}
+          {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
+          <div className="my-5 flex items-center gap-3 text-[12px] uppercase tracking-[0.16em] text-muted">
+            <span className="rule" /> {fil ? "o" : "or"} <span className="rule" />
+          </div>
+          <button className="btn-ghost w-full" onClick={guest} data-testid="try-it">
+            {fil ? "Subukan nang walang account" : "Try without an account"}
+          </button>
+          <p className="mt-2 text-center text-[13px] text-muted">{fil ? "Ikaw lang ang makakakita. Hindi ise-save." : "Only you can see it. Nothing is saved to an account."}</p>
+          <button className="btn-ghost mt-3 w-full" onClick={() => { set({ role: "guest", demo: false }); nav("/welcome"); }} data-testid="start-onboarding">
+            {fil ? "Gumawa ng plano nang walang account" : "Set up my plan without an account"}
+          </button>
         </section>
       )}
-      {consent && <p className="mt-3 text-center text-[13px] text-muted">{fil ? "Mga demo account para sa judging" : "Demo accounts for judging"}</p>}
+      {consent && (
+        <p className="mt-4 text-center text-[13px] text-muted">
+          <Link to="/demo" className="underline decoration-dotted underline-offset-4" data-testid="to-demo">{fil ? "Mga demo account para sa judging" : "Demo accounts for judging"}</Link>
+        </p>
+      )}
     </Shell>
   );
 }

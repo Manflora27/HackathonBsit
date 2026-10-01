@@ -7,6 +7,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await page.goto("/");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /let.s go/i }).click();
+  await page.getByTestId("to-demo").click();
   await page.getByTestId("demo-student").click();
   await expect(page.getByTestId("assignment-card")).toBeVisible();
   await expect(page.getByText(/Math checker ready/)).toBeVisible({ timeout: 90_000 });
@@ -65,7 +66,7 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await expect(page.getByTestId("success")).toContainText("The problem that stopped you");
   await shot("06-retry-success");
 
-  await page.goto("/");
+  await page.goto("/demo");
   await page.getByTestId("demo-teacher").click();
   await expect(page.getByTestId("row-kyla")).toBeVisible();
   await expect(page.getByTestId("top-gap-count")).toHaveText("14");
@@ -89,4 +90,37 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
   await page.getByTestId("confirm").click();
   await expect(page.getByTestId("misconception")).toHaveText("Multiplied only the first term");
   await page.screenshot({ path: "test-results/shots/08-offline.png" });
+});
+
+test("landing without Supabase keys: real sign-in is honest, guest and demo still work", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /let.s go/i }).click();
+  await expect(page.getByTestId("auth-unconfigured")).toBeVisible();
+  await expect(page.getByTestId("google-signin")).toHaveCount(0);
+  await expect(page.getByTestId("demo-student")).toHaveCount(0); // no fake accounts on the main screen
+  await page.goto("/student");
+  await expect(page).toHaveURL(/\/$/); // protected route bounces to sign-in
+  await page.screenshot({ path: "test-results/shots/10-signin.png", fullPage: true });
+});
+
+test("fresh onboarding: subjects, baseline grade, goal, plan, then a home with no problems on it", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: /let.s go/i }).click();
+  await page.getByTestId("start-onboarding").click();
+
+  await page.getByTestId("name").fill("Mika");
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("subject-math").click();
+  await page.getByTestId("subject-science").click();
+  await page.getByTestId("grade-8").click();
+  await page.getByTestId("next-step").click();
+  await page.getByTestId("goal-catch_up").click();
+  await expect(page.getByTestId("plan")).toBeVisible();
+  await page.screenshot({ path: "test-results/shots/11-plan.png", fullPage: true });
+  await page.getByTestId("finish-profile").click();
+
+  await expect(page.getByTestId("plan-home")).toBeVisible();
+  await expect(page.getByTestId("assignment-card")).toHaveCount(0);
 });

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { engineState, onEngineState, startEngine } from "../engine/client";
 import { useT } from "../i18n";
+import { Ambient } from "./Ambient";
 import { Icon, type IconName } from "./Icon";
 import { useStore } from "../store";
 
@@ -79,10 +80,11 @@ export function Shell({
 
   return (
     <div className={`mx-auto min-h-dvh ${wide ? "max-w-6xl" : "max-w-md"}`}>
-      <header className="sticky top-0 z-20 bg-paper/80 backdrop-blur-md">
-        <div className="flex h-14 items-center gap-2.5 px-4">
+      <Ambient />
+      <header className="sticky top-2 z-20 px-3 pt-1">
+        <div className="glass flex h-14 items-center gap-2.5 rounded-full px-3">
           {back !== undefined ? (
-            <button className="flex h-9 w-9 items-center justify-center rounded-full border border-line bg-card" aria-label="Back"
+            <button className="flex h-9 w-9 items-center justify-center rounded-full bg-white/60 shadow-[inset_0_1px_0_#fff]" aria-label="Back"
               onClick={() => (typeof back === "number" ? nav(back) : nav(back))}>
               <Icon name="back" size={18} />
             </button>
@@ -93,20 +95,20 @@ export function Shell({
           )}
           <div className="min-w-0 flex-1 truncate font-display text-[19px]">{title ?? "Gap Finder"}</div>
           {role === "student" && <Stats />}
-          <button className="flex h-9 min-w-9 items-center justify-center rounded-full border border-line bg-card px-2.5 text-[12.5px] font-bold tracking-wide"
+          <button className="flex h-9 min-w-9 items-center justify-center rounded-full bg-white/60 px-2.5 text-[12.5px] font-bold tracking-wide shadow-[inset_0_1px_0_#fff]"
             onClick={() => set({ lang: lang === "en" ? "fil" : "en" })} aria-label="Switch language">
             {lang === "en" ? "EN" : "FIL"}
           </button>
         </div>
       </header>
-      <main className={`px-4 pt-2 ${showTabs ? "pb-28" : "pb-10"}`}>{children}</main>
+      <main className={`px-4 pt-4 ${showTabs ? "pb-28" : "pb-10"}`}>{children}</main>
       {showTabs && (
         <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md px-3 pb-[max(env(safe-area-inset-bottom),10px)]">
-          <div className="flex justify-around rounded-full bg-ink p-1.5 text-paper" style={{ boxShadow: "0 18px 36px -16px rgb(30 43 39 / .7)" }}>
+          <div className="glass-dark flex justify-around rounded-full p-1.5 text-paper">
             {TABS.map((tab) => (
               <NavLink key={tab.to} to={tab.to} end={tab.to === "/student"}
                 className={({ isActive }) =>
-                  `flex flex-1 flex-col items-center gap-0.5 rounded-full py-2 text-[11px] font-bold tracking-wide transition ${isActive ? "bg-paper text-ink" : "text-paper/60"}`
+                  `flex flex-1 flex-col items-center gap-0.5 rounded-full py-2 text-[11px] font-bold tracking-wide transition ${isActive ? "bg-white/90 text-ink shadow-[0_6px_14px_-8px_rgb(0_0_0/.6)]" : "text-paper/65"}`
                 }>
                 <Icon name={tab.icon} size={20} />
                 {lang === "fil" ? tab.fil : tab.en}

@@ -126,7 +126,7 @@ export default function Learn() {
             )}
             {keypad && (
               <div className="mt-3">
-                <Keypad onKey={onKey} onTextMode={() => setKeypad(false)} />
+                <Keypad value={answer} onKey={onKey} onTextMode={() => setKeypad(false)} />
               </div>
             )}
           </motion.section>
@@ -135,7 +135,7 @@ export default function Learn() {
 
       {mastered && (
         <motion.div initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 16 }}
-          className="card mt-5 !bg-ok-soft text-center" data-testid="mastered">
+          className="card mt-5 !bg-ok-soft/70 text-center" data-testid="mastered">
           <InkCircle color="var(--color-ok)" className="mx-auto mt-2 h-14 w-14 rounded-full bg-ok text-white"><Icon name="sprout" size={26} /></InkCircle>
           <div className="mt-1 font-display text-2xl font-bold">{fil ? "Naayos ang gap!" : "Gap fixed!"}</div>
           <p className="mt-1 text-[15px]">{fil ? "Ngayon, balikan ang problem na nagpahinto sa iyo." : "Now go back to the problem that stopped you."}</p>

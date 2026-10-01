@@ -129,7 +129,7 @@ export function PathMap({
               ? "bg-ok text-white border-ok"
               : isLit
                 ? "bg-gap-soft text-gap-dark border-gap"
-                : "bg-card text-ink border-ink/25";
+                : "bg-white/70 text-ink border-white backdrop-blur-md";
         const node = (
           <span className={`flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] font-display text-[15px] transition-colors duration-500 ${tone}`}
             style={{ boxShadow: "0 6px 14px -8px rgb(30 43 39 / .45)" }}>

@@ -80,7 +80,7 @@ export default function Trace() {
   return (
     <Shell tabs={false} back="/student" title={root ? (fil ? "Nahanap!" : "Found it!") : fil ? "Hinahanap ang gap…" : "Digging for the gap…"}>
       <div className="flex justify-center">
-        <span className="chip bg-card text-[13px]">{trace.path.map((s) => `G${skillById[s].grade}`).join(" → ")}{!root && " → ?"}</span>
+        <span className="chip glass text-[13px]">{trace.path.map((s) => `G${skillById[s].grade}`).join(" → ")}{!root && " → ?"}</span>
       </div>
       <div className="mt-3">
         <PathMap statuses={progress} path={trace.path} root={root} animate only={trace.path} />
@@ -120,7 +120,7 @@ export default function Trace() {
             )}
             {keypad && (
               <div className="mt-3">
-                <Keypad onKey={onKey} onTextMode={() => setKeypad(false)} />
+                <Keypad value={answer} onKey={onKey} onTextMode={() => setKeypad(false)} />
               </div>
             )}
           </motion.div>
