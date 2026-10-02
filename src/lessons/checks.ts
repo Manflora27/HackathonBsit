@@ -8,6 +8,7 @@
  *  - checkFigure: labelled points on a graph must lie on one of its functions.
  */
 import { compile, tryCompile } from "../lib/expr.js";
+import { normalizeMath } from "../lib/normalizeMath.js";
 import type { Figure, Lesson, LessonText } from "../types.js";
 
 /** A side of an equation, from LaTeX to the engine's typed notation. Null if it isn't plain arithmetic. */
@@ -34,7 +35,7 @@ export function numericSide(tex: string): string | null {
 /** Every checkable "a = b" in one stretch of lesson text: consecutive number-only sides of each $...$ chain. */
 export function claimsIn(text: string): [string, string][] {
   const out: [string, string][] = [];
-  for (const m of text.matchAll(/\$\$([^$]+)\$\$|\$([^$]+)\$/g)) {
+  for (const m of normalizeMath(text).matchAll(/\$\$([^$]+)\$\$|\$([^$]+)\$/g)) {
     const tex = m[1] ?? m[2];
     if (/\\neq|\\ne\b|\\le|\\ge|\\approx|\\sim|<|>|\\pm|\\mp/.test(tex)) continue;
     const sides = tex.split("=").map(numericSide);

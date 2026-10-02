@@ -1,4 +1,5 @@
 import type { LessonText } from "../types";
+import { normalizeMath } from "../lib/normalizeMath";
 
 // Lesson text -> words a voice can read. Lessons write math as $LaTeX$ (see RichText in
 // components/Math.tsx); a voice reading "\frac{3}{4}" or "x^2" aloud is useless, so each math span
@@ -255,7 +256,7 @@ export function speakTex(tex: string): string {
  * can't be read, so the caller can fall back to the hand-written `spoken` text.
  */
 export function speakableText(text: string): string {
-  return text
+  return normalizeMath(text)
     .split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g)
     .map((p) => {
       if (p.startsWith("$$") && p.endsWith("$$") && p.length > 4) return ` ${speakTex(p.slice(2, -2))}. `;

@@ -1,5 +1,6 @@
 import katex from "katex";
 import { useMemo } from "react";
+import { normalizeMath, stripMathDelimiters } from "../lib/normalizeMath";
 
 const OPTIONS = {
   throwOnError: false,
@@ -8,13 +9,13 @@ const OPTIONS = {
 };
 
 export function Math({ tex, block = false, className = "" }: { tex: string; block?: boolean; className?: string }) {
-  const html = useMemo(() => katex.renderToString(tex, { ...OPTIONS, displayMode: block }), [tex, block]);
+  const html = useMemo(() => katex.renderToString(stripMathDelimiters(tex), { ...OPTIONS, displayMode: block }), [tex, block]);
   return <span className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-/** Lesson text: $$display$$ and $inline$ math, **bold** key terms. Everything else is plain text. */
+/** Lesson text: $$display$$ and $inline$ math (or \[display\] and \(inline\)), **bold** key terms. Everything else is plain text. */
 export function RichText({ text, className = "" }: { text: string; className?: string }) {
-  const parts = text.split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g);
+  const parts = normalizeMath(text).split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g);
   return (
     <span className={className}>
       {parts.map((p, i) =>

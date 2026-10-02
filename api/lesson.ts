@@ -3,6 +3,7 @@ import { subjectMeta } from "../src/data/curriculum.js";
 import { competenciesFor } from "../src/data/competencies.js";
 import { resolve, sign, type Target } from "./_lessons.js";
 import { checkFigure } from "../src/lessons/checks.js";
+import { normalizeMathDeep } from "../src/lib/normalizeMath.js";
 
 const FORMS = ["any", "expanded", "factored", "solved", "units", "chemistry"];
 
@@ -170,7 +171,8 @@ async function secondOpinion(c: Check): Promise<number | null> {
  * `notes` lists what was dropped, for the audit report.
  */
 export async function generateLesson(target: Target, goal: string | null, stream?: Parameters<typeof generate>[2]): Promise<{ draft: Draft; notes: string[] }> {
-  const draft = await generate(target, goal, stream);
+  // \(...\) and \[...\] become $...$ and $$...$$ before anything checks, signs, caches or publishes the text.
+  const draft = normalizeMathDeep(await generate(target, goal, stream));
   const notes: string[] = [];
   const fig = checkFigure(draft.figure as never);
   notes.push(...fig.dropped);
