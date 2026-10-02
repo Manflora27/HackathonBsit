@@ -24,19 +24,7 @@ export default defineConfig({
       workbox: {
         maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
         globPatterns: ["**/*.{js,mjs,css,html,svg,json,wasm,zip,whl}"],
-        // The on-device voice model (onnx wasm + ~75MB weights from the
-        // HuggingFace CDN) loads on demand only: precaching it would tax
-        // every install, so it stays out of the precache and relies on the
-        // runtime caches below + the browser HTTP cache instead.
-        globIgnores: ["**/ort-*.wasm"],
         navigateFallbackDenylist: [/^\/api\//],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/(huggingface\.co|cdn-lfs\.huggingface\.co|cdn-lfs\.hf\.co)\/.*/,
-            handler: "CacheFirst",
-            options: { cacheName: "whisper-models", expiration: { maxEntries: 30 } },
-          },
-        ],
       },
     }),
   ],

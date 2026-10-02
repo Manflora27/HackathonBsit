@@ -22,20 +22,19 @@ Math builds on itself. One gap from years ago — a school transfer, a missed le
 | Is this step correct? Which term is wrong? | **SymPy** (exact, deterministic) |
 | Common misconceptions | **Buggy rules** — apply a known wrong rule to the previous line and check with SymPy whether it reproduces the student's line. A match is certain. |
 | Which prerequisite is the root gap? | **Graph walk** over the skill graph with quick SymPy-checked probes |
-| Uncommon misconceptions, explanations, lessons, starting-point checks, voice/photo transcripts | **AI (OpenRouter: GLM text + vision)**, always with a check and a non-AI fallback |
+| Uncommon misconceptions, explanations, lessons, starting-point checks, photo transcripts | **AI (OpenRouter: GLM text + vision)**, always with a check and a non-AI fallback |
 
 ## Features
 
 - **Step-by-step diagnosis** — "Is this what you wrote?" confirmation, then the wrong term is circled next to the correct line.
 - **Gap trace ("time travel")** — "Your Grade 9 mistake comes from a Grade 7 skill," animated down the skill map.
 - **Roadmap** — explanation (English, Filipino, Bisaya), area-model visual, SymPy-graded practice, then a retry of the original problem.
-- **Voice input (18+)** — browser speech recognition where available, otherwise a short clip transcribed on-device (Whisper-tiny, offline after a one-time download); transcripts become typed math via AI online, via rules offline.
 - **Snap my work** — photograph handwritten work; the vision model transcribes it as written, mistakes preserved.
 - **Self-learners welcome** — no grade, no quarters: subjects only, starting at a default level while checks find the real one.
 - **Light gamification** — XP with combo bonuses, confetti, and Bilog the mascot celebrating mastery; days-practiced and gaps-fixed counters. No streak anxiety.
 - **Starting-point checks** — a short AI-written check per subject places the learner on a DepEd MATATAG study plan; offline, it falls back to built-in skills.
 - **Help with any subject** — type or photograph a question and get feedback, a hint and worked steps.
-- **Works offline** — the SymPy engine runs on the device (Pyodide), so diagnosis works in airplane mode; downloadable lesson packs and offline voice included.
+- **Works offline** — the SymPy engine runs on the device (Pyodide), so diagnosis works in airplane mode; downloadable lesson packs included.
 - **Privacy** — consent screen (RA 10173), AI only sees anonymized math, learning data stays on the device, download my data.
 - **Delete account** — Settings → Delete account permanently removes the account and everything saved with it (server and device).
 - **Accessibility** — read aloud (device voice), text size, readable font, reduced motion, not color-only (✓ / !), screen-reader description of the skill map.
@@ -50,14 +49,12 @@ flowchart LR
     UI[React app<br/>KaTeX · SVG maps · Motion]
     ST[(Device store<br/>progress stays here)]
     PY[Pyodide + SymPy<br/>engine/gapfinder.py]
-    WH[Whisper-tiny<br/>on-device STT]
   end
   subgraph SV["Vercel functions"]
-    PX[api/ai · api/lesson · api/voice<br/>api/publish · api/verify · api/delete-account]
+    PX[api/ai · api/lesson<br/>api/publish · api/verify · api/delete-account]
   end
   UI --> ST
   UI --> PY
-  UI --> WH
   UI -- anonymized math --> PX
   PX --> OR[OpenRouter<br/>text · vision]
   PX --> DB
@@ -70,10 +67,9 @@ flowchart LR
 | `engine/golden.json`, `engine/test_gapfinder.py` | Golden test set + content validation (every probe and practice key verified by SymPy) |
 | `src/data/*.json` | Skill graph, misconception library, lessons (EN/FIL, partial Bisaya), problems |
 | `src/engine/` | Web Worker running the engine in Pyodide |
-| `src/ai/speech.ts`, `src/ai/whisper.ts`, `src/ai/localMath.ts` | Tiered voice input: browser STT → on-device Whisper → offline transcript-to-math rules |
 | `src/components/Bilog.tsx` | Bilog mascot: hand-drawn SVG, 9 moods, eye tracking, reduced-motion support |
 | `src/pages/` | Landing/consent, onboarding, home, starting-point check, solve, trace, unit/learn, help, settings |
-| `api/` | OpenRouter proxy (classification, placement, help, voice formatting, lessons, photo reading), lesson publishing with SymPy re-check, account deletion |
+| `api/` | OpenRouter proxy (classification, placement, help, lessons, photo reading), lesson publishing with SymPy re-check, account deletion |
 | `supabase/migrations/0001-0011` | Schema, Row Level Security, lesson cache (older classroom tables are unused) |
 | `capacitor.config.ts`, `android/` | Android app: runs the deployed site, deep-link sign-in (`com.hopper.math://auth`) |
 | `docs/ARCHITECTURE.md` | Architecture, data flow and diagrams |
@@ -113,7 +109,7 @@ cd android && ./gradlew assembleDebug    # needs JDK 21 (Android Studio's jbr) a
 
 The app loads https://hopper-rust.vercel.app (`capacitor.config.ts`), so web deploys update it without a new APK. Google sign-in opens in a Chrome tab and returns to the app through `com.hopper.math://auth/callback`.
 
-LLM spend (OpenRouter list, Oct 2026 — verify live; providers are pinned): text ~$0.15/$0.60 per 1M in/out tokens, vision ~$0.075/$0.25. Per call that's ~$0.0002 for classify/tips/voice, ~$0.001 per photo read or placement check, ~$0.01 per generated lesson — but lessons are cached and shared, so each one is paid ~once. Cost controls: temperature 0 with strict JSON schemas (short outputs), capped inputs, at most one retry, no silent provider rerouting (`allow_fallbacks: false`), and full offline fallbacks that skip the call entirely. Set an OpenRouter credit limit before demo day.
+LLM spend (OpenRouter list, Oct 2026 — verify live; providers are pinned): text ~$0.15/$0.60 per 1M in/out tokens, vision ~$0.075/$0.25. Per call that's ~$0.0002 for classify/tips, ~$0.001 per photo read or placement check, ~$0.01 per generated lesson — but lessons are cached and shared, so each one is paid ~once. Cost controls: temperature 0 with strict JSON schemas (short outputs), capped inputs, at most one retry, no silent provider rerouting (`allow_fallbacks: false`), and full offline fallbacks that skip the call entirely. Set an OpenRouter credit limit before demo day.
 
 ## Test results
 

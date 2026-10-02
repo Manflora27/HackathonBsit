@@ -25,7 +25,7 @@ export interface Route {
   effort?: "none" | "minimal" | "low" | "medium" | "high";
 }
 
-/** Text only: lessons, placement checks, mistake classification, teacher tips, voice transcripts, reviews. Fast, high throughput. */
+/** Text only: lessons, placement checks, mistake classification, teacher tips, reviews. Fast, high throughput. */
 export const TEXT: Route = {
   // Cost (OpenRouter list, Oct 2026 — verify live, we pin providers so check theirs):
   // $0.30 / $1.20 per 1M input / output tokens on Makora and Together; reasoning tokens bill as output, so medium

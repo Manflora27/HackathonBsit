@@ -6,7 +6,6 @@ import { templatePlacement } from "../lessons/template";
 import { Bilog } from "../components/Bilog";
 import { Icon } from "../components/Icon";
 import { Math as TeX, RichText, quickTex } from "../components/Math";
-import { MicButton } from "../components/MicButton";
 import { Shell } from "../components/Shell";
 import { SubjectIcon } from "../components/SubjectIcon";
 import { skillTitle, skills } from "../data";
@@ -284,8 +283,7 @@ export default function Check() {
                     {flash ? <Icon name={flash.right ? "check" : "close"} size={20} /> : "OK"}
                   </button>
                 </form>
-                <div className="mt-2 flex items-center justify-between gap-2">
-                  <MicButton onText={setAnswer} testId="answer-mic" />
+                <div className="mt-2 flex items-center justify-end gap-2">
                   <button className="text-[14px] text-muted underline decoration-dotted underline-offset-4" onClick={() => void submit(false)} data-testid="check-dont-know">{t("check.dontKnow")}</button>
                 </div>
               </>

@@ -11,7 +11,6 @@ import { engine } from "../engine/client";
 import { useT } from "../i18n";
 import { uid, useStore } from "../store";
 import type { Analysis, Problem } from "../types";
-import { MicButton } from "../components/MicButton";
 import { photoToDataUrl } from "../ai/image";
 
 const DEMO_STEPS: Record<string, string[]> = {
@@ -66,16 +65,6 @@ export default function Solve() {
     setSnap("done");
   }
 
-  // A spoken step goes into the box in focus, else the first empty one, else a new one.
-  function onSpokenStep(text: string) {
-    setResult(null);
-    if (focus === -1) return setCustomGiven(text);
-    setSteps((prev) => {
-      const i = focus !== null && focus >= 0 ? focus : prev.findIndex((x) => !x.trim());
-      if (i === -1) return [...prev, text];
-      return prev.map((x, j) => (j === i ? text : x));
-    });
-  }
   const resultRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -280,7 +269,6 @@ export default function Solve() {
           </button>
           <input ref={photoInput} type="file" accept="image/*" capture="environment" className="hidden"
             onChange={(e) => { void onPhoto(e.target.files?.[0]); e.target.value = ""; }} data-testid="snap-input" />
-          <MicButton onText={onSpokenStep} label={t("solve.sayStep")} testId="say-step" />
           {snap === "done" && <p className="w-full text-[13px] text-muted" role="status">{t("solve.snapDone")}</p>}
           {snap === "failed" && <p className="w-full text-[13px] text-gap-dark" role="status">{t("solve.snapFailed")}</p>}
         </div>

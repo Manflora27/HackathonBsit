@@ -157,11 +157,8 @@
     "resetDemoData": "I-reset ang demo",
     "teacherSeesAssigned": "Nakikita ng guro mo ang score mo sa mga quiz at exam na ipinadala niya, at ang progress mo sa asignatura ng klase niya. Pribado ang iba mong asignatura, mga sagot sa practice, at mga ugat.",
     "language": "Wika",
-    "voiceTitle": "Voice input (18+)",
-    "voiceToggle": "Voice input (18+, device speech)",
     "aiTitle": "Saan tumatakbo ang AI",
-    "aiText": "Mga lesson, hint at pagbasa ng litrato ng solusyon mo: GLM 5.3 Flash sa Together o Baseten (US). Math mo lang ang ipinapadala, hindi ang pangalan mo.",
-    "aiVoice": "Voice input, kung bubuksan mo lang: speech recognition sa device mo ang nagsusulat; ang transcript ay pumupunta sa text model sa itaas kapag online, at isinusulat sa device kapag offline. 18+ lang."
+    "aiText": "Mga lesson, hint at pagbasa ng litrato ng solusyon mo: GLM 5.3 Flash sa Together o Baseten (US). Math mo lang ang ipinapadala, hindi ang pangalan mo."
   },
   "solve": {
     "problem": "Ang problem mo",
@@ -184,7 +181,6 @@
     "aiSuggestion": "Hula ng AI ({pct}%). Ang tama at mali ay sinuri ng SymPy.",
     "plusOneGapFixed": "+1 gap na naayos",
     "snap": "Kunan ang solusyon ko",
-    "sayStep": "Sabihin ang step",
     "reading": "Binabasa ang solusyon mo…",
     "snapFailed": "Hindi mabasa ang litrato. Subukan ang mas malinaw, o i-type ito.",
     "snapDone": "Tingnan kung tugma ang mga linya sa papel mo, tapos i-check."
@@ -652,29 +648,6 @@
     "intro": "Nilalaktawan nito ang sign-in at gumagamit ng sample data (si Kyla at klase ng 30). Nasa main screen ang mga totoong account.",
     "fresh": "Magsimula nang bago",
     "freshNote": "Totoong onboarding, tapos ang handang Grade 9 assignment"
-  },
-  "voice": {
-    "consentTitle": "Ang voice input ay para sa 18+",
-    "consentWhat": "Isinusulat ng voice input ang sinasabi mo, tapos ginagawang typed math: speech recognition ng browser kung kaya nito, o on-device na model kung hindi.",
-    "consentPrivacy": "Maaaring iproseso ng speech service ng browser mo ang audio, o ang maikling clip ay isasalin sa device na ito at hindi sine-save. Ang transcript ay ipinapadala sa text model kapag online ka.",
-    "consentWithout": "Puwede ka pa ring mag-type o gumamit ng keypad — walang nawawala.",
-    "allow": "18+ ako — i-enable",
-    "under18": "Wala pa akong 18",
-    "adultsOnly": "Para sa 18+ lang ang voice input. Mag-type ka na lang.",
-    "say": "Sabihin",
-    "listening": "Nakikinig… pindutin para huminto",
-    "recording": "Nagre-record… pindutin para huminto",
-    "writing": "Isinusulat…",
-    "downloading": "Inihahanda ang offline voice…",
-    "transcribing": "Isinusulat ang sinabi mo, sa device na ito…",
-    "noMath": "Walang nakuhang math. Ulitin?",
-    "micBlocked": "Payagan ang mikropono para masabi ang sagot mo.",
-    "failed": "Hindi available ang voice ngayon. I-type na lang.",
-    "downloadOffline": "I-download ang offline voice",
-    "offlineReady": "Handa na ang offline voice sa device na ito",
-    "offlineNeeded": "Nagre-record at nagsusulat offline ang device na ito (isang download)",
-    "offlineOptional": "Gumagana rin offline pagkatapos ng isang download",
-    "offlineFailed": "Nabigo ang download — subukan ulit sa Wi-Fi"
   },
   "lesson": {
     "workedExample": "Halimbawang sinagutan",

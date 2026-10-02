@@ -248,10 +248,10 @@ Each one must **show the core idea** (find the real gap), not just decorate. Ran
 - **Diagnosis:** buggy-rule matching works offline. Errors no rule matched wait for a connection (AI classification), with engine-only output meanwhile.
 - **Content:** the skill graph, misconception library, and practice live in the bundle; lessons live in device IndexedDB once opened or pack-downloaded (`src/lessons/store.ts`, `src/lessons/pack.ts`). A never-seen lesson shows a "needs connection" card and stays in the plan.
 - **Lesson packs:** per-subject "Download for offline" with a progress ring (`src/components/OfflinePack.tsx`); uncached lessons generate 2-at-a-time while online.
-- **Voice offline:** record → on-device Whisper → rule-based math formatting, once the one-time model download is done (`src/ai/speech.ts`, `src/ai/whisper.ts`, `src/ai/localMath.ts`). Read-aloud uses the device voice, no network.
+- **Read aloud offline:** uses the device voice, no network (`src/ai/tts.ts`). There is no voice input.
 - **Photos need connection:** handwriting recognition is vision-model only, no offline path.
 - **Sync is best-effort, not queued:** classroom writes are no-ops offline (`src/classroom.ts`, `src/school.ts`) — nothing is lost locally (progress lives on the device), but uploads made while offline are not retried. Teacher realtime and sign-in need connection.
-- **First run needs Wi-Fi:** Pyodide, fonts, Whisper model, and lesson packs all download once, then persist.
+- **First run needs Wi-Fi:** Pyodide, fonts, and lesson packs all download once, then persist.
 - **Response cache:** AI explanations for the same skill and misconception are reused across students (shared signed lesson cache).
 - **School option:** Ollama with a local model on one school computer.
 

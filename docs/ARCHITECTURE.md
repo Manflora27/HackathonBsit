@@ -15,16 +15,14 @@ flowchart LR
     UI["React app<br/>(PWA in the browser, or the Android app)"]
     Store[("Device store<br/>progress, attempts, settings<br/>localStorage")]
     Engine["Math engine<br/>SymPy in Pyodide (Web Worker)"]
-    Whisper["Whisper-tiny<br/>on-device speech-to-text"]
     UI <--> Store
     UI --> Engine
-    UI --> Whisper
   end
 
   subgraph Vercel["Vercel"]
     direction TB
     Static["Static site<br/>dist/ + service worker"]
-    API["Serverless functions<br/>api/ai · api/lesson · api/voice<br/>api/publish · api/verify · api/delete-account"]
+    API["Serverless functions<br/>api/ai · api/lesson<br/>api/publish · api/verify · api/delete-account"]
   end
 
   subgraph Supabase["Supabase"]
@@ -64,9 +62,9 @@ React 19 + Vite + Tailwind, routed with React Router, state in Zustand.
 | Diagnosis | `src/pages/Solve.tsx`, `src/pages/Trace.tsx` | Step-by-step input, "is this what you wrote?", error line circled, then the walk down the skill graph to the root gap. |
 | Lessons & practice | `src/pages/Unit.tsx`, `src/pages/Learn.tsx`, `src/lessons/` | Lesson generation pipeline (cache → server → offline pack), SymPy-graded practice. |
 | Help with any subject | `src/pages/Help.tsx` | Type or photograph a question; get feedback, a hint and worked steps. |
-| Settings | `src/pages/Settings.tsx` | Language (EN / Tagalog / Bisaya), reading aids, exam mode, voice, download my data, **delete account**. |
+| Settings | `src/pages/Settings.tsx` | Language (EN / Tagalog / Bisaya), reading aids, exam mode, read aloud, download my data, **delete account**. |
 | Curriculum | `src/data/` | DepEd MATATAG plan, competencies, skill graph, misconception library. |
-| Voice | `src/ai/speech.ts`, `src/ai/whisper.ts`, `src/ai/localMath.ts` | Browser speech recognition → on-device Whisper → rules that turn spoken math into typed math offline. |
+| Read aloud | `src/ai/tts.ts` | Reads lessons aloud with the device voice (Android system TTS, or Web Speech in browsers). No microphone or voice input. |
 
 ## 3. The math engine (`engine/gapfinder.py`)
 
@@ -97,7 +95,6 @@ All of them run on Vercel. API keys exist only here.
 | `POST /api/lesson` | Writes a lesson for one curriculum unit | Returns the draft with an HMAC signature (`LESSON_SIGNING_KEY`), so only server-written drafts can be published. |
 | `POST /api/publish` | Shares a verified lesson | Checks the signature, re-checks every answer key with `/api/verify`, then writes `lesson_cache` with the service role. |
 | `POST /api/verify` | SymPy re-check of answer keys | Python function running `engine/gapfinder.py`. |
-| `POST /api/voice` | Transcript → typed math | Text only: audio never leaves the device. |
 | `POST /api/delete-account` | Deletes the caller's account | Gets the user from their own access token (never a client-sent id), then deletes the auth user. `profiles` cascades to everything they own. |
 
 Model routing is in `api/_openrouter.ts`: a pinned text model and a pinned vision model, with providers pinned and `allow_fallbacks: false`, so a request never silently goes elsewhere.

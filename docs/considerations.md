@@ -4,13 +4,13 @@ Each rubric item, what Hopper does about it, and where it lives in the repo. Pre
 
 ## 1. Offline capability
 
-Grading never needs a network: SymPy runs on-device in a Pyodide worker (`src/engine/`), and airplane-mode diagnosis is a passing e2e test (`tests/demo.spec.ts`). Lessons persist in device IndexedDB once opened or pack-downloaded, with per-subject "Download for offline" packs (`src/lessons/store.ts`, `src/lessons/pack.ts`, `src/components/OfflinePack.tsx`). Voice works offline after a one-time model download — record, on-device Whisper, rule-based math formatting (`src/ai/speech.ts`, `src/ai/whisper.ts`, `src/ai/localMath.ts`). Read-aloud uses the device voice. The app shell, fonts, and KaTeX are PWA-precached.
+Grading never needs a network: SymPy runs on-device in a Pyodide worker (`src/engine/`), and airplane-mode diagnosis is a passing e2e test (`tests/demo.spec.ts`). Lessons persist in device IndexedDB once opened or pack-downloaded, with per-subject "Download for offline" packs (`src/lessons/store.ts`, `src/lessons/pack.ts`, `src/components/OfflinePack.tsx`). Read-aloud uses the device voice. The app shell, fonts, and KaTeX are PWA-precached.
 
-Limits, stated honestly: a never-seen lesson shows a "needs connection" card; photo reading is vision-model only; teacher sync, realtime, and sign-in need connection; classroom writes are best-effort (not queued); first run should happen on Wi-Fi (Pyodide, fonts, Whisper model, packs).
+Limits, stated honestly: a never-seen lesson shows a "needs connection" card; photo reading is vision-model only; teacher sync, realtime, and sign-in need connection; classroom writes are best-effort (not queued); first run should happen on Wi-Fi (Pyodide, fonts, packs).
 
 ## 2. Accessibility features
 
-Read aloud (device speech), text size 100/115/130%, readable-font swap, reduce-motion switch that freezes Bilog's bounce/spin/drawing (`src/components/Shell.tsx`, `src/index.css`, `src/components/Bilog.tsx`). Gap/mastered states carry `!`/`✓` glyphs plus `aria-label`s, never color alone. Dialogs, radios, tabs, and status messages use proper roles; the skill map has a text equivalent. Motor/low-effort alternatives to typing: math keypad, voice input, photo snap. Known gaps: no OS dynamic-type inheritance, no high-contrast theme, no full VoiceOver/TalkBack pass yet.
+Read aloud (device speech), text size 100/115/130%, readable-font swap, reduce-motion switch that freezes Bilog's bounce/spin/drawing (`src/components/Shell.tsx`, `src/index.css`, `src/components/Bilog.tsx`). Gap/mastered states carry `!`/`✓` glyphs plus `aria-label`s, never color alone. Dialogs, radios, tabs, and status messages use proper roles; the skill map has a text equivalent. Motor/low-effort alternatives to typing: math keypad, photo snap. Known gaps: no OS dynamic-type inheritance, no high-contrast theme, no full VoiceOver/TalkBack pass yet.
 
 ## 3. Data privacy (RA 10173)
 
@@ -24,7 +24,7 @@ The core rule (`engine/gapfinder.py:1-8`): correctness is decided by SymPy, neve
 
 ## 5. Multi-language support
 
-UI in English, Tagalog, and Bisaya with English fallback for missing keys (`src/locales/`, `LANGS`/`normalizeLang` in `src/locales/index.ts`). Lessons carry English + Filipino with optional Cebuano; placement checks, insights, and voice setup all follow the learner's language (Whisper uses a Filipino acoustic model for non-English; the offline formatter knows EN/TL/CEB number words including *dose*, *trese*). Known gaps: MATATAG topic titles show English in tl/ceb, and Filipino explanations still need native-speaker review (`docs/PLAN.md` "To Fill In").
+UI in English, Tagalog, and Bisaya with English fallback for missing keys (`src/locales/`, `LANGS`/`normalizeLang` in `src/locales/index.ts`). Lessons carry English + Filipino with optional Cebuano; placement checks and insights all follow the learner's language. Known gaps: MATATAG topic titles show English in tl/ceb, and Filipino explanations still need native-speaker review (`docs/PLAN.md` "To Fill In").
 
 ## 6. Scalability
 

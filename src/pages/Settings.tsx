@@ -1,47 +1,11 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../auth";
-import { ensureVoiceConsent } from "../components/VoiceConsent";
-import { getSpeechBackend } from "../ai/client";
-import { isLocalVoiceReady, preloadLocalVoice } from "../ai/whisper";
 import { Shell } from "../components/Shell";
 import { streak, useStore } from "../store";
 import { setAsideFor } from "../account";
 import { usePlanContext } from "../plan";
 import { LANGS, useT } from "../i18n";
 import type { Lang } from "../types";
-
-/** One-time download of the on-device voice model (Settings, on Wi-Fi is best). */
-function OfflineVoice() {
-  const t = useT();
-  const [state, setState] = useState<"idle" | "busy" | "ready" | "failed">(isLocalVoiceReady() ? "ready" : "idle");
-  // Where the browser already listens, the download only matters offline.
-  // Where it can't (Firefox, Capacitor shell), this IS the voice input.
-  const needed = getSpeechBackend() === "local";
-  async function download() {
-    setState("busy");
-    try {
-      await preloadLocalVoice();
-      setState("ready");
-    } catch {
-      setState("failed");
-    }
-  }
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-sm text-muted">
-        {state === "ready" ? t("voice.offlineReady") : needed ? t("voice.offlineNeeded") : t("voice.offlineOptional")}
-      </span>
-      {state === "ready" ? (
-        <span className="text-sm text-gap-dark" data-testid="offline-voice-ready">✓</span>
-      ) : (
-        <button className="btn-ghost btn-sm" disabled={state === "busy"} onClick={download} data-testid="offline-voice-download">
-          {state === "busy" ? t("voice.downloading") : state === "failed" ? t("voice.offlineFailed") : t("voice.downloadOffline")}
-        </button>
-      )}
-    </div>
-  );
-}
 
 /** The learner's own page: who they are and how they're doing. */
 function MeSection() {
@@ -148,18 +112,8 @@ export default function Settings() {
       </section>
 
       <section className="card mt-4 space-y-3">
-        <h2 className="font-display text-xl font-semibold">{t("settings.aiTitle")}</h2>        <p className="text-sm text-muted">{t("settings.aiText")}</p>
-        <label className="flex items-center justify-between gap-3">
-          {t("settings.voiceToggle")}
-          <input type="checkbox" className="h-5 w-5 shrink-0 accent-[#1e2b27]" checked={s.voiceAi === true}
-            onChange={async (e) => {
-              // Turning it on asks the 18+ question once; under-18s stay off.
-              if (!e.target.checked) return s.set({ voiceAi: false });
-              s.set({ voiceAi: await ensureVoiceConsent() });
-            }} data-testid="voice-toggle" />
-        </label>
-        <p className="text-sm text-muted">{t("settings.aiVoice")}</p>
-        <OfflineVoice />
+        <h2 className="font-display text-xl font-semibold">{t("settings.aiTitle")}</h2>
+        <p className="text-sm text-muted">{t("settings.aiText")}</p>
       </section>
 
       <section className="mt-6 flex flex-wrap gap-2">

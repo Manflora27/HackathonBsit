@@ -157,11 +157,8 @@
     "resetDemoData": "Reset demo data",
     "teacherSeesAssigned": "Your teacher sees your scores on the quizzes and exams they send, and your progress in their class's subject. Your other subjects, practice answers and roots stay private.",
     "language": "Language",
-    "voiceTitle": "Voice input (18+)",
-    "voiceToggle": "Voice input (18+, device speech)",
     "aiTitle": "Where AI runs",
-    "aiText": "Lessons, hints and reading photos of your work: GLM 5.3 Flash on Together or Baseten (US). Only your math is sent, never your name.",
-    "aiVoice": "Voice input, only if you turn it on: speech recognition on your device writes it down; the transcript goes to the text model above when you're online, and is typed on-device when you're not. 18+ only."
+    "aiText": "Lessons, hints and reading photos of your work: GLM 5.3 Flash on Together or Baseten (US). Only your math is sent, never your name."
   },
   "solve": {
     "problem": "Your problem",
@@ -184,7 +181,6 @@
     "aiSuggestion": "AI suggestion ({pct}% confident). Right and wrong are checked by SymPy.",
     "plusOneGapFixed": "+1 gap fixed",
     "snap": "Snap my work",
-    "sayStep": "Say a step",
     "reading": "Reading your work…",
     "snapFailed": "Couldn't read that photo. Try a clearer one, or type it.",
     "snapDone": "Check the lines match your paper, then check your work."
@@ -422,29 +418,6 @@
     "intro": "These skip sign-in and use sample data (Kyla and a class of 30). Real accounts live on the main screen.",
     "fresh": "Start fresh",
     "freshNote": "Real onboarding, then the seeded Grade 9 assignment"
-  },
-  "voice": {
-    "consentTitle": "Voice input is for adults (18+)",
-    "consentWhat": "Voice input writes down what you say, then turns it into typed math: with the browser's speech recognition when it can listen, otherwise with an on-device model.",
-    "consentPrivacy": "The browser's speech service may process the audio, or a short clip is transcribed on this device and never stored. The transcript is sent to our text model when you're online.",
-    "consentWithout": "You can always type or use the keypad instead — nothing is lost.",
-    "allow": "I'm 18 or older — enable",
-    "under18": "I'm under 18",
-    "adultsOnly": "Voice input is 18+ only. Type your answer instead.",
-    "say": "Say it",
-    "listening": "Listening… tap to stop",
-    "recording": "Recording… tap to stop",
-    "writing": "Writing it down…",
-    "downloading": "Getting the offline voice ready…",
-    "transcribing": "Typing what you said, on this device…",
-    "noMath": "Didn't catch any math. Try again?",
-    "micBlocked": "Allow the microphone to speak your answer.",
-    "failed": "Voice isn't available right now. Type it instead.",
-    "downloadOffline": "Download offline voice",
-    "offlineReady": "Offline voice ready on this device",
-    "offlineNeeded": "This device records and types offline (one download)",
-    "offlineOptional": "Also works offline after a one-time download",
-    "offlineFailed": "Download failed — try again on Wi-Fi"
   },
   "lesson": {
     "workedExample": "Worked example",

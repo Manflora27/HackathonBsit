@@ -7,7 +7,6 @@ import type { Lang } from "../types";
 import { Ambient } from "./Ambient";
 import { Icon, type IconName } from "./Icon";
 import { streak, useStore } from "../store";
-import { VoiceConsentSheet } from "./VoiceConsent";
 import { MathStrip } from "./MathStrip";
 
 export function EngineBadge() {
@@ -156,7 +155,6 @@ export function Shell({
         </nav>
       )}
     </div>
-      <VoiceConsentSheet />
       <MathStrip />
     </MotionConfig>
   );

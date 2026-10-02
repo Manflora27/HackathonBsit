@@ -7,7 +7,6 @@ import { photoToDataUrl } from "../ai/image";
 import { Bilog } from "../components/Bilog";
 import { Icon } from "../components/Icon";
 import { RichText } from "../components/Math";
-import { MicButton } from "../components/MicButton";
 import { Shell } from "../components/Shell";
 import { unitById } from "../data/curriculum";
 import { useT } from "../i18n";
@@ -100,7 +99,6 @@ export default function Help() {
             </button>
             <input ref={photo} type="file" accept="image/*" capture="environment" className="hidden"
               onChange={(e) => { void onPhoto(e.target.files?.[0]); e.target.value = ""; }} />
-            <MicButton onText={(x) => setQuestion((q) => (q ? `${q} ${x}` : x))} testId="help-mic" />
             {snap === "failed" && <span className="text-[13px] text-gap-dark">{t("solve.snapFailed")}</span>}
           </div>
         </div>

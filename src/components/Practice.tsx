@@ -7,7 +7,6 @@ import { useStore } from "../store";
 import type { Lesson } from "../types";
 import { Icon } from "./Icon";
 import { Math, RichText, quickTex } from "./Math";
-import { MicButton } from "./MicButton";
 
 type Item = Lesson["practice"][number];
 
@@ -204,7 +203,6 @@ export function Practice({ id, items, need, onFeedback, onDone, onReview }: {
                 )}
               </AnimatePresence>
             </form>
-            <div className="mt-2"><MicButton onText={(x) => { setFeedback(null); setAnswer(x); }} testId="answer-mic" /></div>
             <AnimatePresence>
               {feedback !== null && (
                 <motion.p initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }}

@@ -1,6 +1,6 @@
 import { TextToSpeech } from "@capacitor-community/text-to-speech";
 import type { Lang } from "../types";
-import { isNativePlatform } from "./speech";
+import { Capacitor } from "@capacitor/core";
 
 // Read aloud with the device's own voice: no recordings, no third party, works offline.
 //   - Android app: the system text-to-speech engine, through @capacitor-community/text-to-speech
@@ -28,7 +28,7 @@ export function stopReadAloud() {
   if (!interrupt) return; // nothing reading
   interrupt();
   interrupt = null;
-  if (isNativePlatform()) void TextToSpeech.stop().catch(() => {});
+  if (Capacitor.isNativePlatform()) void TextToSpeech.stop().catch(() => {});
   else if (hasWebSpeech()) speechSynthesis.cancel();
 }
 
@@ -40,7 +40,7 @@ export async function readAloud(text: string, lang: Lang, cb: ReadAloudCallbacks
   const chunks = sentences(text);
   if (!chunks.length) return { outcome: "done" };
   try {
-    return isNativePlatform() ? await readNative(chunks, lang, id, stopped, cb) : await readWeb(chunks, lang, id, stopped, cb);
+    return Capacitor.isNativePlatform() ? await readNative(chunks, lang, id, stopped, cb) : await readWeb(chunks, lang, id, stopped, cb);
   } catch {
     // An engine that throws can't read here; say so instead of leaving the button stuck on Stop.
     if (id === session) stopReadAloud();

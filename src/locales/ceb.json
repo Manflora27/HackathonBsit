@@ -157,11 +157,8 @@
     "resetDemoData": "I-reset ang demo data",
     "teacherSeesAssigned": "Makita sa imong magtutudlo ang imong score sa mga quiz ug exam nga iyang gipadala, ug ang imong progress sa asignatura sa iyang klase. Pribado ang uban nimong asignatura, mga tubag sa praktis, ug mga gamut.",
     "language": "Pinulongan",
-    "voiceTitle": "Voice input (18+)",
-    "voiceToggle": "Voice input (18+, device speech)",
     "aiTitle": "Asa nagdagan ang AI",
-    "aiText": "Mga lesson, hint ug pagbasa sa litrato sa imong solusyon: GLM 5.3 Flash sa Together o Baseten (US). Imong math ra ang ipadala, dili imong ngalan.",
-    "aiVoice": "Voice input, kung imo ra kining ablihan: ang speech recognition sa imong device ang mosulat; ang transcript moadto sa text model sa taas kung online, ug isulat sa device kung offline. 18+ ra."
+    "aiText": "Mga lesson, hint ug pagbasa sa litrato sa imong solusyon: GLM 5.3 Flash sa Together o Baseten (US). Imong math ra ang ipadala, dili imong ngalan."
   },
   "solve": {
     "problem": "Imong problem",
@@ -184,7 +181,6 @@
     "aiSuggestion": "Tag-an sa AI ({pct}% sigurado). Ang sakto ug sayop gi-check sa SymPy.",
     "plusOneGapFixed": "+1 gap nga naayo",
     "snap": "Kuhai og litrato ang akong solusyon",
-    "sayStep": "Isulti ang step",
     "reading": "Gibasa ang imong solusyon…",
     "snapFailed": "Dili mabasa ang litrato. Sulayi ang mas klaro, o i-type kini.",
     "snapDone": "Tan-awa kung parehas ang mga linya sa imong papel, dayon i-check."
@@ -652,29 +648,6 @@
     "intro": "Gilaktawan niini ang sign-in ug naggamit og sample data (si Kyla ug klase nga 30). Naa sa main screen ang tinuod nga mga account.",
     "fresh": "Sugod og bag-o",
     "freshNote": "Tinuod nga onboarding, dayon ang andam nga Grade 9 assignment"
-  },
-  "voice": {
-    "consentTitle": "Ang voice input kay alang sa 18+",
-    "consentWhat": "Isulat sa voice input ang imong gisulti, unya himuong typed math: speech recognition sa browser kung makaya, o on-device nga model kung dili.",
-    "consentPrivacy": "Mahimong i-process sa speech service sa imong browser ang audio, o ang mubong clip kay i-transcribe sa imong device ug dili gyud ma-save. Ang transcript ipadala sa text model kung online ka.",
-    "consentWithout": "Mahimo gihapon kang mag-type o mogamit sa keypad — walay mawala.",
-    "allow": "18+ ko — i-enable",
-    "under18": "Wala pa koy 18",
-    "adultsOnly": "Alang sa 18+ ra ang voice input. Pag-type na lang.",
-    "say": "Isulti",
-    "listening": "Naminaw… pindota aron mohunong",
-    "recording": "Nagre-record… pindota aron mohunong",
-    "writing": "Gisulat…",
-    "downloading": "Giandam ang offline voice…",
-    "transcribing": "Gisulat ang imong giingon, sa imong device…",
-    "noMath": "Walay nadunggan nga math. Usba?",
-    "micBlocked": "Tugoti ang mikropono aron maingon ang imong tubag.",
-    "failed": "Dili available ang voice karon. I-type na lang.",
-    "downloadOffline": "I-download ang offline voice",
-    "offlineReady": "Andam na ang offline voice sa imong device",
-    "offlineNeeded": "Morecord ug mosulat offline ang imong device (usa ka download)",
-    "offlineOptional": "Moandar gihapon offline human sa usa ka download",
-    "offlineFailed": "Napakya ang download — sulayi pag-usab sa Wi-Fi"
   },
   "lesson": {
     "workedExample": "Gisulbad nga pananglitan",

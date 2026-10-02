@@ -93,13 +93,6 @@ export async function placementStream(subject: string, grade: number | null, lan
   }
 }
 
-// Spoken math -> typed notation. The tiered recognizer lives in ./speech:
-// the browser's own speech recognition where available, otherwise a short
-// clip transcribed on-device (works offline, in Firefox, in Capacitor).
-// 18+ feature, see VoiceConsent.
-export { canVoiceInput, startVoiceInput, getSpeechBackend, isNativePlatform, speechLang } from "./speech";
-export type { SpeechBackend, VoiceCallbacks } from "./speech";
-
 // Read aloud with the device's own voice (native TTS in the app, Web Speech in browsers).
 export { readAloud, stopReadAloud } from "./tts";
 export type { ReadAloudResult } from "./tts";

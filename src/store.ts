@@ -68,10 +68,6 @@ interface State {
   reduceMotion: boolean;
   /** Exam-prep switch: lessons generate with six practice items and an exam tip until it's turned off. */
   examMode: boolean;
-  /** Voice input runs on the device's speech recognition and is 18+ only. null = age not attested yet. */
-  voiceAdult: boolean | null;
-  /** Voice input switched on. Only possible once voiceAdult === true. null = not asked yet. */
-  voiceAi: boolean | null;
   placement: Partial<Record<SubjectId, Placement>>;
   progress: Record<string, SkillStatus>;
   attempts: Attempt[];
@@ -114,8 +110,6 @@ const initial = {
   readableFont: false,
   reduceMotion: false,
   examMode: false,
-  voiceAdult: null as boolean | null,
-  voiceAi: null as boolean | null,
   placement: {} as Partial<Record<SubjectId, Placement>>,
   progress: {},
   attempts: [],

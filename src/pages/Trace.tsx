@@ -9,7 +9,6 @@ import { skillById, skillTitle } from "../data";
 import { engine } from "../engine/client";
 import { useStore } from "../store";
 import { useT } from "../i18n";
-import { MicButton } from "../components/MicButton";
 
 /**
  * Gap tracing is a deterministic graph walk, not an AI decision:
@@ -105,7 +104,6 @@ export default function Trace() {
                 data-testid="probe-answer" autoCapitalize="off" autoCorrect="off" spellCheck={false} />
               <button className="btn-primary shrink-0" data-testid="probe-submit">OK</button>
             </form>
-            <div className="mt-2"><MicButton onText={setAnswer} testId="answer-mic" /></div>
             {feedback && (
               <motion.p initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                 className={`mt-3 rounded-2xl border border-line px-3 py-2 font-display text-[17px] ${feedback === "pass" ? "bg-ok text-white" : "bg-gap"}`}>
