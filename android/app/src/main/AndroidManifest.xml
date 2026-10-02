@@ -43,6 +43,13 @@
         </provider>
     </application>
 
+    <!-- Read aloud: Android 11+ hides the text-to-speech engine from apps that don't declare it. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />

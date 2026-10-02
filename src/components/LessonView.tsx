@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { readAloud } from "../ai/client";
+import { readAloud, stopReadAloud } from "../ai/client";
+import { lessonSpeech } from "../ai/mathSpeech";
 import { lessonText } from "../data";
 import { useT } from "../i18n";
 import { useStore } from "../store";
 import type { LessonPreview } from "../lessons/pipeline";
-import type { Lang, Lesson } from "../types";
+import type { Lang, Lesson, LessonText } from "../types";
 import { FigureView, WorkedSteps } from "./Figures";
 import { Icon } from "./Icon";
 import { RichText } from "./Math";
@@ -51,6 +52,43 @@ function ConceptCheck({ check, answer }: { check: NonNullable<Lesson["en"]["chec
   );
 }
 
+/**
+ * Reads the lesson on the page (hook, explanation, common mistake) with the device's voice.
+ * Tap again to stop; leaving the lesson stops it too. Says so plainly when no voice can read.
+ */
+function ReadAloudButton({ text, lang }: { text: LessonText; lang: Lang }) {
+  const t = useT();
+  const [state, setState] = useState<"idle" | "starting" | "speaking">("idle");
+  const [note, setNote] = useState<"english" | "no-voice" | null>(null);
+  const run = useRef(0);
+  // A different lesson or language on screen, or leaving the page, stops the voice.
+  useEffect(() => () => stopReadAloud(), [text, lang]);
+  const toggle = async () => {
+    if (state !== "idle") { stopReadAloud(); return; }
+    const me = ++run.current;
+    setNote(null);
+    setState("starting");
+    const r = await readAloud(lessonSpeech(text, t("lesson.commonMistake")), lang, {
+      onStart: ({ englishFallback }) => { if (run.current !== me) return; setState("speaking"); if (englishFallback) setNote("english"); },
+    });
+    if (run.current !== me) return;
+    if (r.outcome === "no-voice") setNote("no-voice");
+    setState("idle");
+  };
+  return (
+    <>
+      <button className="btn-ghost btn-sm mt-4" onClick={toggle} aria-pressed={state !== "idle"} data-testid="read-aloud">
+        <Icon name={state === "idle" ? "speaker" : "stop"} size={18} /> {state === "idle" ? t("common.readAloud") : t("common.stopReading")}
+      </button>
+      {note && (
+        <p role="status" className={`mt-2 text-[14px] ${note === "no-voice" ? "text-gap-dark" : "text-muted"}`} data-testid="read-aloud-note">
+          {note === "no-voice" ? t("common.noVoice") : t("common.voiceEnglishFallback")}
+        </p>
+      )}
+    </>
+  );
+}
+
 /** A lesson still being written: its hook and body as they stream in, set like the finished page. */
 export function LessonPreviewView({ preview }: { preview: LessonPreview }) {
   const t = useT();
@@ -76,7 +114,6 @@ export function LessonPreviewView({ preview }: { preview: LessonPreview }) {
 export function LessonView({ lesson, lang, visual, onPractice }: { lesson: Lesson; lang: Lang; visual?: React.ReactNode; onPractice: () => void }) {
   const t = useT();
   const text = lessonText(lesson, lang);
-  const [speaking, setSpeaking] = useState(false);
   const check = text.check?.choices.length && typeof lesson.checkAnswer === "number" && lesson.checkAnswer < text.check.choices.length ? text.check : null;
   return (
     <>
@@ -88,9 +125,7 @@ export function LessonView({ lesson, lang, visual, onPractice }: { lesson: Lesso
       <section className="prose-lesson mt-5 space-y-4" data-testid="lesson-body">
         {text.body.map((para, i) => <p key={i}><RichText text={para} /></p>)}
       </section>
-      <button className="btn-ghost btn-sm mt-4" onClick={async () => { setSpeaking(true); await readAloud(text.spoken, lang); setSpeaking(false); }} data-testid="read-aloud">
-        <Icon name="speaker" size={18} /> {speaking ? "…" : t("common.readAloud")}
-      </button>
+      <ReadAloudButton text={text} lang={lang} />
 
       {lesson.figure && <div className="mt-6" data-testid="lesson-extras"><FigureView fig={lesson.figure} /></div>}
       {visual}

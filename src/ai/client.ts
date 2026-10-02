@@ -100,18 +100,9 @@ export async function placementStream(subject: string, grade: number | null, lan
 export { canVoiceInput, startVoiceInput, getSpeechBackend, isNativePlatform, speechLang } from "./speech";
 export type { SpeechBackend, VoiceCallbacks } from "./speech";
 
-/** Read aloud with the device's own voice. No recordings, no third party. */
-export async function readAloud(text: string, lang: Lang) {
-  if (!("speechSynthesis" in window)) return;
-  const u = new SpeechSynthesisUtterance(text);
-  // No common device voice speaks Cebuano; the Filipino voice reads it closest.
-  u.lang = lang === "en" ? "en-US" : "fil-PH";
-  await new Promise<void>((resolve) => {
-    u.onend = () => resolve();
-    u.onerror = () => resolve();
-    speechSynthesis.speak(u);
-  });
-}
+// Read aloud with the device's own voice (native TTS in the app, Web Speech in browsers).
+export { readAloud, stopReadAloud } from "./tts";
+export type { ReadAloudResult } from "./tts";
 
 /** What the homework helper says about one question (api/ai.ts help). Fields fill in as it streams. */
 export interface HelpAnswer {

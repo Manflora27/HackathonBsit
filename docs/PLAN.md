@@ -229,7 +229,7 @@ Each one must **show the core idea** (find the real gap), not just decorate. Ran
 **Skip:** badges and points, avatars and mascots, 3D/AR, a general chatbot. They're common at hackathons and don't show the gap-finding idea.
 
 ## Accessibility
-- **Read aloud (TTS):** OpenRouter TTS reads a `spoken` version of each explanation ("negative three over four"), never raw LaTeX.
+- **Read aloud (TTS):** the device's own voice (native TTS in the Android app, Web Speech in browsers; free, offline) reads the hook, explanation and common mistake, with math turned into words ("negative three over four"), never raw LaTeX (`src/ai/tts.ts`, `src/ai/mathSpeech.ts`). No Filipino voice → English voice, with a note; no voice at all → a clear message.
 - **Voice input (STT):** spoken steps → transcript → AI math parse → student confirms, like any other input.
 - **Readable design:** high contrast, adjustable text size, and a dyslexia-friendly font option.
 - **Not color-only:** ✓ and ! icons with labels.

@@ -17,6 +17,7 @@
     "build:prereqs": "tsx --env-file=.env.local scripts/build-prereqs.ts"
   },
   "dependencies": {
+    "@capacitor-community/text-to-speech": "^8.0.2",
     "@capacitor/android": "^8.5.2",
     "@capacitor/app": "^8.1.1",
     "@capacitor/browser": "^8.0.4",
