@@ -115,7 +115,10 @@ export const useAuth = create<AuthState>((set, get) => ({
         if (error) set({ error: error.message });
       });
     }
-    supabase.auth.getSession().then(({ data }) => {
+    // A failed sign-in comes back as ?error_description=… (from Supabase) or fails the code exchange: say why on the landing.
+    const back = new URLSearchParams(window.location.search + "&" + window.location.hash.slice(1)).get("error_description");
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (back || error) set({ error: back ?? error!.message });
       set({ user: data.session?.user ?? null });
       get().refresh().finally(() => set({ ready: true }));
     });

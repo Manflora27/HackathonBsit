@@ -7,8 +7,8 @@
  *    so they're evaluated right here, identically in the browser, the server and the audit.
  *  - checkFigure: labelled points on a graph must lie on one of its functions.
  */
-import { compile, tryCompile } from "../lib/expr";
-import type { Figure, Lesson, LessonText } from "../types";
+import { compile, tryCompile } from "../lib/expr.js";
+import type { Figure, Lesson, LessonText } from "../types.js";
 
 /** A side of an equation, from LaTeX to the engine's typed notation. Null if it isn't plain arithmetic. */
 export function numericSide(tex: string): string | null {

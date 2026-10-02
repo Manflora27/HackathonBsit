@@ -73,6 +73,9 @@ export default function Welcome() {
   // Bilog watches you type your name, then cheers when the plan assembles.
   const mood: BilogMood = step === 1 ? "watch" : step === 3 && planReady ? "happy" : "idle";
 
+  // Coming back from sign-in, the session isn't known yet: show nothing rather than flash the form before the redirect above.
+  if (!ready || (!user && !guest)) return null;
+
   return (
     <Shell tabs={false}>
       <div className="mt-3" role="progressbar" aria-valuemin={1} aria-valuemax={STEPS} aria-valuenow={step}>
