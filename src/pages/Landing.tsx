@@ -203,8 +203,10 @@ export default function Landing() {
   };
 
   useEffect(() => {
-    if (!consent || !ready || !user) return;
-    if (!profile) return void nav("/welcome", { replace: true });
+    if (!ready || !user) return;
+    // Signed in (here, or through an email link opened elsewhere): continuing to sign in was the consent.
+    if (!consent) set({ consent: { by: "self", at: Date.now() } });
+    if (!profile?.onboarded_at) return void nav("/welcome", { replace: true });
     set({ role: "student", demo: false });
     nav("/student", { replace: true });
   }, [consent, ready, user, profile]); // eslint-disable-line react-hooks/exhaustive-deps

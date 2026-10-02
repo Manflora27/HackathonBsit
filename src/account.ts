@@ -22,7 +22,7 @@ export function useDeviceAccount() {
   const uid = useAuth((s) => s.user?.id ?? null);
   useEffect(() => {
     if (!uid) return;
-    const { owner, demo } = useStore.getState();
+    const { owner, demo, consent } = useStore.getState();
     if (owner === uid || demo) return;
     if (owner) setAsideFor(owner); // another account's data is still here: keep it for them
     const saved = localStorage.getItem(aside(uid));
@@ -31,6 +31,9 @@ export function useDeviceAccount() {
       localStorage.removeItem(aside(uid));
       void useStore.persist.rehydrate();
     }
-    useStore.getState().set({ owner: uid });
+    // Signing in on this device was itself the consent (the landing says so), so a switch of account keeps it;
+    // otherwise the reset above would bounce the new account back to the landing page.
+    const s = useStore.getState();
+    s.set({ owner: uid, consent: s.consent ?? consent ?? { by: "self", at: Date.now() } });
   }, [uid]);
 }

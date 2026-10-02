@@ -23,14 +23,13 @@ import { useStore } from "./store";
 function Gate({ children }: { children: React.ReactNode }) {
   const { consent, role, demo } = useStore();
   const { user, profile, ready } = useAuth();
-  if (!consent) return <Navigate to="/" replace />;
-  if (demo) return <>{children}</>;
+  if (demo) return consent ? <>{children}</> : <Navigate to="/" replace />;
   if (authConfigured && !ready) return null;
   if (user) {
     if (!profile?.onboarded_at) return <Navigate to="/welcome" replace />;
     return <>{children}</>;
   }
-  if (role === "guest") return <>{children}</>;
+  if (role === "guest" && consent) return <>{children}</>;
   return <Navigate to="/" replace />;
 }
 

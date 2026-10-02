@@ -30,7 +30,7 @@ export default function Welcome() {
 
   useEffect(() => {
     if (!ready || onboarding.done) return; // done: finish() is already navigating
-    if (!consent || (!user && !guest)) return void nav("/", { replace: true });
+    if (!user && (!consent || !guest)) return void nav("/", { replace: true });
     if (profile?.onboarded_at) return void nav("/", { replace: true }); // already onboarded
     if (!name) setName((user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "");
   }, [ready, user, profile, consent, guest, onboarding.done]); // eslint-disable-line react-hooks/exhaustive-deps
