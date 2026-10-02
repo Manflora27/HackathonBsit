@@ -35,7 +35,7 @@ export default function Unit() {
   const { unitId = "" } = useParams();
   const unit = unitById(unitId);
   const { lang, progress, setSkill, examMode, trace, onboarding } = useStore();
-  const { classes, profile } = useAuth();
+  const { profile } = useAuth();
   const [state, setState] = useState<"loading" | "failed" | CachedLesson>("loading");
   // Unfinished practice from an earlier visit: go straight back to it.
   const [stage, setStage] = useState<"learn" | "practice">(() => (useStore.getState().practiceResume[unitId] ? "practice" : "learn"));
@@ -49,7 +49,7 @@ export default function Unit() {
     setState("loading");
     setPreview(null);
     const streaming = { lang, onPreview: (p: LessonPreview) => live && setPreview(p) };
-    getLesson(unitTarget(unit), lessonGoal({ examMode, behind: progress[unit.id] === "gap" || !!trace?.rootSkill, inClass: classes.length > 0 }), streaming).then((r) => {
+    getLesson(unitTarget(unit), lessonGoal({ examMode, behind: progress[unit.id] === "gap" || !!trace?.rootSkill }), streaming).then((r) => {
       if (!live) return;
       setPreview(null);
       setState(r ?? "failed");

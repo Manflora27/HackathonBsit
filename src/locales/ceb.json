@@ -1,5 +1,6 @@
 {
   "common": {
+    "close": "Sirad-i",
     "crashTitle": "Adunay problema niining page",
     "crashText": "Naka-save sa kini nga device ang imong progress. Sulayi pag-usab, o balik sa sinugdanan.",
     "goHome": "Balik sa sinugdanan",
@@ -127,6 +128,10 @@
     "classCode": "Class code, pananglitan SAMP-924"
   },
   "settings": {
+    "deleteDeviceNote": "Papason ang imong progreso ug settings niining device.",
+    "deleteAccountNote": "Permanenteng papason ang imong Hopper account ug tanang na-save niini. Dili na kini mabawi.",
+    "deleteAccount": "Papasa ang account",
+    "privateNote": "Pribado ang imong progreso, mga tubag sa praktis ug mga gamot. Ikaw ra ang makakita.",
     "me": "Ako",
     "settings": "Settings",
     "reading": "Pagbasa",
@@ -182,6 +187,7 @@
     "snapDone": "Tan-awa kung parehas ang mga linya sa imong papel, dayon i-check."
   },
   "home": {
+    "practiceSet": "Praktis",
     "movedUpGrade": "Bag-ong school year: Grade {n} ka na",
     "movedUpSelf": "Bag-ong school year: misaka og usa ka level ang imong mga plano",
     "movedUpNote": "Kauban nimo ang tanan nimong na-master, ug ang mga kulang pa gikan kaniadto magpabilin sa imong dalan.",

@@ -7,12 +7,7 @@ import { isLocalVoiceReady, preloadLocalVoice } from "../ai/whisper";
 import { Shell } from "../components/Shell";
 import { streak, useStore } from "../store";
 import { setAsideFor } from "../account";
-import { AnimatePresence } from "motion/react";
-import { JoinClassSheet } from "../components/JoinClassSheet";
-import { SubjectIcon } from "../components/SubjectIcon";
-import { syncClassProgress } from "../classroom";
 import { usePlanContext } from "../plan";
-import type { SubjectId } from "../data/curriculum";
 import { LANGS, useT } from "../i18n";
 import type { Lang } from "../types";
 
@@ -48,14 +43,12 @@ function OfflineVoice() {
   );
 }
 
-/** The learner's own page: who they are, how they're doing, and the classes they're in (and joining one). */
+/** The learner's own page: who they are and how they're doing. */
 function MeSection() {
   const t = useT();
-  const { user, profile, classes, joinClass, error } = useAuth();
+  const { user, profile } = useAuth();
   const { onboarding, xp, activeDays, gapsFixed, demo } = useStore();
   const { grade, subjects } = usePlanContext();
-  const [code, setCode] = useState("");
-  const [joining, setJoining] = useState(false);
   const name = profile?.display_name || onboarding.name || (demo ? "Kyla" : t("home.friend"));
   const signedIn = !!user && !demo;
   return (
@@ -79,45 +72,6 @@ function MeSection() {
         <div><dt className="text-[12px] text-muted">{t("me.gapsFixed")}</dt><dd className="font-display text-[22px]">{gapsFixed.length}</dd></div>
       </dl>
 
-      <h2 className="kicker mt-6 text-muted">{t("me.classes")}</h2>
-      {!signedIn ? (
-        <p className="mt-2 text-[14.5px] text-muted">{t("me.signInForClasses")}</p>
-      ) : (
-        <>
-          {classes.length === 0 && <p className="mt-2 text-[14.5px] text-muted">{t("me.noClasses")}</p>}
-          <ul className="mt-2 divide-y divide-ink/10" data-testid="me-classes">
-            {classes.map((c) => (
-              <li key={c.id} className="flex items-center gap-3 py-3">
-                <SubjectIcon id={(c.subject ?? "math") as SubjectId} size={38} />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-display text-[18px] leading-tight">{c.name}{c.section ? ` · ${c.section}` : ""}</span>
-                  <span className="block text-[13px] text-muted">{[c.subject ? t.subject(c.subject) : null, c.grade ? t("common.gradeN", { n: c.grade }) : null].filter(Boolean).join(" · ")}</span>
-                </span>
-                <span className="font-mono text-[12.5px] tracking-wider text-muted">{c.class_code}</span>
-              </li>
-            ))}
-          </ul>
-          <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); if (code.trim()) setJoining(true); }}>
-            <input className="input" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder={t("me.classCode")}
-              autoCapitalize="characters" spellCheck={false} data-testid="me-class-code" />
-            <button className="btn-primary shrink-0" disabled={!code.trim()} data-testid="me-join">{t("home.join")}</button>
-          </form>
-          {error === "invalid" && <p className="mt-2 text-[13px] text-gap-dark">{t("home.couldntFindCodeCheck")}</p>}
-          <p className="mt-2 text-[12.5px] text-muted">{t("settings.teacherSeesAssigned")}</p>
-        </>
-      )}
-
-      <AnimatePresence>
-        {joining && (
-          <JoinClassSheet code={code} onClose={() => setJoining(false)} onConfirm={async () => {
-            if (!(await joinClass(code))) return setJoining(false), false;
-            void syncClassProgress(useStore.getState().progress);
-            setJoining(false);
-            setCode("");
-            return true;
-          }} />
-        )}
-      </AnimatePresence>
     </section>
   );
 }
@@ -127,7 +81,6 @@ export default function Settings() {
   const s = useStore();
   const t = useT();
   const { user, profile, signOut, deleteAccount } = useAuth();
-  const teacher = s.role === "teacher" || profile?.account_type === "teacher";
 
   function download() {
     const { progress, attempts, consent } = useStore.getState();
@@ -139,21 +92,9 @@ export default function Settings() {
   }
 
   return (
-    // Teachers come from the wide dashboard: same width, two columns, back to the dashboard, no learner-only options.
-    <Shell wide={teacher} back={teacher ? "/teacher" : undefined} title={teacher ? t("settings.settings") : t("settings.me")}>
-      {teacher ? (
-        <>
-          <h1 className="mt-2 font-display text-[30px] font-bold">{t("settings.settings")}</h1>
-          {user && <p className="mt-1 text-[14px] text-muted">{profile?.display_name} · {user.email}</p>}
-        </>
-      ) : (
-        <>
-          <MeSection />
-          <h2 className="mt-8 font-display text-[24px] font-bold">{t("settings.settings")}</h2>
-        </>
-      )}
-
-      <div className={teacher ? "mt-4 grid items-start gap-4 md:grid-cols-2 [&>section]:!mt-0" : ""}>
+    <Shell title={t("settings.me")}>
+      <MeSection />
+      <h2 className="mt-8 font-display text-[24px] font-bold">{t("settings.settings")}</h2>
 
       <section className="card mt-4 space-y-4">
         <h2 className="font-display text-xl font-semibold">{t("settings.reading")}</h2>
@@ -183,29 +124,13 @@ export default function Settings() {
 
       <section className="card mt-4 space-y-3">
         <h2 className="font-display text-xl font-semibold">{t("settings.privacyRa10173")}</h2>
-        {!teacher && <p className="text-sm text-muted">{t("settings.teacherSeesAssigned")}</p>}
-        {teacher && <p className="text-sm text-muted">{t("teacher.youOnlySeeAssigned")}</p>}
+        <p className="text-sm text-muted">{t("settings.privateNote")}</p>
         <div className="flex flex-wrap gap-2">
           <button className="btn-ghost" onClick={download}>⬇ {t("settings.downloadMyData")}</button>
-          <button
-            className="btn-ghost text-red-700"
-            onClick={async () => {
-              if (user) {
-                // Signed in: erasure means the account and its server rows, not just this device.
-                if (!confirm(t("settings.deleteAccountConfirm"))) return;
-                if (!(await deleteAccount())) return alert(t("settings.deleteFailed"));
-              } else if (!confirm(t("settings.deleteAllDataDevice"))) return;
-              s.resetDemo();
-              nav("/");
-            }}
-          >
-            {t("settings.deleteMyData")}
-          </button>
         </div>
       </section>
 
-      {!teacher && (
-        <section className="card mt-4 space-y-3">
+      <section className="card mt-4 space-y-3">
           <h2 className="font-display text-xl font-semibold">{t("settings.study")}</h2>
           <label className="flex items-center justify-between gap-3">
             {t("settings.examMode")}
@@ -220,12 +145,11 @@ export default function Settings() {
             </label>
             <p className="text-sm text-muted">{t("settings.selfAdvanceNote")}</p>
           </>)}
-        </section>
-      )}
+      </section>
 
       <section className="card mt-4 space-y-3">
         <h2 className="font-display text-xl font-semibold">{t("settings.aiTitle")}</h2>        <p className="text-sm text-muted">{t("settings.aiText")}</p>
-        {!teacher && <label className="flex items-center justify-between gap-3">
+        <label className="flex items-center justify-between gap-3">
           {t("settings.voiceToggle")}
           <input type="checkbox" className="h-5 w-5 shrink-0 accent-[#1e2b27]" checked={s.voiceAi === true}
             onChange={async (e) => {
@@ -233,12 +157,10 @@ export default function Settings() {
               if (!e.target.checked) return s.set({ voiceAi: false });
               s.set({ voiceAi: await ensureVoiceConsent() });
             }} data-testid="voice-toggle" />
-        </label>}
-        {!teacher && <p className="text-sm text-muted">{t("settings.aiVoice")}</p>}
-        {!teacher && <OfflineVoice />}
+        </label>
+        <p className="text-sm text-muted">{t("settings.aiVoice")}</p>
+        <OfflineVoice />
       </section>
-
-      </div>
 
       <section className="mt-6 flex flex-wrap gap-2">
         {user && (
@@ -264,6 +186,26 @@ export default function Settings() {
             </button>
           </>
         )}
+      </section>
+
+      <section className="card mt-6 space-y-3 !border-red-700/25" data-testid="delete-account-section">
+        <h2 className="font-display text-xl font-semibold text-red-800">{user ? t("settings.deleteAccount") : t("settings.deleteMyData")}</h2>
+        <p className="text-sm text-muted">{user ? t("settings.deleteAccountNote") : t("settings.deleteDeviceNote")}</p>
+        <button
+          className="btn-ghost text-red-700"
+          data-testid="delete-account"
+          onClick={async () => {
+            if (user) {
+              // Signed in: erasure means the account and its server rows, not just this device.
+              if (!confirm(t("settings.deleteAccountConfirm"))) return;
+              if (!(await deleteAccount())) return alert(t("settings.deleteFailed"));
+            } else if (!confirm(t("settings.deleteAllDataDevice"))) return;
+            s.resetDemo();
+            nav("/", { replace: true });
+          }}
+        >
+          {user ? t("settings.deleteAccount") : t("settings.deleteMyData")}
+        </button>
       </section>
     </Shell>
   );

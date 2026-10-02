@@ -2,9 +2,8 @@
 // so the app keeps working offline or when the proxy is down.
 import { misconceptions } from "../data";
 import type { Lang } from "../types";
-import { translate } from "../locales";
+
 import { readStream } from "./stream";
-import type { TestQuestion } from "../school";
 
 async function post<T>(path: string, body: unknown, timeoutMs = 9000): Promise<T | null> {
   if (!navigator.onLine) return null;
@@ -41,14 +40,6 @@ export async function classifyWithAi(input: {
   if (!r) return null;
   const valid = r.id === null || misconceptions.some((m) => m.id === r.id);
   return valid ? r : null;
-}
-
-/** Job 5: one-line teaching suggestion from aggregate numbers only. */
-export async function teacherInsight(input: { skill: string; count: number; classSize: number; lang: Lang }) {
-  const r = await post<{ text: string }>("/api/ai", { op: "insight", ...input });
-  if (r?.text) return { text: r.text, ai: true };
-  const text = translate(input.lang, "teacher.insightFallback", { count: input.count, size: input.classSize, skill: input.skill });
-  return { text, ai: false };
 }
 
 /** Photo of handwritten work -> typed lines (GLM vision). Mistakes are copied as written. */
@@ -167,29 +158,3 @@ export async function readQuestion(image: string): Promise<{ question: string; w
   return post<{ question: string; work: string[] }>("/api/ai", { op: "read-question", image }, 30_000);
 }
 
-/**
- * Write a teacher's test (api/ai.ts makeTest), streamed: `onItems` gets the questions written so far. The final
- * list (multiple-choice keys re-checked on the server) comes back at the end. Null offline or on failure.
- */
-export async function makeTest(input: { unitIds: string[]; count: number; mix: "easier" | "balanced" | "harder"; lang: Lang }, signal: AbortSignal,
-  onItems: (soFar: TestQuestion[]) => void): Promise<TestQuestion[] | null> {
-  if (!navigator.onLine) return null;
-  const ctrl = new AbortController();
-  signal.addEventListener("abort", () => ctrl.abort());
-  let timer = setTimeout(() => ctrl.abort(), 30_000);
-  try {
-    const res = await fetch("/api/ai", {
-      method: "POST", headers: { "content-type": "application/json" }, signal: ctrl.signal,
-      body: JSON.stringify({ op: "test", stream: true, ...input }),
-    });
-    const done = await readStream<{ questions: TestQuestion[] }>(res, (soFar) => onItems(((soFar as { questions?: TestQuestion[] })?.questions ?? []).filter(Boolean)), () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => ctrl.abort(), 30_000);
-    });
-    return done?.questions ?? null;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
-}

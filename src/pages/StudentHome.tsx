@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../auth";
 import { Bilog } from "../components/Bilog";
@@ -8,42 +8,18 @@ import { OfflinePack } from "../components/OfflinePack";
 import { EngineBadge, Shell } from "../components/Shell";
 import { startGrade, type SubjectId } from "../data/curriculum";
 import { demoAssignment, problemById, skillById, skillTitle } from "../data";
-import { KYLA_ID } from "../data/seedClass";
 import { useStore } from "../store";
 import { useT } from "../i18n";
 import { SubjectIcon } from "../components/SubjectIcon";
 import { currentUnit, usePlanContext } from "../plan";
-import { fetchMyTests, type MyTest } from "../school";
-import { syncClassProgress } from "../classroom";
-import { JoinClassSheet } from "../components/JoinClassSheet";
-import { AnimatePresence } from "motion/react";
 
 export default function StudentHome() {
   const nav = useNavigate();
-  const { onboarding, attempts, lang, practiceAssignments, trace, gapsFixed, progress, demo, placement, movedUp, set } = useStore();
-  const { profile, classes, joinClass, error } = useAuth();
+  const { onboarding, attempts, lang, trace, gapsFixed, progress, demo, placement, movedUp, set } = useStore();
+  const { profile } = useAuth();
   const t = useT();
-  const [code, setCode] = useState("");
-  /** The code typed in is being confirmed: the sheet shows the class and what its teacher will see. */
-  const [joining, setJoining] = useState(false);
-  const [showJoin, setShowJoin] = useState(false);
   const rootRef = useRef<HTMLButtonElement | null>(null);
   const name = demo && !onboarding.name ? "Kyla" : profile?.display_name || onboarding.name || t("home.friend");
-  const signedIn = !demo && !!profile;
-  const [tests, setTests] = useState<MyTest[]>([]);
-  useEffect(() => {
-    if (!signedIn) return;
-    let live = true;
-    fetchMyTests().then((x) => live && setTests(x));
-    return () => { live = false; };
-  }, [signedIn, classes.length]);
-  // Catch the teacher's view up with progress made offline (upserts, so repeats are harmless).
-  useEffect(() => {
-    if (signedIn && classes.length) void syncClassProgress(useStore.getState().progress);
-  }, [signedIn, classes.length]);
-  const toTake = tests.filter((x) => !x.result);
-  const recent = tests.filter((x) => x.result).slice(0, 3);
-  const assigned = practiceAssignments.filter((p) => p.studentIds.includes(KYLA_ID));
   const mastered = Object.values(progress).filter((s) => s === "mastered").length;
 
   const statusOf = (pid: string) => {
@@ -96,7 +72,7 @@ export default function StudentHome() {
             </div>
             <p className="mt-1 text-sm text-muted">{t("home.movedUpNote")}</p>
           </div>
-          <button className="btn-ghost btn-sm shrink-0" onClick={() => set({ movedUp: false })}>{t("teacher.close")}</button>
+          <button className="btn-ghost btn-sm shrink-0" onClick={() => set({ movedUp: false })}>{t("common.close")}</button>
         </div>
       )}
 
@@ -142,46 +118,14 @@ export default function StudentHome() {
         </button>
       ) : null}
 
-      {assigned.map((p) => (
-        <button key={p.id} className="mt-3 flex w-full items-center gap-4 rounded-[22px] bg-ok-soft/80 px-4 py-3.5 text-left" onClick={() => nav(`/learn/${p.skillId}`)}>
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ok text-white"><Icon name="mail" size={18} /></span>
-          <span className="min-w-0 flex-1">
-            <span className="kicker block text-ok-dark">{t("home.newFromMsSantos")}</span>
-            <span className="block font-display text-[19px] leading-tight">{skillTitle(p.skillId, lang)}</span>
-          </span>
-          <Icon name="arrow" className="text-ok-dark" />
-        </button>
-      ))}
 
-      {(toTake.length > 0 || recent.length > 0) && (
-        <section className="mt-8" data-testid="teacher-tests">
-          <div className="kicker text-muted">{t("classes.fromTeacher")}</div>
-          <ul className={list}>
-            {[...toTake, ...recent].map(({ test, className, result }) => (
-              <li key={test.id}>
-                <button className={row} onClick={() => nav(`/test/${test.id}`)} data-testid={`take-${test.title}`}>
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${result ? "bg-ok-soft text-ok-dark" : "bg-gap text-white"}`}>
-                    <Icon name={result ? "check" : "pencil"} size={18} />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-display text-[18px] leading-tight">{test.title}</span>
-                    <span className="text-[13px] text-muted">{t(test.kind === "exam" ? "classes.exam" : "classes.quiz")} · {className}</span>
-                  </span>
-                  {result ? <span className="font-display text-[18px]">{result.score}/{result.total}</span> : <span className="chip !bg-gap-soft text-gap-dark">{t("classes.take")}</span>}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       {demo && (
         <section className="mt-8" data-testid="assignment-card">
           <div className="flex items-baseline justify-between gap-3">
             <div>
-              <div className="kicker text-muted">{t("home.assignment")} · {demoAssignment.teacher}</div>
+              <div className="kicker text-muted">{t("home.practiceSet")}</div>
               <div className="mt-1 font-display text-[22px] leading-tight">{demoAssignment.title}</div>
-              <div className="text-[13px] text-muted">{t("home.dueFriday")} · {t("home.teacherCanSee")}</div>
             </div>
             <div className="font-display text-[26px] leading-none">{doneCount}<span className="text-[16px] text-muted">/{demoAssignment.problemIds.length}</span></div>
           </div>
@@ -190,7 +134,7 @@ export default function StudentHome() {
               const st = statusOf(pid);
               return (
                 <li key={pid}>
-                  <button onClick={() => nav(`/solve/${pid}?assignment=${demoAssignment.id}`)} className={row} data-testid={`problem-${pid}`}>
+                  <button onClick={() => nav(`/solve/${pid}`)} className={row} data-testid={`problem-${pid}`}>
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-display text-[14px] ${st === "done" ? "bg-ok text-white" : st === "gap" ? "bg-gap text-white" : "bg-white/55 text-muted"}`}>
                       {st === "done" ? <Icon name="check" size={16} strokeWidth={2.2} /> : i + 1}
                     </span>
@@ -248,46 +192,6 @@ export default function StudentHome() {
               <Icon name="chevron" size={18} className="text-muted" />
             </button>
           </li>
-          {signedIn && classes.map((c) => (
-            <li key={c.id} className={row}>
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/55 text-muted"><Icon name="user" size={19} /></span>
-              <span className="flex-1"><span className="block font-display text-[18px] leading-tight">{c.name}{c.section ? ` · ${c.section}` : ""}</span><span className="text-[13.5px] text-muted">{t("home.class2")}</span></span>
-              <span className="chip">{c.class_code}</span>
-            </li>
-          ))}
-          {signedIn && (
-            <li className="py-3.5" data-testid="join-class">
-              {!showJoin ? (
-                <button className="flex w-full items-center gap-4 text-left" onClick={() => setShowJoin(true)}>
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/55 text-muted"><Icon name="user" size={19} /></span>
-                  <span className="flex-1 text-[15px]">{classes.length ? t("classes.joinAnother") : t("home.joinPrompt")}</span>
-                  <Icon name="chevron" size={18} className="text-muted" />
-                </button>
-              ) : (
-                <>
-                  <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); setJoining(true); }}>
-                    <input className="input" autoFocus value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SAMP-924" autoCapitalize="characters" spellCheck={false} data-testid="class-code" />
-                    <button className="btn-primary shrink-0" disabled={!code.trim() || joining} data-testid="join-btn">{t("home.join")}</button>
-                  </form>
-                  <AnimatePresence>
-                    {joining && (
-                      <JoinClassSheet code={code} onClose={() => setJoining(false)} onConfirm={async () => {
-                        if (!(await joinClass(code))) return setJoining(false), false;
-                        // What's already done in the class subject shows up for the teacher right away.
-                        void syncClassProgress(useStore.getState().progress);
-                        setJoining(false);
-                        setShowJoin(false);
-                        setCode("");
-                        return true;
-                      }} />
-                    )}
-                  </AnimatePresence>
-                  {error === "invalid" && <p className="mt-2 text-[13px] text-gap-dark">{t("home.couldntFindCodeCheck")}</p>}
-                  {error === "removed" && <p className="mt-2 text-[13px] text-gap-dark">{t("home.removedFromClass")}</p>}
-                </>
-              )}
-            </li>
-          )}
         </ul>
       </section>
 

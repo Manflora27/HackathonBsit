@@ -11,7 +11,7 @@ async function enterGuest(page: import("@playwright/test").Page, to = "/welcome"
 }
 
 // The full stage demo, as an acceptance test.
-test("Kyla: error circled → trace to Grade 7 gap → practice → retry → teacher sees 14", async ({ page }) => {
+test("Kyla: error circled → trace to Grade 7 gap → practice → retry", async ({ page }) => {
   const shot = (name: string) => page.screenshot({ path: `test-results/shots/${name}.png`, fullPage: true });
 
   await page.goto("/");
@@ -74,15 +74,6 @@ test("Kyla: error circled → trace to Grade 7 gap → practice → retry → te
   await expect(page.getByTestId("success")).toContainText("The problem that stopped you");
   await shot("06-retry-success");
 
-  await page.goto("/demo");
-  await page.getByTestId("demo-teacher").click();
-  await expect(page.getByTestId("row-kyla")).toBeVisible();
-  await expect(page.getByTestId("top-gap-count")).toHaveText("14");
-  await expect(page.getByTestId("top-gap-fixed")).toContainText("1 already fixed it");
-  await shot("07-teacher");
-  await page.getByTestId("assign-top").click();
-  await page.getByTestId("confirm-assign").click();
-  await expect(page.getByRole("status")).toContainText("Sent to 13");
 });
 
 test("airplane mode: still diagnoses with no internet", async ({ page, context }) => {

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { motion } from "motion/react";
-import { useAuth } from "../auth";
 import { lessonGoal } from "../goals";
 import { AreaModel } from "../components/AreaModel";
 import { Bilog } from "../components/Bilog";
@@ -20,7 +19,6 @@ export default function Learn() {
   const nav = useNavigate();
   const { skillId = "" } = useParams();
   const { lang, setSkill, trace, progress, examMode } = useStore();
-  const { classes } = useAuth();
   const skill = skillById[skillId];
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -37,7 +35,7 @@ export default function Learn() {
     let live = true;
     setPreview(null);
     const streaming = { lang, onPreview: (p: LessonPreview) => live && setPreview(p) };
-    getLesson(skillTarget(skill), lessonGoal({ examMode, behind: progress[skillId] === "gap" || !!trace?.rootSkill, inClass: classes.length > 0 }), streaming).then((r) => {
+    getLesson(skillTarget(skill), lessonGoal({ examMode, behind: progress[skillId] === "gap" || !!trace?.rootSkill }), streaming).then((r) => {
       if (!live) return;
       setPreview(null);
       const seed = lessons[skillId];

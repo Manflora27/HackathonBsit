@@ -15,6 +15,12 @@ const config: CapacitorConfig = {
   appName: "Hopper",
   webDir: "dist",
   backgroundColor: "#f4efe4",
+  // The app runs the deployed site, so /api (AI, lessons, account deletion) works the same as on the web.
+  // Sign-in opens in the system browser and comes back on com.hopper.math://auth/callback (src/auth.ts).
+  server: {
+    url: "https://hopper-rust.vercel.app",
+    androidScheme: "https",
+  },
   android: {
     allowMixedContent: false,
   },

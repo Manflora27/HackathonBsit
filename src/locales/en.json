@@ -1,5 +1,6 @@
 {
   "common": {
+    "close": "Close",
     "crashTitle": "Something went wrong on this page",
     "crashText": "Your progress is saved on this device. Try again, or go back to the start.",
     "goHome": "Go home",
@@ -127,6 +128,10 @@
     "classCode": "Class code, e.g. SAMP-924"
   },
   "settings": {
+    "deleteDeviceNote": "Clears your progress and settings from this device.",
+    "deleteAccountNote": "Permanently deletes your Hopper account and everything saved with it. This can't be undone.",
+    "deleteAccount": "Delete account",
+    "privateNote": "Your progress, practice answers and roots stay private. Only you can see them.",
     "me": "Me",
     "settings": "Settings",
     "reading": "Reading",
@@ -182,6 +187,7 @@
     "snapDone": "Check the lines match your paper, then check your work."
   },
   "home": {
+    "practiceSet": "Practice set",
     "movedUpGrade": "New school year: you're in Grade {n} now",
     "movedUpSelf": "New school year: your plans moved up a level",
     "movedUpNote": "Everything you've mastered comes with you, and anything still missing from before stays on your path.",

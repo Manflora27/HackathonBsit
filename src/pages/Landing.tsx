@@ -205,8 +205,8 @@ export default function Landing() {
   useEffect(() => {
     if (!consent || !ready || !user) return;
     if (!profile) return void nav("/welcome", { replace: true });
-    set({ role: profile.account_type === "teacher" ? "teacher" : "student", demo: false });
-    nav(profile.account_type === "teacher" ? "/teacher" : "/student", { replace: true });
+    set({ role: "student", demo: false });
+    nav("/student", { replace: true });
   }, [consent, ready, user, profile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

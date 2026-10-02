@@ -11,9 +11,9 @@ export default function Demo() {
   const { set, consent, resetDemo } = useStore();
   // Wipe local progress first so the run starts from nothing.
   const resetState = () => (resetDemo(), {});
-  const enter = (role: "student" | "teacher") => {
-    set({ role, demo: true, consent: consent ?? { by: "school", at: Date.now() } });
-    nav(role === "teacher" ? "/teacher" : "/student");
+  const enter = () => {
+    set({ role: "student", demo: true, consent: consent ?? { by: "school", at: Date.now() } });
+    nav("/student");
   };
   return (
     <Shell tabs={false} back="/" title={t("demo.title")}>
@@ -32,9 +32,8 @@ export default function Demo() {
       <section className="card mt-4 !p-2">
         {([
           ["student", "demo-student", "Kyla", "Student, Grade 9", "bg-gap-soft text-gap-dark"],
-          ["teacher", "demo-teacher", "Ms. Santos", "Teacher, 9-Sampaguita", "bg-ok-soft text-ok-dark"],
         ] as const).map(([role, tid, title, sub, tone], i) => (
-          <button key={role} onClick={() => enter(role)} data-testid={tid}
+          <button key={role} onClick={enter} data-testid={tid}
             className={`flex w-full items-center gap-4 rounded-[22px] px-3 py-3.5 text-left transition hover:bg-white/40 ${i ? "border-t border-line" : ""}`}>
             <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-[19px] ${tone}`}>{title[0]}</span>
             <span className="flex-1">

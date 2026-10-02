@@ -1,5 +1,5 @@
-import { REVIEW, chatJson, chatJsonStream, json, ndjson, VISION, type Sink } from "./_openrouter.js";
-import { buildPlan, isMathSubject, placementUnits, startGrade, subjectMeta, unitById, type PlanUnit, type SubjectId } from "../src/data/curriculum.js";
+import { chatJson, chatJsonStream, json, ndjson, VISION, type Sink } from "./_openrouter.js";
+import { buildPlan, isMathSubject, placementUnits, startGrade, subjectMeta, type PlanUnit, type SubjectId } from "../src/data/curriculum.js";
 import { competenciesFor } from "../src/data/competencies.js";
 
 type Candidate = { id: string; title: string };
@@ -197,100 +197,12 @@ async function help(b: { question: string; work: string[]; subjects: string[]; g
   return { ...out, unitId: pool.some((u) => u.id === out.unitId) ? out.unitId : "" };
 }
 
-/**
- * A teacher's quiz or exam, written for testing (not copied from lesson practice): a set number of questions spread
- * over the chosen units and their DepEd competencies, at a chosen difficulty mix. Math mixes typed calculations
- * (the teacher's browser proves every key with the engine) with multiple choice; other subjects are multiple choice.
- * Every multiple-choice key is re-answered by an independent call and dropped if the two disagree.
- * Curriculum fields only: no class, no student data.
- */
-const MIXES: Record<string, string> = {
-  easier: "about half easy, 40% medium, 10% hard",
-  balanced: "about 30% easy, 50% medium, 20% hard",
-  harder: "about 20% easy, 40% medium, 40% hard",
-};
-async function makeTest(b: { unitIds: string[]; count: number; mix: string; lang: string }, sink?: Sink) {
-  const units = (Array.isArray(b.unitIds) ? b.unitIds : []).map((id) => unitById(String(id))).filter((u): u is PlanUnit => !!u).slice(0, 12);
-  if (!units.length) throw new Error("no units");
-  const count = Math.max(3, Math.min(20, Math.round(Number(b.count) || 10)));
-  const math = units.some((u) => isMathSubject(u.subject));
-  const system = [
-    `You write a ${count}-question test for a Filipino class, Grade ${units[0].grade}, from the units listed (each with its DepEd learning competencies).`,
-    "Spread the questions over the units as evenly as you can, and over their competencies. Each question tests ONE unit, given by its exact id.",
-    `Difficulty: ${MIXES[b.mix] ?? MIXES.balanced}. 'easy' recalls or applies one step; 'medium' needs two or three steps or a short word problem; 'hard' combines ideas, a less familiar setting, or explaining why. Order them easiest first.`,
-    "Test understanding, not memorized wording: vary contexts (Philippine settings welcome), avoid trick questions, and never repeat a question.",
-    `Write in ${LANG_NAME[b.lang] ?? "English"}; keep subject terms learners use in class in English. Math as $...$ LaTeX.`,
-    math
-      ? "For calculations use kind 'typed': 'given' is ONLY a typed expression or ONE equation with no words (e.g. 3(x-2)=12, 3/4+1/2, (x+3)^2), 'expected' its exact final answer typed (x=6, 5/4, x^2+6x+9), 'form' expanded, factored, solved or any; the words go in 'prompt'. A calculator checks every key, so compute carefully and prefer small whole numbers. At least half the questions are 'typed'. Leave choices empty and answer 0."
-      : "Every question is kind 'choice'.",
-    "For kind 'choice': exactly 4 short 'choices', exactly one correct, its index in 'answer'; the wrong choices are mistakes real learners make. Leave given and expected empty, form 'any'.",
-    "'why' explains the right answer in one or two sentences, for the review after the test.",
-  ].join(" ");
-  const comps = (id: string) => competenciesFor(id).map((c) => `\n    · ${c.text.length > 140 ? c.text.slice(0, 137) + "…" : c.text}`).join("");
-  const user = `Units:\n${units.map((u) => `- ${u.id}: ${u.title} (${subjectMeta[u.subject].en}, Grade ${u.grade}, Q${u.quarter})${comps(u.id)}`).join("\n")}`;
-  const str = { type: "string" };
-  const schema = {
-    type: "object", additionalProperties: false, required: ["questions"],
-    properties: {
-      questions: {
-        type: "array",
-        items: {
-          type: "object", additionalProperties: false,
-          required: ["unitId", "difficulty", "kind", "prompt", "given", "expected", "form", "choices", "answer", "why"],
-          properties: {
-            unitId: { type: "string", enum: units.map((u) => u.id) },
-            difficulty: { type: "string", enum: ["easy", "medium", "hard"] },
-            kind: { type: "string", enum: math ? ["typed", "choice"] : ["choice"] },
-            prompt: str, given: str, expected: str,
-            form: { type: "string", enum: ["any", "expanded", "factored", "solved"] },
-            choices: { type: "array", items: str },
-            answer: { type: "integer" },
-            why: str,
-          },
-        },
-      },
-    },
-  };
-  type Q = { unitId: string; difficulty: string; kind: string; prompt: string; given: string; expected: string; form: string; choices: string[]; answer: number; why: string };
-  const out = sink ? await chatJsonStream<{ questions: Q[] }>(system, user, schema, "test", sink) : await chatJson<{ questions: Q[] }>(system, user, schema, "test");
-  const shaped = out.questions.filter((q) => units.some((u) => u.id === q.unitId) &&
-    (q.kind === "typed" ? math && q.given && q.expected : q.choices.length === 4 && q.answer >= 0 && q.answer < 4));
-  // An independent reading of every multiple-choice question: if it picks a different answer, the key can't be trusted.
-  const checked = await Promise.all(shaped.map(async (q) => {
-    if (q.kind !== "choice") return q;
-    try {
-      const r = await chatJson<{ answer: number }>(
-        "Answer the multiple-choice question. Reply with the 0-based index of the single correct choice. If none or more than one is correct, reply -1.",
-        `${q.prompt}\n${q.choices.map((c, i) => `${i}. ${c}`).join("\n")}`,
-        { type: "object", additionalProperties: false, required: ["answer"], properties: { answer: { type: "integer" } } },
-        "test_check", REVIEW,
-      );
-      return r.answer === q.answer ? q : null;
-    } catch {
-      return null;
-    }
-  }));
-  return { questions: checked.filter((q): q is Q => !!q).slice(0, count) };
-}
-
-// Aggregate numbers only.
-async function insight(b: { skill: string; count: number; classSize: number; lang: "en" | "tl" | "ceb" | "fil" }) {
-  const system =
-    "You help a Filipino high-school math teacher plan a short intervention. One or two sentences, practical, no fluff." +
-    (b.lang === "tl" || b.lang === "fil" ? " Write in Tagalog (Filipino)." : b.lang === "ceb" ? " Write in Cebuano (Bisaya)." : " Write in English.");
-  const user = `${Number(b.count)} of ${Number(b.classSize)} students share a root gap in "${String(b.skill).slice(0, 80)}". Suggest one concrete 10-minute activity.`;
-  const schema = { type: "object", additionalProperties: false, required: ["text"], properties: { text: { type: "string" } } };
-  return chatJson<{ text: string }>(system, user, schema, "insight");
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     if (body.op === "classify") return json(await classify(body));
-    if (body.op === "insight") return json(await insight(body));
     if (body.op === "read-work") return json(await readWork(body));
     if (body.op === "read-question") return json(await readQuestion(body));
-    if (body.op === "test") return body.stream ? ndjson((sink) => makeTest(body, sink)) : json(await makeTest(body));
     if (body.op === "help") return body.stream ? ndjson((sink) => help(body, sink)) : json(await help(body));
     if (body.op === "placement") return body.stream ? ndjson((sink) => placement(body, sink)) : json(await placement(body));
     return json({ error: "unknown op" }, 400);

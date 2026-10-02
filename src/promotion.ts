@@ -13,8 +13,6 @@ export function useSchoolYearRollover() {
   useEffect(() => {
     const now = schoolYear();
     const s = useStore.getState();
-    if (s.role === "teacher" || profile?.account_type === "teacher") return;
-
     // This device's onboarding (guests, and the fallback when signed in).
     const o = s.onboarding;
     if (o.done && o.gradeYear !== now) {

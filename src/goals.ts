@@ -18,8 +18,8 @@ import type { Goal } from "./data/curriculum";
  */
 
 /** The framing for one lesson, derived — not declared. */
-export function lessonGoal(opts: { examMode: boolean; behind: boolean; inClass: boolean }): Goal | null {
+export function lessonGoal(opts: { examMode: boolean; behind: boolean }): Goal | null {
   if (opts.examMode) return "exam_prep";
   if (opts.behind) return "catch_up";
-  return opts.inClass ? "keep_up" : "explore";
+  return "explore";
 }

@@ -130,18 +130,12 @@ export function Shell({
               <Icon name="back" size={18} />
             </button>
           ) : (
-            <button onClick={() => nav(role === "teacher" ? "/teacher" : role ? "/student" : "/")} aria-label={t("common.home")}>
+            <button onClick={() => nav(role ? "/student" : "/")} aria-label={t("common.home")}>
               <img src="/icon.svg" alt="" className="h-8 w-8 rounded-[10px]" />
             </button>
           )}
           <div className="min-w-0 flex-1 truncate font-display text-[19px]">{title ?? "Hopper"}</div>
           {role === "student" && <Stats />}
-          {role === "teacher" && (
-            <button onClick={() => nav("/settings")} aria-label={t("nav.me")}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/60 shadow-[inset_0_1px_0_#fff]">
-              <Icon name="user" size={18} />
-            </button>
-          )}
           <LangButton className="flex h-9 min-w-9 items-center justify-center rounded-full bg-white/60 px-2.5 text-[12.5px] font-bold tracking-wide shadow-[inset_0_1px_0_#fff]" />
         </div>
       </header>}

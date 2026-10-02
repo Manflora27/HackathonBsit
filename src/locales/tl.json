@@ -1,5 +1,6 @@
 {
   "common": {
+    "close": "Isara",
     "crashTitle": "May nagkaproblema sa page na ito",
     "crashText": "Naka-save sa device na ito ang progress mo. Subukan ulit, o bumalik sa simula.",
     "goHome": "Bumalik sa simula",
@@ -127,6 +128,10 @@
     "classCode": "Class code, hal. SAMP-924"
   },
   "settings": {
+    "deleteDeviceNote": "Buburahin ang iyong progreso at settings sa device na ito.",
+    "deleteAccountNote": "Permanenteng buburahin ang iyong Hopper account at lahat ng naka-save dito. Hindi na ito maibabalik.",
+    "deleteAccount": "Burahin ang account",
+    "privateNote": "Pribado ang iyong progreso, mga sagot sa pagsasanay at mga ugat. Ikaw lang ang nakakakita.",
     "me": "Ako",
     "settings": "Settings",
     "reading": "Pagbasa",
@@ -182,6 +187,7 @@
     "snapDone": "Tingnan kung tugma ang mga linya sa papel mo, tapos i-check."
   },
   "home": {
+    "practiceSet": "Pagsasanay",
     "movedUpGrade": "Bagong school year: Grade {n} ka na",
     "movedUpSelf": "Bagong school year: umakyat ng isang level ang mga plano mo",
     "movedUpNote": "Kasama mo ang lahat ng na-master mo, at mananatili sa daan mo ang mga kulang pa mula noon.",
