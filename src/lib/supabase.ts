@@ -3,8 +3,11 @@ import { createClient } from "@supabase/supabase-js";
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
 
-/** True when the Supabase project keys are present. Without them, only guest mode and /demo work. */
-export const authConfigured = Boolean(url && key);
+/**
+ * Accounts are off: the app runs offline as a guest on this device (the offline happy path). To bring sign-in back,
+ * set this to Boolean(url && key) again.
+ */
+export const authConfigured = false && Boolean(url && key);
 
 /**
  * Local test accounts: sign-in creates accounts kept on this device (see auth.ts MOCK_AUTH), for the classroom

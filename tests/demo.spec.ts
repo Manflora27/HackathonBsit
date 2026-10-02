@@ -95,9 +95,9 @@ test("airplane mode: still diagnoses with no internet", async ({ page, context }
   await page.screenshot({ path: "test-results/shots/08-offline.png" });
 });
 
-test("landing without Supabase keys: sign-in is honest, no guest button, demo still works", async ({ page }) => {
+test("landing without accounts: a start button, no sign-in, no demo accounts", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByTestId("auth-unconfigured")).toBeVisible();
+  await expect(page.getByTestId("start")).toBeVisible();
   await expect(page.getByTestId("google-signin")).toHaveCount(0);
   await expect(page.getByTestId("try-it")).toHaveCount(0);
   await expect(page.getByTestId("demo-student")).toHaveCount(0); // no fake accounts on the main screen
@@ -194,11 +194,11 @@ test("lesson pipeline: skeleton, generated lesson, engine drops a wrong key, pra
   await expect(page.getByText("Nice!")).toBeVisible();
 });
 
-test("lesson pipeline: generation failure keeps the skill in the plan", async ({ page }) => {
+test("lesson pipeline: generation failure falls back to the template lesson", async ({ page }) => {
   await page.route("**/api/lesson", (route) => route.fulfill({ status: 502, json: { error: "down" } }));
   await startPlan(page);
   await page.getByTestId("unit-math").click();
-  await expect(page.getByTestId("lesson-unavailable")).toBeVisible();
+  await expect(page.getByTestId("lesson-hook")).toContainText("Let's get started with");
 });
 
 test("verifiers: unit keys are checked in the browser, wrong ones dropped", async ({ page }) => {

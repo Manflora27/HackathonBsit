@@ -270,9 +270,11 @@ export default function Landing() {
                 )}
               </>
             ) : (
-              <p className="rounded-2xl bg-gap-soft/70 px-3 py-2 text-[13px] text-gap-dark" data-testid="auth-unconfigured">
-                {t("landing.signIsntConnectedYet")}
-              </p>
+              // No accounts: start right away on this device, offline.
+              <button className="btn-primary w-full !py-4 text-[17px]" data-testid="start"
+                onClick={() => { agreeNow(); set({ role: "guest", demo: false }); nav(useStore.getState().onboarding.done ? "/student" : "/welcome"); }}>
+                {t("check.startLearning")}
+              </button>
             )}
             {error && <p className="mt-3 text-[14px] text-gap-dark">{error}</p>}
             <p className="mt-4 text-center text-[12px] leading-snug text-muted" data-testid="consent-note">{t("landing.consent")}</p>

@@ -6,6 +6,7 @@ import { engine } from "../engine/client";
 import { supabase } from "../lib/supabase";
 import type { Form, Lang, Lesson } from "../types";
 import { cleanPartial, readStream } from "../ai/stream";
+import { Capacitor } from "@capacitor/core";
 import { wrongClaims } from "./checks";
 
 export const LESSON_FORMAT = 3;
@@ -15,7 +16,8 @@ export interface CachedLesson {
   lesson: Lesson;
   /** True only when every practice key passed the engine. Otherwise the UI says "AI-checked". */
   verified: boolean;
-  source: "device" | "shared" | "generated";
+  /** "template": the bundled lesson from lessons/template.ts, shown when no generated one is available. */
+  source: "device" | "shared" | "generated" | "template";
 }
 
 const TIMEOUT_MS = 45_000;
@@ -97,13 +99,14 @@ async function gate(unit: LessonTarget, d: Draft): Promise<{ lesson: Lesson; ver
 
 /** Grade one practice answer: the engine for verified items; AI-checked items against their key. */
 export async function checkPractice(p: Lesson["practice"][number], answer: string): Promise<boolean> {
-  if (!p.ai) return (await engine.check(p.given, answer, p.form)).correct;
   const key = p.expected ?? "";
+  const norm = (s: string) => s.toLowerCase().replace(/\s+|\*|\\/g, "").replace(/^[a-z]=/, "");
+  // Without the engine (still loading, or failed to load), a stored key is compared as text.
+  if (!p.ai) return (await engine.check(p.given, answer, p.form).catch(() => null))?.correct ?? (!!key && norm(answer) === norm(key));
   try {
     const r = await engine.check(key, answer, p.form === "solved" ? "any" : p.form);
     if (r.correct || r.reason === "not_equivalent") return r.correct;
   } catch { /* fall through */ }
-  const norm = (s: string) => s.toLowerCase().replace(/\s+|\*|\\/g, "").replace(/^[a-z]=/, "");
   return norm(answer) === norm(key);
 }
 
@@ -119,7 +122,8 @@ async function checkExample(ex: Lesson["example"]): Promise<Lesson["example"] | 
 }
 
 async function generate(unit: LessonTarget, goal: Goal | null, streaming?: Streaming): Promise<Draft | null> {
-  if (!navigator.onLine) return null;
+  // The Android app is offline-only: no server inside it, so the bundled template lesson is used (pages/Unit.tsx).
+  if (!navigator.onLine || Capacitor.isNativePlatform()) return null;
   const ctrl = new AbortController();
   let timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {

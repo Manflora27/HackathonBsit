@@ -8,6 +8,7 @@ import { Shell } from "../components/Shell";
 import { unitById } from "../data/curriculum";
 import { competenciesFor } from "../data/competencies";
 import { getLesson, unitTarget, type CachedLesson, type LessonPreview } from "../lessons/pipeline";
+import { templateLesson } from "../lessons/template";
 import { useT } from "../i18n";
 import { useStore } from "../store";
 import { Bilog } from "../components/Bilog";
@@ -52,7 +53,8 @@ export default function Unit() {
     getLesson(unitTarget(unit), lessonGoal({ examMode, behind: progress[unit.id] === "gap" || !!trace?.rootSkill }), streaming).then((r) => {
       if (!live) return;
       setPreview(null);
-      setState(r ?? "failed");
+      // No generated lesson (offline, no model, or it failed its answer check): the bundled template.
+      setState(r ?? { lesson: templateLesson(unitTarget(unit)), verified: true, source: "template" });
       setDone(false);
     });
     return () => { live = false; };
@@ -85,7 +87,7 @@ export default function Unit() {
       </Shell>
     );
 
-  const { lesson, verified } = state;
+  const { lesson, verified, source } = state;
   const comps = competenciesFor(unit.id);
   const need = globalThis.Math.min(2, lesson.practice.length);
 
@@ -94,7 +96,8 @@ export default function Unit() {
       {head}
       <div className="mt-2 flex items-center gap-2 text-[13px] text-muted" data-testid="verified-badge">
         {verified ? <Icon name="check" size={14} className="text-ok" /> : <span className="chip !px-2 text-[11px]">AI</span>}
-        {t.verifier(verified ? unit.verifier : "llm")}
+        {/* The template lesson's practice is algebra, checked by the math engine whatever the unit (lessons/template.ts). */}
+        {t.verifier(!verified ? "llm" : source === "template" ? "sympy" : unit.verifier)}
       </div>
 
       {stage === "learn" && comps.length > 0 && (

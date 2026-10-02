@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { placementStream, type PlacementQuestion } from "../ai/client";
+import { templatePlacement } from "../lessons/template";
 import { Bilog } from "../components/Bilog";
 import { Icon } from "../components/Icon";
 import { Math as TeX, RichText, quickTex } from "../components/Math";
@@ -142,7 +143,15 @@ export default function Check() {
       });
       await chain;
       if (ctrl.signal.aborted) return; // the check already ended
-      // Too few usable questions (offline, or the model failed): math has built-in ones.
+      // Too few usable questions (offline, or the model failed): the bundled template questions.
+      if (live && count < 3) {
+        for (const item of templatePlacement(buildPlan(round.subject, at))) {
+          const q = toQ(item, at, math);
+          if (q) add([q]);
+        }
+        await chain;
+      }
+      // Still too few: math has built-in ones.
       if (live && count < 3 && math) add(offlineQuestions(round.grade ?? grade));
       await chain;
       if (!live) return;
